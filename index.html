@@ -6,6 +6,36 @@
   <title>BakeEase - Home</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
+<script>
+  const toggle = document.getElementById("profileToggle");
+  const menu = document.getElementById("profileMenu");
+  const cartToggle = document.getElementById("cartToggle");
+  const cartMenu = document.getElementById("cartMenu");
+
+  // Profile toggle
+  toggle.addEventListener("click", () => {
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    cartMenu.style.display = "none";
+  });
+
+  // Cart toggle
+  cartToggle.addEventListener("click", () => {
+    cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+    menu.style.display = "none";
+  });
+
+  // Hide both when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+      menu.style.display = "none";
+    }
+    if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+      cartMenu.style.display = "none";
+    }
+  });
+</script>
+
 <body>
   <!-- Header -->
   <header>
@@ -18,15 +48,20 @@
   </div>
 
   <div class="header-icons">
-  <a href="login.html" title="Profile" class="icon-link">👤</a>
-  <a href="cart.html" title="Cart" class="icon-link">🛒</a>
-</div>
+  <div class="profile-dropdown">
+    <span class="profile-icon" id="profileToggle" title="Profile">👤</span>
+    <div class="dropdown-menu" id="profileMenu">
+      <a href="register.html">Sign Up</a>
+      <a href="login.html">Login</a>
+    </div>
+  </div>
 
-<div class="profile-dropdown">
-  <span class="profile-icon" id="profileToggle" title="Profile">👤</span>
-  <div class="dropdown-menu" id="profileMenu">
-    <a href="register.html">Sign Up</a>
-    <a href="login.html">Login</a>
+  <div class="cart-dropdown">
+    <span class="cart-icon" id="cartToggle" title="Cart">🛒</span>
+    <div class="dropdown-menu" id="cartMenu">
+      <a href="cart.html">View Cart</a>
+      <a href="checkout.html">Checkout</a>
+    </div>
   </div>
 </div>
 
@@ -36,8 +71,6 @@
         <li><a href="about.html">About Us</a></li>
         <li><a href="products.html">Products</a></li>
         <li><a href="contact.html">Contact</a></li>
-        <li><a href="register.html">Sign Up</a></li>
-        <li><a href="login.html">Login</a></li>
       </ul>
     </nav>
   </header>

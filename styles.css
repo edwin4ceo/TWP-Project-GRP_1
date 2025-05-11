@@ -110,6 +110,50 @@ header {
   transform: scale(1.2);
 }
 
+.profile-dropdown {
+  position: absolute;
+  top: 20px;
+  right: 60px;
+}
+
+.profile-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.cart-dropdown, .profile-dropdown {
+  display: inline-block;
+  position: relative;
+  margin-left: 15px;
+}
+
+.cart-icon, .profile-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff8e1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-menu a:hover {
+  background-color: #ffe0b2;
+}
+
 /* Search bar style */
 .search-form {
   display: flex;
