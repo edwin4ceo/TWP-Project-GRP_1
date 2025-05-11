@@ -213,6 +213,26 @@ main {
   display: inline-block;
 }
 
+.product-nav {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.product-nav button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin: 0 10px;
+  border: none;
+  background-color: #ff6347;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product-nav button:hover {
+  background-color: #e5533d;
+}
+
 /* Why Choose Us */
 .why-choose {
   margin-top: 50px;
