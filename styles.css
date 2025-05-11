@@ -36,17 +36,16 @@ header {
   gap: 20px;
 }
 
-.logo-inline {
-  width: 8vw;
-  min-width: 80px;
-  max-width: 150px;
-  height: auto;
-}
-
 .logo-search {
   display: flex;
   align-items: center;
   gap: 10px; /* Reduce this value to bring logo and search bar closer */
+}
+
+.logo-inline {
+  max-width: 120px;
+  height: auto;
+  margin-right: 5px; /* Adjust this value to control the space between logo and search bar */
 }
 
 .search-form {
@@ -58,7 +57,7 @@ header {
   padding: 8px;
   border: none;
   border-radius: 5px;
-  width: 250px;
+  width: 220px;
 }
 
 .search-form button {
