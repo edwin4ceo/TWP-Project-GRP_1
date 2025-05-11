@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1>Our Cakes</h1>
+    <h1 id="productTitle">Our Cakes</h1>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -138,9 +138,10 @@
     </section>
   </main>
 
-  <div class="product-nav">
-    <button id="prevBtn">← Previous</button>
-    <button id="nextBtn">Next →</button>
+  <div class="product-controls">
+    <button id="prevBtn">←</button>
+    <span id="pageIndicator">1 / 9</span>
+    <button id="nextBtn">→</button>
   </div>
 
   <footer>
@@ -149,12 +150,17 @@
 
   <script>
     const products = document.querySelectorAll(".product-detail");
+    const pageIndicator = document.getElementById("pageIndicator");
+    const productTitle = document.getElementById("productTitle");
     let currentIndex = 0;
 
     function showProduct(index) {
       products.forEach((product, i) => {
         product.style.display = i === index ? "flex" : "none";
       });
+      pageIndicator.textContent = `${index + 1} / ${products.length}`;
+      const title = products[index].querySelector("h2")?.textContent;
+      if (title) productTitle.textContent = title;
     }
 
     document.getElementById("prevBtn").addEventListener("click", () => {
