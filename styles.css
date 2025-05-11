@@ -43,6 +43,12 @@ header {
   height: auto;
 }
 
+.logo-search {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduce this value to bring logo and search bar closer */
+}
+
 .search-form {
   display: flex;
   gap: 10px;
