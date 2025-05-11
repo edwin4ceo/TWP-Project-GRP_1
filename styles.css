@@ -66,6 +66,12 @@ main {
   border-radius: 5px;
 }
 
+.logo {
+  max-width: 120px;
+  display: block;
+  margin: 0 auto 10px;
+}
+
 /* Product Grid */
 .product-grid {
   display: flex;
