@@ -45,8 +45,9 @@ header {
 }
 
 .logo-inline {
-  max-width: 120px;
+  width: auto;
   height: auto;
+  max-height: 80px;
 }
 
 .header-right {
