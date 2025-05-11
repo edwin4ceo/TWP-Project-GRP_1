@@ -75,32 +75,12 @@ header {
   gap: 15px;
 }
 
-.header-nav {
-  display: flex;
-  list-style: none;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-}
-
-.header-nav li a {
-  background-color: #ff6347;
-  padding: 8px 14px;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.header-nav li a:hover {
-  background-color: #e5533d;
-}
-
 .header-icons {
   display: flex;
   gap: 15px;
 }
 
-/* Profile & Cart Icons */
+/* Navigation Dropdown */
 .nav-dropdown {
   position: relative;
   display: inline-block;
@@ -132,11 +112,49 @@ header {
   display: block;
   padding: 8px 16px;
   color: #333;
+  text-decoration: none;
 }
 
 #navMenu a:hover {
   background-color: #ffe0b2;
 }
+
+/* Profile & Cart Icons */
+.profile-dropdown, .cart-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-icon, .cart-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff8e1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 120px;
+  max-width: 250px;
+  right: 0;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-menu a:hover {
+  background-color: #ffe0b2;
+}
+
 
 /* ------------------------------
    Main Content Sections
@@ -363,7 +381,7 @@ footer {
     align-items: center;
   }
 
-  .dropdown-menu {
+  .dropdown-menu, #navMenu {
     right: auto;
     left: 50%;
     transform: translateX(-50%);
