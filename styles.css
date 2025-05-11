@@ -21,8 +21,8 @@ header {
   background-color: #ffb347;
   padding: 20px;
   text-align: center;
+  position: relative;
 }
-
 nav ul {
   list-style-type: none;
   padding: 0;
@@ -99,15 +99,15 @@ header {
   gap: 15px;
 }
 
-.icon {
-  width: 28px;
-  height: auto;
-  cursor: pointer;
+.icon-link {
+  width: 24px;
+  text-decoration: none;
+  color: #333 ;
   transition: transform 0.2s;
 }
 
-.icon:hover {
-  transform: scale(1.1);
+.icon-link:hover {
+  transform: scale(1.2);
 }
 
 /* Search bar style */
@@ -231,7 +231,7 @@ footer {
   text-align: center;
   padding: 15px;
   background-color: #ffb347;
-  color: #fff;
+  color: #070707;
   margin-top: 40px;
 }
 
