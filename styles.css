@@ -213,6 +213,11 @@ main {
   display: inline-block;
 }
 
+.product-card .button + .button {
+  margin-top: 8px;
+  display: inline-block;
+}
+
 .product-nav {
   text-align: center;
   margin: 20px 0;
@@ -297,6 +302,7 @@ main {
 .product-detail .button {
   display: inline-block;
 }
+
 
 /* Product viewer layout */
 #productContainer {
