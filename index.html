@@ -6,36 +6,6 @@
   <title>BakeEase - Home</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-
-<script>
-  const toggle = document.getElementById("profileToggle");
-  const menu = document.getElementById("profileMenu");
-  const cartToggle = document.getElementById("cartToggle");
-  const cartMenu = document.getElementById("cartMenu");
-
-  // Profile toggle
-  toggle.addEventListener("click", () => {
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
-    cartMenu.style.display = "none";
-  });
-
-  // Cart toggle
-  cartToggle.addEventListener("click", () => {
-    cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
-    menu.style.display = "none";
-  });
-
-  // Hide both when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
-      menu.style.display = "none";
-    }
-    if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-      cartMenu.style.display = "none";
-    }
-  });
-</script>
-
 <body>
   <!-- Header -->
   <header>
@@ -46,6 +16,7 @@
       <button type="submit">Search</button>
     </form>
 
+<!-- Icons with Dropdowns -->
   <div class="header-icons">
   <div class="profile-dropdown">
     <span class="profile-icon" id="profileToggle" title="Profile">👤</span>
@@ -62,6 +33,7 @@
       <a href="checkout.html">Checkout</a>
     </div>
   </div>
+</div>
 </div>
 
     <nav>
@@ -127,5 +99,36 @@
   <footer>
     <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
   </footer>
+
+<!-- JavaScript for dropdowns -->
+  <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
+    });
+
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
+
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+    });
+  </script>
+
 </body>
 </html>
