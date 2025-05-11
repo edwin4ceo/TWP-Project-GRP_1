@@ -9,42 +9,44 @@
 <body>
   <!-- Header -->
   <header>
-    <div class="header-top">
+  <div class="header-bar">
+    <!-- Left: Logo -->
     <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+
+    <!-- Middle: Search (optional) -->
     <form class="search-form" action="products.html" method="get">
-      <input type="text" name="search" placeholder="Welcome To BakeEase Bakery" />
+      <input type="text" name="search" placeholder="Search for cakes..." />
       <button type="submit">Search</button>
     </form>
 
-<!-- Icons with Dropdowns -->
-  <div class="header-icons">
-  <div class="profile-dropdown">
-    <span class="profile-icon" id="profileToggle" title="Profile">👤</span>
-    <div class="dropdown-menu" id="profileMenu">
-      <a href="register.html">Sign Up</a>
-      <a href="login.html">Login</a>
-    </div>
-  </div>
-
-  <div class="cart-dropdown">
-    <span class="cart-icon" id="cartToggle" title="Cart">🛒</span>
-    <div class="dropdown-menu" id="cartMenu">
-      <a href="cart.html">View Cart</a>
-      <a href="checkout.html">Checkout</a>
-    </div>
-  </div>
-</div>
-</div>
-
-    <nav>
-      <ul class="nav-links">
+    <!-- Right: Navigation + Icons -->
+    <div class="header-right">
+      <ul class="header-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="products.html">Products</a></li>
-        <li><a href="contact.html">Contact</a></li>
         <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
-    </nav>
-  </header>
+
+      <div class="header-icons">
+        <div class="cart-dropdown">
+          <span class="cart-icon" id="cartToggle">🛒</span>
+          <div class="dropdown-menu" id="cartMenu">
+            <a href="cart.html">View Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        <div class="profile-dropdown">
+          <span class="profile-icon" id="profileToggle">👤</span>
+          <div class="dropdown-menu" id="profileMenu">
+            <a href="register.html">Sign Up</a>
+            <a href="login.html">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 
   <!-- Hero Section -->
   <main>
