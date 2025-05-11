@@ -21,12 +21,15 @@
 
     <!-- Right: Navigation + Icons -->
     <div class="header-right">
-      <ul class="header-nav">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
+      <div class="nav-dropdown">
+  <span class="nav-toggle" id="navToggle">☰</span>
+  <div class="dropdown-menu" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</div>
 
       <div class="header-icons">
         <div class="cart-dropdown">
@@ -108,6 +111,8 @@
     const profileMenu = document.getElementById("profileMenu");
     const cartToggle = document.getElementById("cartToggle");
     const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
 
     // Toggle Profile Menu
     profileToggle.addEventListener("click", () => {
@@ -121,6 +126,10 @@
       profileMenu.style.display = "none";
     });
 
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
+
     // Hide dropdowns when clicking outside
     document.addEventListener("click", (e) => {
       if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
@@ -129,6 +138,11 @@
       if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
         cartMenu.style.display = "none";
       }
+      document.addEventListener("click", (e) => {
+      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      navMenu.style.display = "none";
+    }
+  });
     });
   </script>
 
