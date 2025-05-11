@@ -33,14 +33,14 @@ nav ul {
   gap: 15px;
 }
 
-nav a {
+.nav-links li a {
   background-color: #ff6347;
   padding: 10px 16px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
-nav a:hover {
+.nav-links li a:hover {
   background-color: #e5533d;
 }
 
@@ -66,26 +66,30 @@ main {
   border-radius: 5px;
 }
 
-.logo {
-  max-width: 150px;
-  display: block;
-  margin: 0 auto 20px;
+/* Header container */
+header {
+  background-color: #ffb347;
+  padding: 20px;
+  text-align: center;
 }
 
-.header-flex {
+/* Align logo and search bar horizontally */
+.header-top {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   gap: 20px;
   flex-wrap: wrap;
-  padding: 10px 20px;
+  margin-bottom: 15px;
 }
 
+/* Logo next to search bar */
 .logo-inline {
-  max-width: 60px;
+  width: 60px;
   height: auto;
 }
 
+/* Search bar style */
 .search-form {
   display: flex;
   gap: 10px;
@@ -93,9 +97,9 @@ main {
 
 .search-form input[type="text"] {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 5px;
-  width: 220px;
+  width: 250px;
 }
 
 .search-form button {
@@ -106,6 +110,30 @@ main {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+}
+
+/* Nav links in a row */
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #fff;
+  background-color: #ff6347;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  background-color: #e5533d;
 }
 
 .search-form button:hover {
