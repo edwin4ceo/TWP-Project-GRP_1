@@ -67,10 +67,51 @@ main {
 }
 
 .logo {
-  max-width: 120px;
+  max-width: 150px;
   display: block;
-  margin: 0 auto 10px;
+  margin: 0 auto 20px;
 }
+
+.header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+}
+
+.logo-inline {
+  max-width: 60px;
+  height: auto;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.search-form input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 220px;
+}
+
+.search-form button {
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-form button:hover {
+  background-color: #e5533d;
+}
+
 
 /* Product Grid */
 .product-grid {
