@@ -1,4 +1,6 @@
-/* General Reset and Typography */
+/* ------------------------------
+   General Reset and Typography
+------------------------------ */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -16,64 +18,17 @@ a {
   color: #fff;
 }
 
-/* Header and Navigation */
-header {
-  background-color: #ffb347;
-  padding: 20px;
-  text-align: center;
-  position: relative;
-}
-nav ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
 
-.nav-links li a {
-  background-color: #ff6347;
-  padding: 10px 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.nav-links li a:hover {
-  background-color: #e5533d;
-}
-
-/* Main Content */
-main {
-  padding: 30px 20px;
-}
-
-.intro {
-  text-align: center;
-  padding: 30px;
-  background-color: #fff0e0;
-  border-radius: 10px;
-  margin-bottom: 40px;
-}
-
-.intro .button {
-  display: inline-block;
-  margin-top: 20px;
-  background-color: #ff6347;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-}
-
-/* Header container */
+/* ------------------------------
+   Header and Navigation
+------------------------------ */
 header {
   background-color: #fccb86;
   padding: 20px;
   text-align: center;
+  position: relative;
 }
 
-/* Align logo and search bar horizontally */
 .header-top {
   display: flex;
   justify-content: center;
@@ -83,7 +38,6 @@ header {
   margin-bottom: 15px;
 }
 
-/* Logo next to search bar */
 .logo-inline {
   width: 8vw;
   min-width: 80px;
@@ -99,39 +53,19 @@ header {
   gap: 15px;
 }
 
-.icon-link {
-  width: 24px;
-  text-decoration: none;
-  color: #333 ;
-  transition: transform 0.2s;
-}
-
-.icon-link:hover {
-  transform: scale(1.2);
-}
-
-.profile-dropdown {
-  position: absolute;
-  top: 20px;
-  right: 60px;
-}
-
-.profile-icon {
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.cart-dropdown, .profile-dropdown {
+/* Profile & Cart Icons */
+.profile-dropdown, .cart-dropdown {
   display: inline-block;
   position: relative;
   margin-left: 15px;
 }
 
-.cart-icon, .profile-icon {
+.profile-icon, .cart-icon {
   font-size: 24px;
   cursor: pointer;
 }
 
+/* Dropdown Menus */
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -141,6 +75,7 @@ header {
   padding: 8px 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  min-width: 120px;
 }
 
 .dropdown-menu a {
@@ -154,7 +89,7 @@ header {
   background-color: #ffe0b2;
 }
 
-/* Search bar style */
+/* Search Bar */
 .search-form {
   display: flex;
   gap: 10px;
@@ -177,7 +112,11 @@ header {
   font-weight: bold;
 }
 
-/* Nav links in a row */
+.search-form button:hover {
+  background-color: #e5533d;
+}
+
+/* Navigation Links */
 .nav-links {
   list-style: none;
   padding: 0;
@@ -189,10 +128,8 @@ header {
 }
 
 .nav-links li a {
-  text-decoration: none;
-  color: #fff;
   background-color: #ff6347;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
@@ -201,10 +138,31 @@ header {
   background-color: #e5533d;
 }
 
-.search-form button:hover {
-  background-color: #e5533d;
+
+/* ------------------------------
+   Main Content Sections
+------------------------------ */
+main {
+  padding: 30px 20px;
 }
 
+.intro {
+  text-align: center;
+  padding: 30px;
+  background-color: #fff0e0;
+  border-radius: 10px;
+  margin-bottom: 40px;
+}
+
+.intro .button {
+  display: inline-block;
+  margin-top: 20px;
+  background-color: #ff6347;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+}
 
 /* Product Grid */
 .product-grid {
@@ -251,7 +209,7 @@ header {
   display: inline-block;
 }
 
-/* Why Choose Us Section */
+/* Why Choose Us */
 .why-choose {
   margin-top: 50px;
   background-color: #fef1e8;
@@ -270,16 +228,10 @@ header {
   font-size: 1.1em;
 }
 
-/* Footer */
-footer {
-  text-align: center;
-  padding: 15px;
-  background-color: #ffb347;
-  color: #070707;
-  margin-top: 40px;
-}
 
-/* Product Detail Page Layout */
+/* ------------------------------
+   Product Detail Page
+------------------------------ */
 .product-detail {
   display: flex;
   flex-wrap: wrap;
@@ -322,7 +274,44 @@ footer {
   display: inline-block;
 }
 
+
+/* ------------------------------
+   Footer
+------------------------------ */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #ffb347;
+  color: #070707;
+  margin-top: 40px;
+}
+
+
+/* ------------------------------
+   Responsive Adjustments
+------------------------------ */
 @media (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-form input[type="text"] {
+    width: 100%;
+  }
+
+  .header-icons {
+    position: static;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .dropdown-menu {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .product-detail {
     flex-direction: column;
     align-items: center;
