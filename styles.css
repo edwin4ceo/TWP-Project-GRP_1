@@ -68,7 +68,7 @@ main {
 
 /* Header container */
 header {
-  background-color: #ffb347;
+  background-color: #fccb86;
   padding: 20px;
   text-align: center;
 }
@@ -86,9 +86,28 @@ header {
 /* Logo next to search bar */
 .logo-inline {
   width: 8vw;
-  min-width: 60px;
-  max-width: 140px;
+  min-width: 80px;
+  max-width: 150px;
   height: auto;
+}
+
+.header-icons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.icon {
+  width: 28px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.icon:hover {
+  transform: scale(1.1);
 }
 
 /* Search bar style */
