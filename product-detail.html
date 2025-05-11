@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Chocolate Indulgence - BakeEase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Viewer - BakeEase</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <h1>Chocolate Indulgence</h1>
+    <h1>Our Cakes</h1>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -17,22 +18,156 @@
     </nav>
   </header>
 
-  <main class="product-detail">
-    <img src="images/chocolate_cake.jpg" alt="Chocolate Indulgence Cake" />
-    <div>
-      <h2>RM80</h2>
-      <p>This rich, moist chocolate cake is topped with decadent chocolate ganache and layers of fudge. Perfect for chocolate lovers!</p>
-      <ul>
-        <li>Size: 1kg (8-inch)</li>
-        <li>Delivery available in 2 hours</li>
-        <li>Eggless option available</li>
-      </ul>
-      <a href="register.html" class="button">Sign up to Order</a>
-    </div>
+  <main id="productContainer">
+    <section class="product-detail" data-index="0">
+      <img src="images/chocolate_cake.jpg" alt="Chocolate Indulgence Cake" />
+      <div>
+        <h2>Chocolate Indulgence</h2>
+        <p>Rich and moist chocolate cake topped with decadent chocolate ganache and layers of fudge. Perfect for chocolate lovers!</p>
+        <ul>
+          <li>Size: 1kg (8-inch)</li>
+          <li>Delivery available in 2 hours</li>
+          <li>Eggless option available</li>
+        </ul>
+        <a href="register.html" class="button">Sign up to Order</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="1" style="display: none;">
+      <img src="images/cheesecake.jpg" alt="Classic Cheesecake">
+      <div>
+        <h2>Classic Cheesecake</h2>
+        <p>Creamy, rich cheesecake on a buttery biscuit base with a hint of vanilla.</p>
+        <ul>
+          <li>Weight: 800g</li>
+          <li>Delivery: Next-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="2" style="display: none;">
+      <img src="images/pandan_gula_melaka.jpg" alt="Pandan Gula Melaka">
+      <div>
+        <h2>Pandan Gula Melaka</h2>
+        <p>Fragrant pandan sponge layered with coconut cream and gula melaka syrup.</p>
+        <ul>
+          <li>Weight: 900g</li>
+          <li>Delivery: Same-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="3" style="display: none;">
+      <img src="images/red_velvet.jpg" alt="Red Velvet Delight">
+      <div>
+        <h2>Red Velvet Delight</h2>
+        <p>Moist red velvet layers with smooth cream cheese frosting, beautifully decorated for any celebration.</p>
+        <ul>
+          <li>Weight: 1.2kg</li>
+          <li>Delivery: Same-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="4" style="display: none;">
+      <img src="images/tiramisu.jpg" alt="Tiramisu Classic">
+      <div>
+        <h2>Tiramisu Classic</h2>
+        <p>Authentic Italian dessert with espresso-soaked sponge and whipped mascarpone cream.</p>
+        <ul>
+          <li>Weight: 750g</li>
+          <li>Delivery: Next-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="5" style="display: none;">
+      <img src="images/mango_mousse.jpg" alt="Mango Mousse Cake">
+      <div>
+        <h2>Mango Mousse Cake</h2>
+        <p>Light mango mousse layered over vanilla sponge and topped with mango glaze.</p>
+        <ul>
+          <li>Weight: 900g</li>
+          <li>Delivery: Same-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="6" style="display: none;">
+      <img src="images/blueberry_crumble.jpg" alt="Blueberry Crumble">
+      <div>
+        <h2>Blueberry Crumble</h2>
+        <p>Sweet and tangy blueberry filling topped with buttery crumble crust.</p>
+        <ul>
+          <li>Weight: 800g</li>
+          <li>Delivery: Next-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="7" style="display: none;">
+      <img src="images/carrot_walnut.jpg" alt="Carrot Walnut Cake">
+      <div>
+        <h2>Carrot Walnut Cake</h2>
+        <p>Spiced carrot cake with crushed walnuts and cream cheese frosting for a hearty bite.</p>
+        <ul>
+          <li>Weight: 950g</li>
+          <li>Delivery: Same-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
+
+    <section class="product-detail" data-index="8" style="display: none;">
+      <img src="images/mocha_buttercream.jpg" alt="Mocha Buttercream Cake">
+      <div>
+        <h2>Mocha Buttercream Cake</h2>
+        <p>Decadent chocolate sponge filled with rich mocha buttercream and topped with coffee glaze.</p>
+        <ul>
+          <li>Weight: 1kg</li>
+          <li>Delivery: Next-day available</li>
+        </ul>
+        <a href="cart.html" class="button">Add to Cart</a>
+      </div>
+    </section>
   </main>
+
+  <div class="product-nav">
+    <button id="prevBtn">← Previous</button>
+    <button id="nextBtn">Next →</button>
+  </div>
 
   <footer>
     <p>&copy; 2025 BakeEase Bakery</p>
   </footer>
+
+  <script>
+    const products = document.querySelectorAll(".product-detail");
+    let currentIndex = 0;
+
+    function showProduct(index) {
+      products.forEach((product, i) => {
+        product.style.display = i === index ? "flex" : "none";
+      });
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + products.length) % products.length;
+      showProduct(currentIndex);
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % products.length;
+      showProduct(currentIndex);
+    });
+
+    showProduct(currentIndex);
+  </script>
 </body>
 </html>
