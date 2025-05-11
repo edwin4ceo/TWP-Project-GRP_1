@@ -33,19 +33,26 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  width: 100%;
 }
 
 .logo-search {
   display: flex;
   align-items: center;
-  gap: 10px; /* Reduce this value to bring logo and search bar closer */
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
 }
 
 .logo-inline {
   max-width: 120px;
   height: auto;
-  margin-right: 5px; /* Adjust this value to control the space between logo and search bar */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .search-form {
