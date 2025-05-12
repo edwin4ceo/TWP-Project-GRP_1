@@ -7,7 +7,42 @@
 </head>
 <body>
   <header>
-    <h1>About Our Team</h1>
+    <div class="header-bar">
+    <!-- Logo only -->
+    <div class="logo-search">
+      <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+      <h1 id="page-heading">About Our Team</h1>
+    </div>
+
+    <!-- Right: Nav, Cart, Profile -->
+    <div class="header-right">
+      <div class="nav-dropdown">
+        <span class="nav-toggle" id="navToggle">☰</span>
+        <div class="dropdown-menu" id="navMenu">
+          <a href="index.html">Home</a>
+          <a href="products.html">Products</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+
+      <div class="cart-dropdown">
+        <span class="cart-icon" id="cartToggle">🛒</span>
+        <div class="dropdown-menu" id="cartMenu">
+          <a href="cart.html">View Cart</a>
+          <a href="checkout.html">Checkout</a>
+        </div>
+      </div>
+
+      <div class="profile-dropdown">
+        <span class="profile-icon" id="profileToggle">👤</span>
+        <div class="dropdown-menu" id="profileMenu">
+          <a href="register.html">Sign Up</a>
+          <a href="login.html">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
   </header>
 
   <main class="team-section">
