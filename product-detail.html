@@ -9,7 +9,13 @@
 <body>
   <header>
     <h1 id="productTitle">Our Cakes</h1>
-    <!-- Right Side Icons: Menu, Cart, Profile -->
+  <div class="header-bar">
+    <!-- Logo only -->
+    <div class="logo-search">
+      <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+    </div>
+
+    <!-- Right: Nav, Cart, Profile -->
     <div class="header-right">
       <div class="nav-dropdown">
         <span class="nav-toggle" id="navToggle">☰</span>
@@ -37,6 +43,7 @@
         </div>
       </div>
     </div>
+  </div>
   </header>
 
   <main id="productContainer">
@@ -196,5 +203,33 @@
 
     showProduct(currentIndex);
   </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggles = [
+      { btn: "navToggle", menu: "navMenu" },
+      { btn: "cartToggle", menu: "cartMenu" },
+      { btn: "profileToggle", menu: "profileMenu" },
+    ];
+
+    toggles.forEach(({ btn, menu }) => {
+      const toggle = document.getElementById(btn);
+      const menuEl = document.getElementById(menu);
+
+      if (toggle && menuEl) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+        });
+      }
+    });
+
+    document.addEventListener("click", () => {
+      toggles.forEach(({ menu }) => {
+        const el = document.getElementById(menu);
+        if (el) el.style.display = "none";
+      });
+    });
+  });
+</script>
 </body>
 </html>
