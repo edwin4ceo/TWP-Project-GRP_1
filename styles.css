@@ -387,35 +387,91 @@ main {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  padding: 20px;
-}
-
-#productContainer {
-  flex: 1;
+  padding: 20px 40px; /* add horizontal padding for button spacing */
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  width: fit-content;
+  margin: 40px auto;
   position: relative;
 }
 
+/* Container holding the sliding product cards */
+#productContainer {
+  flex: 1;
+  position: relative;
+  width: 600px; /* fixed width to control sliding area */
+  min-height: 340px;
+  overflow: hidden;
+}
+
+/* Navigation buttons styling */
 .product-nav-side {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   padding: 12px 18px;
   border: none;
   background-color: #ff6347;
   color: white;
   border-radius: 50%;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .product-nav-side:hover {
   background-color: #e5533d;
 }
 
-.product-indicator {
-  text-align: center;
-  margin-top: 10px;
-  font-weight: bold;
-  color: #333;
+/* Position nav buttons vertically centered on sides */
+.product-viewer > .product-nav-side.left-btn {
+  margin-right: 12px;
 }
 
+.product-viewer > .product-nav-side.right-btn {
+  margin-left: 12px;
+}
+
+/* Product indicator below the viewer */
+.product-indicator {
+  text-align: center;
+  margin-top: 12px;
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  user-select: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .product-viewer {
+    flex-direction: column;
+    padding: 16px 20px;
+    width: 90vw;
+  }
+
+  #productContainer {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .product-nav-side {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    padding: 8px 12px;
+  }
+
+  .product-viewer > .product-nav-side.left-btn,
+  .product-viewer > .product-nav-side.right-btn {
+    margin: 8px 0;
+  }
+}
 
 /* ------------------------------
    Footer
