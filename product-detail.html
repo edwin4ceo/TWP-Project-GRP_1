@@ -8,243 +8,213 @@
 </head>
 <body>
   <header>
-  <div class="header-bar">
-    <!-- Logo only -->
-    <div class="logo-search">
-      <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
-      <h1 id="page-heading">Our Cakes</h1>
-    </div>
-
-    <!-- Right: Nav, Cart, Profile -->
-    <div class="header-right">
-      <div class="nav-dropdown">
-        <span class="nav-toggle" id="navToggle">☰</span>
-        <div class="dropdown-menu" id="navMenu">
-          <a href="index.html">Home</a>
-          <a href="products.html">Products</a>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact</a>
-        </div>
+    <div class="header-bar">
+      <div class="logo-search">
+        <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        <h1 id="page-heading">Our Cakes</h1>
       </div>
-
-      <div class="cart-dropdown">
-        <span class="cart-icon" id="cartToggle">🛒</span>
-        <div class="dropdown-menu" id="cartMenu">
-          <a href="cart.html">View Cart</a>
-          <a href="checkout.html">Checkout</a>
+      <div class="header-right">
+        <div class="nav-dropdown">
+          <span class="nav-toggle" id="navToggle">☰</span>
+          <div class="dropdown-menu" id="navMenu">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+          </div>
         </div>
-      </div>
-
-      <div class="profile-dropdown">
-        <span class="profile-icon" id="profileToggle">👤</span>
-        <div class="dropdown-menu" id="profileMenu">
-          <a href="register.html">Sign Up</a>
-          <a href="login.html">Login</a>
+        <div class="cart-dropdown">
+          <span class="cart-icon" id="cartToggle">🛒</span>
+          <div class="dropdown-menu" id="cartMenu">
+            <a href="cart.html">View Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        <div class="profile-dropdown">
+          <span class="profile-icon" id="profileToggle">👤</span>
+          <div class="dropdown-menu" id="profileMenu">
+            <a href="register.html">Sign Up</a>
+            <a href="login.html">Login</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </header>
-<div class="product-viewer">
-  <button id="prevBtn" class="product-nav-side" aria-label="Previous product">←</button>
-  <div id="productContainer">
-    <section class="product-detail" data-index="0">
-      <img src="images/chocolate_cake.jpg" alt="Chocolate Indulgence Cake" />
-      <div class="product-info">
-        <h2>Chocolate Indulgence</h2>
-        <p>Rich and moist chocolate cake topped with decadent chocolate ganache and layers of fudge. Perfect for chocolate lovers!</p>
-        <ul>
-          <li>Size: 1kg (8-inch)</li>
-          <li>Delivery available in 2 hours</li>
-          <li>Eggless option available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
 
-    <section class="product-detail" data-index="1" style="display: none;">
-      <img src="images/cheesecake.jpg" alt="Classic Cheesecake">
-      <div class="product-info">
-        <h2>Classic Cheesecake</h2>
-        <p>Creamy, rich cheesecake on a buttery biscuit base with a hint of vanilla.</p>
-        <ul>
-          <li>Weight: 800g</li>
-          <li>Delivery: Next-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
+  <div class="product-viewer">
+    <button id="prevBtn" class="product-nav-side" aria-label="Previous product">←</button>
+    <div id="productContainer">
+      <!-- Product details will be shown here one at a time -->
+    </div>
+    <button id="nextBtn" class="product-nav-side" aria-label="Next product">→</button>
+  </div>
 
-    <section class="product-detail" data-index="2" style="display: none;">
-      <img src="images/pandan_gula_melaka.jpg" alt="Pandan Gula Melaka">
-      <div class="product-info">
-        <h2>Pandan Gula Melaka</h2>
-        <p>Fragrant pandan sponge layered with coconut cream and gula melaka syrup.</p>
-        <ul>
-          <li>Weight: 900g</li>
-          <li>Delivery: Same-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="3" style="display: none;">
-      <img src="images/red_velvet.webp" alt="Red Velvet Delight">
-      <div class="product-info">
-        <h2>Red Velvet Delight</h2>
-        <p>Moist red velvet layers with smooth cream cheese frosting, beautifully decorated for any celebration.</p>
-        <ul>
-          <li>Weight: 1.2kg</li>
-          <li>Delivery: Same-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="4" style="display: none;">
-      <img src="images/tiramisu.jpg" alt="Tiramisu Classic">
-      <div class="product-info">
-        <h2>Tiramisu Classic</h2>
-        <p>Authentic Italian dessert with espresso-soaked sponge and whipped mascarpone cream.</p>
-        <ul>
-          <li>Weight: 750g</li>
-          <li>Delivery: Next-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="5" style="display: none;">
-      <img src="images/mango_mousse.jpg" alt="Mango Mousse Cake">
-      <div class="product-info">
-        <h2>Mango Mousse Cake</h2>
-        <p>Light mango mousse layered over vanilla sponge and topped with mango glaze.</p>
-        <ul>
-          <li>Weight: 900g</li>
-          <li>Delivery: Same-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="6" style="display: none;">
-      <img src="images/blueberry_crumble.jpg" alt="Blueberry Crumble">
-      <div class="product-info">
-        <h2>Blueberry Crumble</h2>
-        <p>Sweet and tangy blueberry filling topped with buttery crumble crust.</p>
-        <ul>
-          <li>Weight: 800g</li>
-          <li>Delivery: Next-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="7" style="display: none;">
-      <img src="images/carrot_walnut.jpg" alt="Carrot Walnut Cake">
-      <div class="product-info">
-        <h2>Carrot Walnut Cake</h2>
-        <p>Spiced carrot cake with crushed walnuts and cream cheese frosting for a hearty bite.</p>
-        <ul>
-          <li>Weight: 950g</li>
-          <li>Delivery: Same-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-
-    <section class="product-detail" data-index="8" style="display: none;">
-      <img src="images/mocha_buttercream.jpg" alt="Mocha Buttercream Cake">
-      <div class="product-info">
-        <h2>Mocha Buttercream Cake</h2>
-        <p>Decadent chocolate sponge filled with rich mocha buttercream and topped with coffee glaze.</p>
-        <ul>
-          <li>Weight: 1kg</li>
-          <li>Delivery: Next-day available</li>
-        </ul>
-        <a href="cart.html" class="button">Add to Cart</a>
-      </div>
-    </section>
-</div>
-  <button id="nextBtn" class="product-nav-side" aria-label="Next product">→</button>
-</div>
-
-<div class="product-indicator" id="pageIndicator">1 / 9</div>
+  <div class="product-indicator" id="pageIndicator">1 / 9</div>
 
   <footer>
-    <p>&copy; 2025 BakeEase Bakery</p>
+    <p>© 2025 BakeEase Bakery. All rights reserved.</p>
   </footer>
 
   <script>
-  const track = document.getElementById('carouselTrack');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const pageIndicator = document.getElementById('pageIndicator');
-  const products = track.children;
-  const totalProducts = products.length;
+    document.addEventListener("DOMContentLoaded", function() {
+      const products = [
+        {
+          image: "images/chocolate_cake.jpg",
+          title: "Chocolate Indulgence",
+          description: "Rich and moist chocolate cake topped with decadent chocolate ganache and layers of fudge. Perfect for chocolate lovers!",
+          features: [
+            "Size: 1kg (8-inch)",
+            "Delivery available in 2 hours",
+            "Eggless option available"
+          ]
+        },
+        {
+          image: "images/cheesecake.jpg",
+          title: "Classic Cheesecake",
+          description: "Creamy, rich cheesecake on a buttery biscuit base with a hint of vanilla.",
+          features: [
+            "Weight: 800g",
+            "Delivery: Next-day available"
+          ]
+        },
+        {
+          image: "images/pandan_gula_melaka.jpg",
+          title: "Pandan Gula Melaka",
+          description: "Fragrant pandan sponge layered with coconut cream and gula melaka syrup.",
+          features: [
+            "Weight: 900g",
+            "Delivery: Same-day available"
+          ]
+        },
+        {
+          image: "images/red_velvet.webp",
+          title: "Red Velvet Delight",
+          description: "Moist red velvet layers with smooth cream cheese frosting, beautifully decorated for any celebration.",
+          features: [
+            "Weight: 1.2kg",
+            "Delivery: Same-day available"
+          ]
+        },
+        {
+          image: "images/tiramisu.jpg",
+          title: "Tiramisu Classic",
+          description: "Authentic Italian dessert with espresso-soaked sponge and whipped mascarpone cream.",
+          features: [
+            "Weight: 750g",
+            "Delivery: Next-day available"
+          ]
+        },
+        {
+          image: "images/mango_mousse.jpg",
+          title: "Mango Mousse Cake",
+          description: "Light mango mousse layered over vanilla sponge and topped with mango glaze.",
+          features: [
+            "Weight: 900g",
+            "Delivery: Same-day available"
+          ]
+        },
+        {
+          image: "images/blueberry_crumble.jpg",
+          title: "Blueberry Crumble",
+          description: "Sweet and tangy blueberry filling topped with buttery crumble crust.",
+          features: [
+            "Weight: 800g",
+            "Delivery: Next-day available"
+          ]
+        },
+        {
+          image: "images/carrot_walnut.jpg",
+          title: "Carrot Walnut Cake",
+          description: "Spiced carrot cake with crushed walnuts and cream cheese frosting for a hearty bite.",
+          features: [
+            "Weight: 950g",
+            "Delivery: Same-day available"
+          ]
+        },
+        {
+          image: "images/mocha_buttercream.jpg",
+          title: "Mocha Buttercream Cake",
+          description: "Decadent chocolate sponge filled with rich mocha buttercream and topped with coffee glaze.",
+          features: [
+            "Weight: 1kg",
+            "Delivery: Next-day available"
+          ]
+        }
+      ];
 
-  let currentIndex = 0;
+      const productContainer = document.getElementById('productContainer');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pageIndicator = document.getElementById('pageIndicator');
 
-  function updateCarousel() {
-    const cardWidth = products[0].getBoundingClientRect().width;
-    const offset = -cardWidth * currentIndex;
-    track.style.transform = `translateX(${offset}px)`;
+      let currentIndex = 0;
+      const totalProducts = products.length;
 
-    // Update indicator
-    pageIndicator.textContent = `${currentIndex + 1} / ${totalProducts}`;
-
-    // Disable buttons at ends
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === totalProducts - 1;
-  }
-
-  prevBtn.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updateCarousel();
-    }
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if (currentIndex < totalProducts - 1) {
-      currentIndex++;
-      updateCarousel();
-    }
-  });
-
-  // Initialize
-  updateCarousel();
-
-  // Optional: handle window resize to recalc width
-  window.addEventListener('resize', updateCarousel);
-  </script>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggles = [
-      { btn: "navToggle", menu: "navMenu" },
-      { btn: "cartToggle", menu: "cartMenu" },
-      { btn: "profileToggle", menu: "profileMenu" },
-    ];
-
-    toggles.forEach(({ btn, menu }) => {
-      const toggle = document.getElementById(btn);
-      const menuEl = document.getElementById(menu);
-
-      if (toggle && menuEl) {
-        toggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
-        });
+      function createProductHTML(product) {
+        const featuresHTML = product.features.map(feature => `<li>${feature}</li>`).join('');
+        return `
+          <section class="product-detail">
+            <img src="${product.image}" alt="${product.title}" onerror="this.src='images/placeholder.jpg';" />
+            <div class="product-info">
+              <h2>${product.title}</h2>
+              <p>${product.description}</p>
+              <ul>${featuresHTML}</ul>
+              <a href="cart.html" class="button">Add to Cart</a>
+            </div>
+          </section>
+        `;
       }
+
+      function showCurrentProduct() {
+        productContainer.innerHTML = createProductHTML(products[currentIndex]);
+        pageIndicator.textContent = `${currentIndex + 1} / ${totalProducts}`;
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === totalProducts - 1;
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          showCurrentProduct();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < totalProducts - 1) {
+          currentIndex++;
+          showCurrentProduct();
+        }
+      });
+
+      showCurrentProduct();
     });
 
-    document.addEventListener("click", () => {
-      toggles.forEach(({ menu }) => {
-        const el = document.getElementById(menu);
-        if (el) el.style.display = "none";
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggles = [
+        { btn: "navToggle", menu: "navMenu" },
+        { btn: "cartToggle", menu: "cartMenu" },
+        { btn: "profileToggle", menu: "profileMenu" },
+      ];
+
+      toggles.forEach(({ btn, menu }) => {
+        const toggle = document.getElementById(btn);
+        const menuEl = document.getElementById(menu);
+
+        if (toggle && menuEl) {
+          toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+          });
+        }
+      });
+
+      document.addEventListener("click", () => {
+        toggles.forEach(({ menu }) => {
+          const el = document.getElementById(menu);
+          if (el) el.style.display = "none";
+        });
       });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
