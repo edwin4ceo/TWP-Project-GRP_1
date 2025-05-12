@@ -18,7 +18,6 @@ a {
   color: #fff;
 }
 
-
 /* ------------------------------
    Header and Navigation
 ------------------------------ */
@@ -168,7 +167,6 @@ header {
   background-color: #ffe0b2;
 }
 
-
 /* ------------------------------
    Main Content Sections
 ------------------------------ */
@@ -283,7 +281,6 @@ main {
   font-size: 1.1em;
 }
 
-
 /* ------------------------------
    Product Detail Page
 ------------------------------ */
@@ -382,96 +379,134 @@ main {
 }
 
 /* Product viewer layout */
-.product-viewer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px 40px; /* add horizontal padding for button spacing */
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  width: fit-content;
-  margin: 40px auto;
-  position: relative;
-}
+/* Container for the whole viewer */
+    .product-viewer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px 60px; /* padding to contain buttons */
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      width: 720px;
+      box-sizing: border-box;
+      margin: 40px auto;
+      position: relative;
+      user-select: none;
+    }
 
-/* Container holding the sliding product cards */
-#productContainer {
-  flex: 1;
-  position: relative;
-  width: 600px; /* fixed width to control sliding area */
-  min-height: 340px;
-  overflow: hidden;
-}
+    /* Navigation buttons */
+    .product-nav-side {
+      font-size: 1.8rem;
+      padding: 12px 18px;
+      border: none;
+      background-color: #ff6347;
+      color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      margin: 0; /* no margin to keep inside container */
+      flex-shrink: 0;
+    }
 
-/* Navigation buttons styling */
-.product-nav-side {
-  font-size: 1.8rem;
-  padding: 12px 18px;
-  border: none;
-  background-color: #ff6347;
-  color: white;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
+    .product-nav-side:hover:not(:disabled) {
+      background-color: #e5533d;
+    }
 
-.product-nav-side:hover {
-  background-color: #e5533d;
-}
+    .product-nav-side:disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
 
-/* Position nav buttons vertically centered on sides */
-.product-viewer > .product-nav-side.left-btn {
-  margin-right: 12px;
-}
+    /* Container holding product cards */
+    #productContainer {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      height: 360px; /* enough height for product cards */
+    }
 
-.product-viewer > .product-nav-side.right-btn {
-  margin-left: 12px;
-}
+    /* Track that slides */
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease;
+      height: 100%;
+    }
 
-/* Product indicator below the viewer */
-.product-indicator {
-  text-align: center;
-  margin-top: 12px;
-  font-weight: 600;
-  color: #333;
-  font-size: 1rem;
-  user-select: none;
-}
+    /* Single product detail */
+    .product-detail {
+      min-width: 600px; /* width of one product card */
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 24px;
+      box-sizing: border-box;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      height: 100%;
+      flex-shrink: 0;
+    }
 
-/* Responsive adjustments */
-@media (max-width: 700px) {
-  .product-viewer {
-    flex-direction: column;
-    padding: 16px 20px;
-    width: 90vw;
-  }
+    .product-detail img {
+      width: 280px;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      user-select: none;
+    }
 
-  #productContainer {
-    width: 100%;
-    min-height: auto;
-  }
+    .product-info {
+      max-width: 320px;
+    }
 
-  .product-nav-side {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    padding: 8px 12px;
-  }
+    /* Product indicator below */
+    .product-indicator {
+      text-align: center;
+      margin-top: 12px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+      user-select: none;
+    }
 
-  .product-viewer > .product-nav-side.left-btn,
-  .product-viewer > .product-nav-side.right-btn {
-    margin: 8px 0;
-  }
-}
+    /* Responsive */
+    @media (max-width: 750px) {
+      .product-viewer {
+        width: 95vw;
+        padding: 20px 30px;
+        flex-direction: column;
+        gap: 16px;
+        height: auto;
+      }
+      #productContainer {
+        height: auto;
+      }
+      .carousel-track {
+        flex-wrap: nowrap;
+      }
+      .product-detail {
+        min-width: 100%;
+        flex-direction: column;
+        gap: 16px;
+        height: auto;
+      }
+      .product-detail img {
+        width: 100%;
+        max-width: 320px;
+      }
+      .product-nav-side {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+      }
+    }
 
 /* ------------------------------
    Footer

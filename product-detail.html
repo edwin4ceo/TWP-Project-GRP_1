@@ -46,6 +46,8 @@
   </div>
   </header>
 <div class="product-viewer">
+  <button id="prevBtn" class="product-nav-side" aria-label="Previous product">←</button>
+  <div id="productContainer">
     <section class="product-detail" data-index="0">
       <img src="images/chocolate_cake.jpg" alt="Chocolate Indulgence Cake" />
       <div>
@@ -164,56 +166,57 @@
       </div>
     </section>
 </div>
-  <div class="product-viewer">
-  <button id="prevBtn" class="product-nav-side" aria-label="Previous product">←</button>
-  <div id="productContainer">
-    <!-- All your product-detail sections go here -->
-    <section class="product-detail" data-index="0">
-      <!-- ... -->
-    </section>
-    <!-- ...other product-detail sections... -->
-  </div>
   <button id="nextBtn" class="product-nav-side" aria-label="Next product">→</button>
 </div>
-<div class="product-indicator">
-  <span id="pageIndicator">1 / 9</span>
-</div>
+
+<div class="product-indicator" id="pageIndicator">1 / 9</div>
 
   <footer>
     <p>&copy; 2025 BakeEase Bakery</p>
   </footer>
 
   <script>
-    const products = document.querySelectorAll(".product-detail");
-const pageIndicator = document.getElementById("pageIndicator");
-let currentIndex = 0;
+    const track = document.getElementById('carouselTrack');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pageIndicator = document.getElementById('pageIndicator');
+  const products = track.children;
+  const totalProducts = products.length;
 
-function showProduct(index) {
-  products.forEach((product, i) => {
-    product.classList.remove("active");
-    product.style.display = "none";
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    const cardWidth = products[0].getBoundingClientRect().width;
+    const offset = -cardWidth * currentIndex;
+    track.style.transform = `translateX(${offset}px)`;
+
+    // Update indicator
+    pageIndicator.textContent = `${currentIndex + 1} / ${totalProducts}`;
+
+    // Disable buttons at ends
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === totalProducts - 1;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateCarousel();
+    }
   });
 
-  const activeProduct = products[index];
-  activeProduct.style.display = "flex";
-  // Force reflow for animation
-  void activeProduct.offsetWidth;
-  activeProduct.classList.add("active");
+  nextBtn.addEventListener('click', () => {
+    if (currentIndex < totalProducts - 1) {
+      currentIndex++;
+      updateCarousel();
+    }
+  });
 
-  pageIndicator.textContent = `${index + 1} / ${products.length}`;
-}
+  // Initialize
+  updateCarousel();
 
-document.getElementById("prevBtn").addEventListener("click", () => {
-  currentIndex = (currentIndex - 1 + products.length) % products.length;
-  showProduct(currentIndex);
-});
-
-document.getElementById("nextBtn").addEventListener("click", () => {
-  currentIndex = (currentIndex + 1) % products.length;
-  showProduct(currentIndex);
-});
-
-showProduct(currentIndex);
+  // Optional: handle window resize to recalc width
+  window.addEventListener('resize', updateCarousel);
   </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
