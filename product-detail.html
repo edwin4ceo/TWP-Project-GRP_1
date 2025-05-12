@@ -50,7 +50,7 @@
   <div id="productContainer">
     <section class="product-detail" data-index="0">
       <img src="images/chocolate_cake.jpg" alt="Chocolate Indulgence Cake" />
-      <div>
+      <div class="product-info">
         <h2>Chocolate Indulgence</h2>
         <p>Rich and moist chocolate cake topped with decadent chocolate ganache and layers of fudge. Perfect for chocolate lovers!</p>
         <ul>
@@ -58,13 +58,13 @@
           <li>Delivery available in 2 hours</li>
           <li>Eggless option available</li>
         </ul>
-        <a href="register.html" class="button">Sign up to Order</a>
+        <a href="cart.html" class="button">Add to Cart</a>
       </div>
     </section>
 
     <section class="product-detail" data-index="1" style="display: none;">
       <img src="images/cheesecake.jpg" alt="Classic Cheesecake">
-      <div>
+      <div class="product-info">
         <h2>Classic Cheesecake</h2>
         <p>Creamy, rich cheesecake on a buttery biscuit base with a hint of vanilla.</p>
         <ul>
@@ -77,7 +77,7 @@
 
     <section class="product-detail" data-index="2" style="display: none;">
       <img src="images/pandan_gula_melaka.jpg" alt="Pandan Gula Melaka">
-      <div>
+      <div class="product-info">
         <h2>Pandan Gula Melaka</h2>
         <p>Fragrant pandan sponge layered with coconut cream and gula melaka syrup.</p>
         <ul>
@@ -90,7 +90,7 @@
 
     <section class="product-detail" data-index="3" style="display: none;">
       <img src="images/red_velvet.webp" alt="Red Velvet Delight">
-      <div>
+      <div class="product-info">
         <h2>Red Velvet Delight</h2>
         <p>Moist red velvet layers with smooth cream cheese frosting, beautifully decorated for any celebration.</p>
         <ul>
@@ -103,7 +103,7 @@
 
     <section class="product-detail" data-index="4" style="display: none;">
       <img src="images/tiramisu.jpg" alt="Tiramisu Classic">
-      <div>
+      <div class="product-info">
         <h2>Tiramisu Classic</h2>
         <p>Authentic Italian dessert with espresso-soaked sponge and whipped mascarpone cream.</p>
         <ul>
@@ -116,7 +116,7 @@
 
     <section class="product-detail" data-index="5" style="display: none;">
       <img src="images/mango_mousse.jpg" alt="Mango Mousse Cake">
-      <div>
+      <div class="product-info">
         <h2>Mango Mousse Cake</h2>
         <p>Light mango mousse layered over vanilla sponge and topped with mango glaze.</p>
         <ul>
@@ -129,7 +129,7 @@
 
     <section class="product-detail" data-index="6" style="display: none;">
       <img src="images/blueberry_crumble.jpg" alt="Blueberry Crumble">
-      <div>
+      <div class="product-info">
         <h2>Blueberry Crumble</h2>
         <p>Sweet and tangy blueberry filling topped with buttery crumble crust.</p>
         <ul>
@@ -142,7 +142,7 @@
 
     <section class="product-detail" data-index="7" style="display: none;">
       <img src="images/carrot_walnut.jpg" alt="Carrot Walnut Cake">
-      <div>
+      <div class="product-info">
         <h2>Carrot Walnut Cake</h2>
         <p>Spiced carrot cake with crushed walnuts and cream cheese frosting for a hearty bite.</p>
         <ul>
@@ -155,7 +155,7 @@
 
     <section class="product-detail" data-index="8" style="display: none;">
       <img src="images/mocha_buttercream.jpg" alt="Mocha Buttercream Cake">
-      <div>
+      <div class="product-info">
         <h2>Mocha Buttercream Cake</h2>
         <p>Decadent chocolate sponge filled with rich mocha buttercream and topped with coffee glaze.</p>
         <ul>
@@ -176,7 +176,7 @@
   </footer>
 
   <script>
-    const track = document.getElementById('carouselTrack');
+  const track = document.getElementById('carouselTrack');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const pageIndicator = document.getElementById('pageIndicator');
