@@ -71,5 +71,34 @@
   <footer>
     <p>&copy; 2025 BakeEase Bakery</p>
   </footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggles = [
+      { btn: "navToggle", menu: "navMenu" },
+      { btn: "cartToggle", menu: "cartMenu" },
+      { btn: "profileToggle", menu: "profileMenu" },
+    ];
+
+    toggles.forEach(({ btn, menu }) => {
+      const toggle = document.getElementById(btn);
+      const menuEl = document.getElementById(menu);
+
+      if (toggle && menuEl) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+        });
+      }
+    });
+
+    document.addEventListener("click", () => {
+      toggles.forEach(({ menu }) => {
+        const el = document.getElementById(menu);
+        if (el) el.style.display = "none";
+      });
+    });
+  });
+</script>
 </body>
 </html>
