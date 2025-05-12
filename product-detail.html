@@ -167,15 +167,16 @@
   </main>
 
   <div class="product-viewer">
-  <button id="prevBtn" class="product-nav-side">←</button>
-
-  <main id="productContainer">
-    <!-- Product detail sections go here -->
-  </main>
-
-  <button id="nextBtn" class="product-nav-side">→</button>
+  <button id="prevBtn" class="product-nav-side" aria-label="Previous product">←</button>
+  <div id="productContainer">
+    <!-- All your product-detail sections go here -->
+    <section class="product-detail" data-index="0">
+      <!-- ... -->
+    </section>
+    <!-- ...other product-detail sections... -->
+  </div>
+  <button id="nextBtn" class="product-nav-side" aria-label="Next product">→</button>
 </div>
-
 <div class="product-indicator">
   <span id="pageIndicator">1 / 9</span>
 </div>
@@ -186,11 +187,10 @@
 
   <script>
     const products = document.querySelectorAll(".product-detail");
-    const pageIndicator = document.getElementById("pageIndicator");
-    const productTitle = document.getElementById("productTitle");
-    let currentIndex = 0;
+const pageIndicator = document.getElementById("pageIndicator");
+let currentIndex = 0;
 
-    function showProduct(index) {
+function showProduct(index) {
   products.forEach((product, i) => {
     product.classList.remove("active");
     product.style.display = "none";
@@ -198,28 +198,24 @@
 
   const activeProduct = products[index];
   activeProduct.style.display = "flex";
-
-  // Force reflow before adding class for animation
+  // Force reflow for animation
   void activeProduct.offsetWidth;
   activeProduct.classList.add("active");
 
   pageIndicator.textContent = `${index + 1} / ${products.length}`;
-
-  const title = activeProduct.querySelector("h2")?.textContent;
-  if (title) document.getElementById("productTitle").textContent = title;
 }
 
-    document.getElementById("prevBtn").addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + products.length) % products.length;
-      showProduct(currentIndex);
-    });
+document.getElementById("prevBtn").addEventListener("click", () => {
+  currentIndex = (currentIndex - 1 + products.length) % products.length;
+  showProduct(currentIndex);
+});
 
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      currentIndex = (currentIndex + 1) % products.length;
-      showProduct(currentIndex);
-    });
+document.getElementById("nextBtn").addEventListener("click", () => {
+  currentIndex = (currentIndex + 1) % products.length;
+  showProduct(currentIndex);
+});
 
-    showProduct(currentIndex);
+showProduct(currentIndex);
   </script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
