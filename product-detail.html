@@ -191,13 +191,23 @@
     let currentIndex = 0;
 
     function showProduct(index) {
-      products.forEach((product, i) => {
-        product.style.display = i === index ? "flex" : "none";
-      });
-      pageIndicator.textContent = `${index + 1} / ${products.length}`;
-      const title = products[index].querySelector("h2")?.textContent;
-      if (title) productTitle.textContent = title;
-    }
+  products.forEach((product, i) => {
+    product.classList.remove("active");
+    product.style.display = "none";
+  });
+
+  const activeProduct = products[index];
+  activeProduct.style.display = "flex";
+
+  // Force reflow before adding class for animation
+  void activeProduct.offsetWidth;
+  activeProduct.classList.add("active");
+
+  pageIndicator.textContent = `${index + 1} / ${products.length}`;
+
+  const title = activeProduct.querySelector("h2")?.textContent;
+  if (title) document.getElementById("productTitle").textContent = title;
+}
 
     document.getElementById("prevBtn").addEventListener("click", () => {
       currentIndex = (currentIndex - 1 + products.length) % products.length;

@@ -329,6 +329,19 @@ main {
   display: inline-block;
 }
 
+/* Animation transitions */
+.product-detail {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  display: none;
+}
+
+.product-detail.active {
+  display: flex;
+  opacity: 1;
+  transform: translateX(0);
+}
 
 /* Product viewer layout */
 .product-viewer {
