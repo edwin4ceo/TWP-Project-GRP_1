@@ -22,7 +22,7 @@ a {
    Header and Navigation
 ------------------------------ */
 header {
-  background-color: #fad29a;
+  background-color: #ffffff;
   padding: 20px;
   position: relative;
 }
@@ -38,15 +38,16 @@ header {
 .logo-search {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 100px;
   flex: 1;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 .logo-inline {
   width: auto;
-  height: 50px;
-  max-height: 60px;
+  height: 100px;
+  max-height: 110px;
 }
 
 #page-heading {
@@ -64,10 +65,11 @@ header {
 .search-form {
   display: flex;
   align-items: center;
-  gap: 0; /* tightly pair input and button */
+  gap: 8; /* tightly pair input and button */
   background-color: #fff;
   border-radius: 5px;
   overflow: hidden;
+  flex-wrap: nowrap;
 }
 
 .search-form input[type="text"] {
@@ -76,6 +78,8 @@ header {
   width: 180px;
   outline: none;
   border-radius: 5px 0 0 5px;
+  font-size: 14px;
+  background-color: #f0f0f0;
 }
 
 .search-form button {
