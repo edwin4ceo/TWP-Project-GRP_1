@@ -331,51 +331,37 @@ main {
 
 
 /* Product viewer layout */
+.product-viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
 #productContainer {
+  flex: 1;
   position: relative;
 }
 
-.product-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 30px 0;
-  padding: 0 40px;
-}
-
-.product-controls button {
-  padding: 10px 16px;
-  font-size: 1.2rem;
-  border: none;
-  background-color: #ff6347;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.product-controls button:hover {
-  background-color: #e5533d;
-}
-
-.product-nav-left,
-.product-nav-right {
+.product-nav-side {
+  font-size: 1.5rem;
   padding: 12px 18px;
-  font-size: 1.4rem;
   border: none;
   background-color: #ff6347;
   color: white;
-  border-radius: 6px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
-.product-nav-left:hover,
-.product-nav-right:hover {
+.product-nav-side:hover {
   background-color: #e5533d;
 }
 
-#pageIndicator {
+.product-indicator {
+  text-align: center;
+  margin-top: 10px;
   font-weight: bold;
-  font-size: 1rem;
   color: #333;
 }
 
