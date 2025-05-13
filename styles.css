@@ -401,6 +401,7 @@ main {
   gap: 30px;
   margin: 0 auto;
   overflow: hidden;
+  flex: 1 0 auto;
 }
 
 .team-section article {
@@ -506,7 +507,11 @@ footer {
   background-color: #ffb347;
   color: #070707;
   margin-top: 40px;
-  margin: 0 auto;
+  margin: 0;
+  width: 100%;
+  bottom: 0;
+  flex-shrink: 0;
+  position: fixed;
 }
 
 footer p {
