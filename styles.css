@@ -11,6 +11,7 @@ body {
 }
 
 h1, h2, h3, h4 {
+  text-align: center;
   color: #2e2e2e;
 }
 
@@ -56,6 +57,7 @@ header {
   margin: 0;
   color: #333;
   white-space: nowrap; /* Prevent text wrapping */
+  text-align: center;
 }
 
 .header-right {
@@ -77,6 +79,7 @@ header {
   overflow: hidden;
   flex-wrap: nowrap;
   max-width: 320px;
+  margin: 0 auto;
 }
 
 .search-form input[type="text"] {
