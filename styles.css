@@ -34,16 +34,23 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  padding: 10px 20px;
 }
 
-.logo-search {
+.logo-left,
+.search-center {
+  flex: 1;
   display: flex;
   align-items: center;
+}
+
+.logo-left {
+  justify-content: flex-start;
+}
+
+.search-center {
   justify-content: center;
-  gap: 20px;
-  flex-wrap: nowrap;
-  flex-direction: row;
 }
 
 .logo-inline {
@@ -58,6 +65,7 @@ header {
   color: #333;
   white-space: nowrap; /* Prevent text wrapping */
   text-align: center;
+  margin: 20px auto;
 }
 
 .header-right {
