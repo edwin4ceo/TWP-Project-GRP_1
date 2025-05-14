@@ -16,23 +16,28 @@
     }
     
     .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #5a3921;
-    }
-    
-    .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 16px;
-    }
+  margin-bottom: 20px;
+  display: flex; /* Use flexbox to align label and input side by side */
+  align-items: center; /* Vertically center the label and input */
+}
+
+.form-group label {
+  display: block;
+  width: 120px; /* Fixed width for labels to ensure alignment */
+  margin-bottom: 0; /* Remove bottom margin since we're aligning horizontally */
+  font-weight: bold;
+  color: #5a3921;
+  text-align: right; /* Right-align the label text */
+  margin-right: 15px; /* Space between label and input */
+}
+
+.form-group input {
+  flex: 1; /* Input takes remaining space */
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
     
     .form-actions {
   margin-top: 30px;
