@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - BakeEase</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Additional styles for login/register pages */
+    .auth-container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #5a3921;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .form-actions {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .btn-primary {
+      background-color: #e67e22;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-primary:hover {
+      background-color: #d35400;
+    }
+    
+    .auth-links {
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .auth-links a {
+      color: #e67e22;
+      text-decoration: none;
+    }
+    
+    .auth-links a:hover {
+      text-decoration: underline;
+    }
+    
+    .form-title {
+      color: #5a3921;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <!-- Logo only -->
+      <div class="logo-search">
+        <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        <h1 id="page-heading">Login</h1>
+      </div>
+      
+      <!-- Right: Nav, Cart, Profile -->
+      <div class="header-right">
+        <div class="nav-dropdown">
+          <span class="nav-toggle" id="navToggle">☰</span>
+          <div class="dropdown-menu" id="navMenu">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+        
+        <div class="cart-dropdown">
+          <span class="cart-icon" id="cartToggle">🛒</span>
+          <div class="dropdown-menu" id="cartMenu">
+            <a href="cart.html">View Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        
+        <div class="profile-dropdown">
+          <span class="profile-icon" id="profileToggle">👤</span>
+          <div class="dropdown-menu" id="profileMenu">
+            <a href="register.html">Sign Up</a>
+            <a href="login.html">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="auth-container">
+      <h2 class="form-title">Welcome Back!</h2>
+      <form id="loginForm" action="process-login.php" method="post">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required placeholder="Enter your email" />
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Enter your password" />
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Login</button>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </div>
+      </form>
+      
+      <div class="auth-links">
+        <p>Don't have an account? <a href="register.html">Sign Up</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 BakeEase Bakery</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggles = [
+        { btn: "navToggle", menu: "navMenu" },
+        { btn: "cartToggle", menu: "cartMenu" },
+        { btn: "profileToggle", menu: "profileMenu" },
+      ];
+      
+      toggles.forEach(({ btn, menu }) => {
+        const toggle = document.getElementById(btn);
+        const menuEl = document.getElementById(menu);
+        
+        if (toggle && menuEl) {
+          toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+          });
+        }
+      });
+      
+      document.addEventListener("click", () => {
+        toggles.forEach(({ menu }) => {
+          const el = document.getElementById(menu);
+          if (el) el.style.display = "none";
+        });
+      });
+      
+      // Form validation
+      document.getElementById("loginForm").addEventListener("submit", function(e) {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        
+        if (!email || !password) {
+          e.preventDefault();
+          alert("Please fill in all fields");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
