@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login - BakeEase</title>
+  <title>Register - BakeEase</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Additional styles for login/register pages */
@@ -16,50 +16,28 @@
     }
     
     .form-group {
-  margin-bottom: 20px;
-  display: flex; /* Use flexbox to align label and input side by side */
-  align-items: center; /* Vertically center the label and input */
-}
-
-.form-group label {
-  display: block;
-  width: 120px; /* Fixed width for labels to ensure alignment */
-  margin-bottom: 0; /* Remove bottom margin since we're aligning horizontally */
-  font-weight: bold;
-  color: #5a3921;
-  text-align: right; /* Right-align the label text */
-  margin-right: 15px; /* Space between label and input */
-}
-
-.form-group input {
-  flex: 1; /* Input takes remaining space */
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-}
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #5a3921;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
     
     .form-actions {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column; /* Stack items vertically */
-  align-items: center; /* Center items horizontally */
-  text-align: center;
-}
-
-.form-actions .btn-primary {
-  margin-bottom: 15px; /* Add spacing between the button and the link */
-}
-
-.form-actions .forgot-password {
-  font-size: 14px; /* Ensure readability */
-  color: #e67e22; /* Match the theme color */
-  text-decoration: none; /* Consistent with other links */
-}
-
-.form-actions .forgot-password:hover {
-  text-decoration: underline; /* Consistent with other links */
-}
+      margin-top: 30px;
+      text-align: center;
+    }
     
     .btn-primary {
       background-color: #e67e22;
@@ -70,12 +48,11 @@
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s;
-      text-align: center;
+      width: 100%;
     }
     
     .btn-primary:hover {
       background-color: #d35400;
-      text-align: center;
     }
     
     .auth-links {
@@ -97,16 +74,40 @@
       text-align: center;
       margin-bottom: 30px;
     }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    .terms-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .terms-checkbox input {
+      margin-top: 5px;
+    }
+    
+    .terms-checkbox label {
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="header-bar">
       <!-- Logo only -->
-      <div class="logo-left">
-      <a href="index.html">
-        <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" /></a>
-        <h1 id="page-heading">Login</h1>
+      <div class="logo-search">
+        <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        <h1 id="page-heading">Create Account</h1>
       </div>
       
       <!-- Right: Nav, Cart, Profile -->
@@ -142,32 +143,60 @@
 
   <main>
     <div class="auth-container">
-      <h2 class="form-title">Welcome Back!</h2>
-      <form id="loginForm" action="process-login.php" method="post">
+      <h2 class="form-title">Join BakeEase Today</h2>
+      <form id="registerForm" action="process-register.php" method="post">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name" />
+          </div>
+          
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name" />
+          </div>
+        </div>
+        
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" required placeholder="Enter your email" />
+          <input type="email" id="email" name="email" required placeholder="Enter your email address" />
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="Enter your phone number (optional)" />
         </div>
         
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required placeholder="Enter your password" />
+          <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8" />
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password" />
+        </div>
+        
+        <div class="terms-checkbox">
+          <input type="checkbox" id="terms" name="terms" required />
+          <label for="terms">
+            I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a> of BakeEase Bakery
+          </label>
         </div>
         
         <div class="form-actions">
-          <button type="submit" class="btn-primary">Login</button>
-          <a href="#" class="forgot-password">Forgot Password?</a>
+          <button type="submit" class="btn-primary">Create Account</button>
         </div>
       </form>
       
       <div class="auth-links">
-        <p>Don't have an account? <a href="register.html">Sign Up</a></p>
+        <p>Already have an account? <a href="login.html">Login</a></p>
       </div>
     </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+    <p>&copy; 2025 BakeEase Bakery</p>
   </footer>
 
   <script>
@@ -198,13 +227,13 @@
       });
       
       // Form validation
-      document.getElementById("loginForm").addEventListener("submit", function(e) {
-        const email = document.getElementById("email").value;
+      document.getElementById("registerForm").addEventListener("submit", function(e) {
         const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
         
-        if (!email || !password) {
+        if (password !== confirmPassword) {
           e.preventDefault();
-          alert("Please fill in all fields");
+          alert("Passwords do not match!");
         }
       });
     });
