@@ -57,6 +57,44 @@
   </footer>
 
   <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
+    });
+
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
+
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
+
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+      document.addEventListener("click", (e) => {
+      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      navMenu.style.display = "none";
+    }
+  });
+    });
+
     document.addEventListener("DOMContentLoaded", function() {
       const products = [
         {
@@ -190,13 +228,6 @@
       showCurrentProduct();
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggles = [
-        { btn: "navToggle", menu: "navMenu" },
-        { btn: "cartToggle", menu: "cartMenu" },
-        { btn: "profileToggle", menu: "profileMenu" },
-      ];
-
       toggles.forEach(({ btn, menu }) => {
         const toggle = document.getElementById(btn);
         const menuEl = document.getElementById(menu);
@@ -215,7 +246,7 @@
           if (el) el.style.display = "none";
         });
       });
-    });
+    ;
   </script>
 </body>
 </html>
