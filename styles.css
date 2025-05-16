@@ -8,6 +8,11 @@ body {
   background: #fff9f4;
   color: #333;
   overflow-x: hidden; /* Prevent horizontal overflow */
+  background-image: url("images/bkg1.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 h1, h2, h3, h4 {
