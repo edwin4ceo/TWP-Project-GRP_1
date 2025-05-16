@@ -227,25 +227,6 @@
 
       showCurrentProduct();
     });
-
-      toggles.forEach(({ btn, menu }) => {
-        const toggle = document.getElementById(btn);
-        const menuEl = document.getElementById(menu);
-
-        if (toggle && menuEl) {
-          toggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
-          });
-        }
-      });
-
-      document.addEventListener("click", () => {
-        toggles.forEach(({ menu }) => {
-          const el = document.getElementById(menu);
-          if (el) el.style.display = "none";
-        });
-      });
     ;
   </script>
 </body>
