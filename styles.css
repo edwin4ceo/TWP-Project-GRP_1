@@ -349,7 +349,8 @@ main {
   text-align: left;
 }
 
-.product-detail .button {
+.product-detail .button,
+.button.add-to-cart {
   display: inline-block;
   margin-top: 15px;
   padding: 10px 20px;
@@ -357,6 +358,7 @@ main {
   color: white;
   text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 #productContainer {

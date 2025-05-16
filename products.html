@@ -55,7 +55,7 @@
     <p>Rich and moist chocolate cake topped with ganache.</p>
     <p><strong>RM 80</strong></p>
     <a href="product-detail.html" class="button">View Details</a>
-    <button class="button add-to-cart" data-name="Chocolate Indulgence" data-price="80" data-desc="rich chocolate cake ganache"><a>Add to Cart</a></button>
+    <button class="button add-to-cart" data-name="Chocolate Indulgence" data-price="80" data-desc="rich chocolate cake ganache">Add to Cart</button>
   </article>
 
   <article class="product-card" data-name="Classic Cheesecake" data-desc="creamy smooth cheese dessert">
@@ -64,7 +64,7 @@
     <p>Creamy cheesecake with a full buttery biscuit base.</p>
     <p><strong>RM 90</strong></p>
     <a href="product-detail.html" class="button">View Details</a>
-    <button class="button add-to-cart" data-name="Classic Cheesecake" data-price="90" data-desc="creamy smooth cheese dessert"><a>Add to Cart</a></button>
+    <button class="button add-to-cart" data-name="Classic Cheesecake" data-price="90" data-desc="creamy smooth cheese dessert">Add to Cart</button>
   </article>
 
   <article class="product-card" data-name="Pandan Gula Melaka" data-desc="pandan gula melaka traditional">
@@ -172,25 +172,6 @@
       navMenu.style.display = "none";
     }
   });
-    });
-
-    toggles.forEach(({ btn, menu }) => {
-      const toggle = document.getElementById(btn);
-      const menuEl = document.getElementById(menu);
-
-      if (toggle && menuEl) {
-        toggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
-        });
-      }
-    });
-
-    document.addEventListener("click", () => {
-      toggles.forEach(({ menu }) => {
-        const el = document.getElementById(menu);
-        if (el) el.style.display = "none";
-      });
     });
   ;
 
