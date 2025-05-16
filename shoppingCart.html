@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -406,81 +405,8 @@
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Item 1 -->
-          <tr>
-            <td data-label="Product">
-              <div class="product-info">
-                <div class="product-image">🍰</div>
-                <div class="product-details">
-                  <h4>Chocolate Cake</h4>
-                  <p>Classic chocolate cake with ganache</p>
-                </div>
-              </div>
-            </td>
-            <td data-label="Price" class="item-price">RM 28.99</td>
-            <td data-label="Quantity">
-              <div class="quantity-control">
-                <div class="quantity-btn decrease">-</div>
-                <input type="number" class="quantity-input" value="1" min="1" max="99" data-price="28.99">
-                <div class="quantity-btn increase">+</div>
-              </div>
-            </td>
-            <td data-label="Total" class="item-total">RM 28.99</td>
-            <td>
-              <button class="remove-item">✕</button>
-            </td>
-          </tr>
-          
-          <!-- Item 2 -->
-          <tr>
-            <td data-label="Product">
-              <div class="product-info">
-                <div class="product-image">🧁</div>
-                <div class="product-details">
-                  <h4>Strawberry Cupcakes (6 pcs)</h4>
-                  <p>Strawberry flavored cupcakes</p>
-                </div>
-              </div>
-            </td>
-            <td data-label="Price" class="item-price">RM 18.50</td>
-            <td data-label="Quantity">
-              <div class="quantity-control">
-                <div class="quantity-btn decrease">-</div>
-                <input type="number" class="quantity-input" value="2" min="1" max="99" data-price="18.50">
-                <div class="quantity-btn increase">+</div>
-              </div>
-            </td>
-            <td data-label="Total" class="item-total">RM 37.00</td>
-            <td>
-              <button class="remove-item">✕</button>
-            </td>
-          </tr>
-          
-          <!-- Item 3 -->
-          <tr>
-            <td data-label="Product">
-              <div class="product-info">
-                <div class="product-image">🍞</div>
-                <div class="product-details">
-                  <h4>Sourdough Bread</h4>
-                  <p>Artisan sourdough bread</p>
-                </div>
-              </div>
-            </td>
-            <td data-label="Price" class="item-price">RM 8.75</td>
-            <td data-label="Quantity">
-              <div class="quantity-control">
-                <div class="quantity-btn decrease">-</div>
-                <input type="number" class="quantity-input" value="1" min="1" max="99" data-price="8.75">
-                <div class="quantity-btn increase">+</div>
-              </div>
-            </td>
-            <td data-label="Total" class="item-total">RM 8.75</td>
-            <td>
-              <button class="remove-item">✕</button>
-            </td>
-          </tr>
+        <tbody id="cart-body">
+          <!-- Items will be dynamically inserted here -->
         </tbody>
       </table>
       
@@ -496,34 +422,19 @@
         <a href="products.html" class="continue-shopping">← Continue Shopping</a>
         
         <!-- Cart Summary -->
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span id="summary-subtotal">RM 74.74</span>
-          </div>
-          
-          <div class="summary-row">
-            <span>Shipping:</span>
-            <span id="summary-shipping">RM 5.99</span>
-          </div>
-          
-          <div class="summary-row">
-            <span>Tax (7%):</span>
-            <span id="summary-tax">RM 5.23</span>
-          </div>
-          
-          <div class="summary-row total">
-            <span>Total:</span>
-            <span id="summary-total">RM 85.96</span>
-          </div>
-          
-          <!-- Promo Code Form -->
+        <div class="cart-summary" id="cart-actions">
+        <h3>Summary</h3>
+        <p class="summary-row"><strong>Subtotal:</strong> <span id="summary-subtotal">RM 0.00</span></p>
+        <p class="summary-row"><strong>Shipping:</strong> <span id="summary-shipping">RM 0.00</span></p>
+        <p class="summary-row"><strong>Tax (7%):</strong> <span id="summary-tax">RM 0.00</span></p>
+        <p class="summary-row total"><strong>Total:</strong> <span id="summary-total">RM 0.00</span></p>
+        <!-- Promo Code Form -->
           <div class="promo-code">
             <input type="text" class="promo-input" placeholder="Promo Code">
             <button class="promo-btn">Apply</button>
           </div>
-          
-          <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+        <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+      </div>
         </div>
       </div>
     </div>
@@ -534,133 +445,90 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Navigation toggles
-      const toggles = [
-        { btn: "navToggle", menu: "navMenu" },
-        { btn: "cartToggle", menu: "cartMenu" },
-        { btn: "profileToggle", menu: "profileMenu" },
-      ];
-      
-      toggles.forEach(({ btn, menu }) => {
-        const toggle = document.getElementById(btn);
-        const menuEl = document.getElementById(menu);
-        
-        if (toggle && menuEl) {
-          toggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
-          });
-        }
+    const cartKey = "bakeeaseCart";
+
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const tbody = document.getElementById("cart-body");
+      const table = document.getElementById("cart-table");
+      const summary = document.getElementById("cart-actions");
+      const emptyMsg = document.getElementById("empty-cart");
+
+      if (cart.length === 0) {
+        table.style.display = "none";
+        summary.style.display = "none";
+        emptyMsg.style.display = "block";
+        return;
+      }
+
+      tbody.innerHTML = "";
+      cart.forEach((item, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>
+            <div class="product-info">
+              <div class="product-details">
+                <h4>${item.name}</h4>
+                <p>${item.desc}</p>
+              </div>
+            </div>
+          </td>
+          <td>RM ${item.price.toFixed(2)}</td>
+          <td>
+            <div class="quantity-control">
+              <button class="quantity-btn decrease" data-index="${index}">−</button>
+              <input type="number" class="quantity-input" data-index="${index}" value="${item.quantity}" min="1" max="99" />
+              <button class="quantity-btn increase" data-index="${index}">+</button>
+            </div>
+          </td>
+          <td>RM ${(item.price * item.quantity).toFixed(2)}</td>
+          <td><button class="remove-item" data-index="${index}">✕</button></td>;
+        `;
+        tbody.appendChild(row);
       });
-      
-      document.addEventListener("click", () => {
-        toggles.forEach(({ menu }) => {
-          const el = document.getElementById(menu);
-          if (el) el.style.display = "none";
-        });
+
+      updateCartSummary(cart);
+    }
+
+    function updateCartSummary(cart) {
+      let subtotal = 0;
+      cart.forEach(item => {
+        subtotal += item.price * item.quantity;
       });
-      
-      // Cart functionality
-      const cartTable = document.getElementById('cart-table');
-      const emptyCart = document.getElementById('empty-cart');
-      const cartActions = document.getElementById('cart-actions');
-      const subtotalEl = document.getElementById('summary-subtotal');
-      const taxEl = document.getElementById('summary-tax');
-      const totalEl = document.getElementById('summary-total');
-      const shippingEl = document.getElementById('summary-shipping');
-      
-      // Quantity control buttons
-      if (cartTable) {
-        cartTable.addEventListener('click', (e) => {
-          // Decrease quantity
-          if (e.target.classList.contains('decrease')) {
-            const input = e.target.nextElementSibling;
-            let value = parseInt(input.value);
-            if (value > 1) {
-              input.value = value - 1;
-              updateItemTotal(input);
-              updateCartTotals();
-            }
-          }
-          
-          // Increase quantity
-          if (e.target.classList.contains('increase')) {
-            const input = e.target.previousElementSibling;
-            let value = parseInt(input.value);
-            if (value < 99) {
-              input.value = value + 1;
-              updateItemTotal(input);
-              updateCartTotals();
-            }
-          }
-          
-          // Remove item
-          if (e.target.classList.contains('remove-item')) {
-            const row = e.target.closest('tr');
-            row.style.opacity = '0';
-            setTimeout(() => {
-              row.remove();
-              if (cartTable.querySelector('tbody').children.length === 0) {
-                showEmptyCart();
-              } else {
-                updateCartTotals();
-              }
-            }, 300);
-          }
-        });
-        
-        // Quantity input changes
-        const quantityInputs = cartTable.querySelectorAll('.quantity-input');
-        quantityInputs.forEach(input => {
-          input.addEventListener('change', () => {
-            let value = parseInt(input.value);
-            if (value < 1) input.value = 1;
-            if (value > 99) input.value = 99;
-            updateItemTotal(input);
-            updateCartTotals();
-          });
-        });
+
+      const shipping = subtotal > 0 ? 5.99 : 0;
+      const tax = subtotal * 0.07;
+      const total = subtotal + shipping + tax;
+
+      document.getElementById("summary-subtotal").textContent = `RM ${subtotal.toFixed(2)}`;
+      document.getElementById("summary-shipping").textContent = `RM ${shipping.toFixed(2)}`;
+      document.getElementById("summary-tax").textContent = `RM ${tax.toFixed(2)}`;
+      document.getElementById("summary-total").textContent = `RM ${total.toFixed(2)}`;
+    }
+
+    document.addEventListener("click", (e) => {
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      if (e.target.classList.contains("decrease")) {
+        const index = e.target.getAttribute("data-index");
+        if (cart[index].quantity > 1) cart[index].quantity--;
       }
-      
-      // Update item total based on quantity
-      function updateItemTotal(input) {
-        const price = parseFloat(input.getAttribute('data-price'));
-        const quantity = parseInt(input.value);
-        const total = price * quantity;
-        const totalEl = input.closest('tr').querySelector('.item-total');
-        totalEl.textContent = `RM${total.toFixed(2)}`;
+
+      if (e.target.classList.contains("increase")) {
+        const index = e.target.getAttribute("data-index");
+        if (cart[index].quantity < 99) cart[index].quantity++;
       }
-      
-      // Update cart summary totals
-      function updateCartTotals() {
-        if (!cartTable || !subtotalEl || !taxEl || !totalEl || !shippingEl) return;
-        
-        const itemTotals = cartTable.querySelectorAll('.item-total');
-        let subtotal = 0;
-        
-        itemTotals.forEach(item => {
-          const value = parseFloat(item.textContent.replace('RM', ''));
-          subtotal += value;
-        });
-        
-        const shipping = subtotal > 0 ? 5.99 : 0;
-        const tax = subtotal * 0.07;
-        const total = subtotal + shipping + tax;
-        
-        subtotalEl.textContent = `RM${subtotal.toFixed(2)}`;
-        shippingEl.textContent = `RM${shipping.toFixed(2)}`;
-        taxEl.textContent = `RM${tax.toFixed(2)}`;
-        totalEl.textContent = `RM${total.toFixed(2)}`;
+
+      if (e.target.classList.contains("remove-item")) {
+        const index = e.target.getAttribute("data-index");
+        cart.splice(index, 1);
       }
-      
-      // Show empty cart message
-      function showEmptyCart() {
-        if (cartTable) cartTable.style.display = 'none';
-        if (cartActions) cartActions.style.display = 'none';
-        if (emptyCart) emptyCart.style.display = 'block';
-      }
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      renderCart();
     });
+
+    document.addEventListener("DOMContentLoaded", renderCart);
   </script>
 </body>
 </html>
