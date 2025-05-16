@@ -266,6 +266,37 @@
     .return-to-cart:hover {
       text-decoration: underline;
     }
+
+    .empty-cart-message {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    
+    .empty-cart-message .cart-empty-icon {
+      font-size: 48px;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+    
+    .empty-cart-message .cart-empty-text {
+      color: #666;
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    
+    .checkout-btn {
+      background-color: #e67e22;
+      color: white;
+      border: none;
+      padding: 15px 24px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: inline-block;
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -311,7 +342,7 @@
 
   <main>
     <div class="checkout-container">
-      <a href="cart.html" class="return-to-cart">← Return to Cart</a>
+      <a href="shoppingCart.html" class="return-to-cart">← Return to Cart</a>
       
       <h2 class="checkout-title">Secure Checkout</h2>
       
@@ -331,7 +362,15 @@
         </div>
       </div>
       
-      <div class="checkout-grid">
+      <!-- Empty Cart Message - Initially Hidden -->
+      <div id="empty-checkout" class="empty-cart-message" style="display: none;">
+        <div class="cart-empty-icon">🛒</div>
+        <h3 class="cart-empty-text">Your cart is empty</h3>
+        <p>Add some delicious items to your cart before proceeding to checkout.</p>
+        <a href="products.html" class="checkout-btn">Browse Products</a>
+      </div>
+
+      <div id="checkout-content" class="checkout-grid">
         <!-- Checkout Form -->
         <div class="checkout-form">
           <form id="checkout-form">
@@ -495,53 +534,28 @@
         <div class="order-summary">
           <h3 class="summary-header">Order Summary</h3>
           
-          <div class="order-items">
-            <!-- Item 1 -->
-            <div class="order-item">
-              <div class="item-info">
-                <div class="item-quantity">1</div>
-                <div class="item-name">Chocolate Cake</div>
-              </div>
-              <div class="item-price">RM 28.99</div>
-            </div>
-            
-            <!-- Item 2 -->
-            <div class="order-item">
-              <div class="item-info">
-                <div class="item-quantity">2</div>
-                <div class="item-name">Strawberry Cupcakes (6 pcs)</div>
-              </div>
-              <div class="item-price">RM 37.00</div>
-            </div>
-            
-            <!-- Item 3 -->
-            <div class="order-item">
-              <div class="item-info">
-                <div class="item-quantity">1</div>
-                <div class="item-name">Sourdough Bread</div>
-              </div>
-              <div class="item-price">RM 8.75</div>
-            </div>
+          <div class="order-items" id="order-items">
+            <!-- Cart items will be loaded here dynamically -->
           </div>
           
           <div class="summary-row">
             <span>Subtotal:</span>
-            <span id="summary-subtotal">RM 74.74</span>
+            <span id="summary-subtotal">RM 0.00</span>
           </div>
           
           <div class="summary-row">
             <span>Shipping:</span>
-            <span id="summary-shipping">RM 5.99</span>
+            <span id="summary-shipping">RM 0.00</span>
           </div>
           
           <div class="summary-row">
             <span>Tax (7%):</span>
-            <span id="summary-tax">RM 5.23</span>
+            <span id="summary-tax">RM 0.00</span>
           </div>
           
           <div class="summary-row total">
             <span>Total:</span>
-            <span id="summary-total">RM 85.96</span>
+            <span id="summary-total">RM 0.00</span>
           </div>
           
           <button class="place-order-btn" id="place-order-btn">Place Order</button>
@@ -581,7 +595,38 @@
           if (el) el.style.display = "none";
         });
       });
+
+      // Load cart items
+      const cartKey = "bakeeaseCart";
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
       
+      // Check if cart is empty
+      if (cart.length === 0) {
+        document.getElementById("checkout-content").style.display = "none";
+        document.getElementById("empty-checkout").style.display = "block";
+        return;
+      }
+      
+      // Populate order items
+      const orderItemsContainer = document.getElementById("order-items");
+      orderItemsContainer.innerHTML = "";
+      
+      cart.forEach(item => {
+        const itemElement = document.createElement("div");
+        itemElement.className = "order-item";
+        itemElement.innerHTML = `
+          <div class="item-info">
+            <div class="item-quantity">${item.quantity}</div>
+            <div class="item-name">${item.name}</div>
+          </div>
+          <div class="item-price">RM${(item.price * item.quantity).toFixed(2)}</div>
+        `;
+        orderItemsContainer.appendChild(itemElement);
+      });
+      
+      // Calculate and update order summary
+      updateOrderSummary(cart);
+
       // Checkout form validation and submission
       const checkoutForm = document.getElementById('checkout-form');
       const placeOrderBtn = document.getElementById('place-order-btn');
@@ -631,6 +676,20 @@
           if (isValid) {
             placeOrderBtn.textContent = 'Processing...';
             placeOrderBtn.disabled = true;
+            
+            // Save order details to session storage for order confirmation page
+            const orderDetails = {
+              items: cart,
+              subtotal: calculateSubtotal(cart),
+              shipping: calculateShipping(cart),
+              tax: calculateTax(cart),
+              total: calculateTotal(cart)
+            };
+            
+            sessionStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+            
+            // Clear cart
+            localStorage.setItem(cartKey, JSON.stringify([]));
             
             // Simulate processing delay and redirect to confirmation page
             setTimeout(() => {
@@ -700,6 +759,38 @@
         }
       }
     });
+
+    // Helper functions for calculating order summary
+    function calculateSubtotal(cart) {
+      return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    }
+    
+    function calculateShipping(cart) {
+      // Simple shipping calculation - RM5.99 flat rate if cart has items
+      return calculateSubtotal(cart) > 0 ? 5.99 : 0;
+    }
+    
+    function calculateTax(cart) {
+      // 7% tax rate
+      return calculateSubtotal(cart) * 0.07;
+    }
+    
+    function calculateTotal(cart) {
+      return calculateSubtotal(cart) + calculateShipping(cart) + calculateTax(cart);
+    }
+    
+    function updateOrderSummary(cart) {
+      const subtotal = calculateSubtotal(cart);
+      const shipping = calculateShipping(cart);
+      const tax = calculateTax(cart);
+      const total = calculateTotal(cart);
+      
+      document.getElementById("summary-subtotal").textContent = `RM${subtotal.toFixed(2)}`;
+      document.getElementById("summary-shipping").textContent = `RM${shipping.toFixed(2)}`;
+      document.getElementById("summary-tax").textContent = `RM${tax.toFixed(2)}`;
+      document.getElementById("summary-total").textContent = `RM${total.toFixed(2)}`;
+    }
+
   </script>
 </body>
 </html>
