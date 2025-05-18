@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Staff - BakeEase</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .staff-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .staff-title {
+      font-size: 2rem;
+      text-align: center;
+      color: #5a3921;
+      margin-bottom: 30px;
+    }
+
+    .staff-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .staff-table th, .staff-table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .staff-action-btn {
+      background-color: #e67e22;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .staff-action-btn:hover {
+      background-color: #d35400;
+    }
+  </style>
+</head>
+<body>
+  <div class="staff-container">
+    <h2 class="staff-title">Manage Staff</h2>
+    <button class="staff-action-btn" onclick="window.location.href='add-staff.html'">Add Staff</button>
+    <table class="staff-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example staff data, you can dynamically populate with backend data -->
+        <tr>
+          <td>1</td>
+          <td>John Doe</td>
+          <td>john@example.com</td>
+          <td>Manager</td>
+          <td>
+            <button class="staff-action-btn">Update</button>
+            <button class="staff-action-btn">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
