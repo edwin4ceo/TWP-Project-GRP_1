@@ -237,6 +237,14 @@
         if (!email || !password) {
           e.preventDefault();
           alert("Please fill in all fields");
+          return;
+        }
+
+        // Admin login 
+        if (email === "admin@example.com" && password === "admin123") {
+          e.preventDefault(); // Prevent normal submission
+          alert("Welcome Admin! Redirecting to admin dashboard...");
+          window.location.href = "admin-dashboard.html"; // Replace with your actual admin page
         }
       });
     ;
