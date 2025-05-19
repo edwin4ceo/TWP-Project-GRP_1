@@ -1,79 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Manage Categories - BakeEase</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BakeEase - Manage Products</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .category-container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    :root {
+      --primary: #e67e22;
+      --primary-dark: #d35400;
+      --brown: #5a3921;
+      --light: #f9f5f0;
+      --white: #ffffff;
+      --gray: #f0f0f0;
+      --dark-gray: #777;
     }
 
-    .category-title {
-      font-size: 2rem;
-      text-align: center;
-      color: #5a3921;
-      margin-bottom: 30px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .category-table {
-      width: 100%;
-      border-collapse: collapse;
+    body {
+      background-color: var(--light);
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
       margin-top: 20px;
     }
 
-    .category-table th, .category-table td {
-      padding: 10px;
+    .admin-header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .admin-nav .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .admin-nav .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+/* Sidebar */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--brown);
+      color: var(--white);
+      padding: 20px 0;
+      position: fixed;  
+      height: calc(100vh - 80px);
+      top: 80px;
+      transition: all 0.3s;
+      z-index: 1;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--white);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu a i {
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-menu .menu-text {
+      font-size: 0.95rem;
+    }
+
+    .admin-content {
+      flex: 1;
+      padding: 30px;
+      margin-left: 250px;
+      padding-top: 100px;
+    }
+
+    .management-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .management-header h2 {
+      font-size: 1.8rem;
+      color: var(--brown);
+    }
+
+    .management-header button {
+      font-size: 1rem;
+      padding: 10px 15px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .management-header button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .search-filter {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--dark-gray);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .filter-dropdown select {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .action-buttons {
+      margin-left: auto;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px 15px;
       border: 1px solid #ddd;
       text-align: left;
     }
 
-    .category-action-btn {
-      background-color: #e67e22;
+    th {
+      background-color: var(--primary);
       color: white;
-      padding: 8px 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-      transition: background-color 0.3s;
     }
 
-    .category-action-btn:hover {
-      background-color: #d35400;
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background-color: #e6f7ee;
+      color: #2ecc71;
+    }
+
+    .badge-danger {
+      background-color: #ffebee;
+      color: #e74c3c;
+    }
+
+    .action-btn {
+      padding: 5px 10px;
+      font-size: 0.85rem;
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
-  <div class="category-container">
-    <h2 class="category-title">Manage Categories</h2>
-    <button class="category-action-btn" onclick="window.location.href='add-category.html'">Add Category</button>
-    <table class="category-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Category Name</th>
-          <th>Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Example category data -->
-        <tr>
-          <td>1</td>
-          <td>Electronics</td>
-          <td>All electronic products</td>
-          <td>
-            <button class="category-action-btn">Update</button>
-            <button class="category-action-btn">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <header class="admin-header">
+    <div class="logo-container">
+      <img src="images/logo.png" alt="BakeEase Logo">
+      <div class="logo-text">
+        <h1>BakeEase</h1>
+        <span>Admin Dashboard</span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="profile">
+        <img src="images/admin-avatar.jpg" alt="Admin">
+        <span class="profile-name">Admin</span>
+      </div>
+    </nav>
+  </header>
+
+  <aside class="admin-sidebar">
+    <ul class="sidebar-menu">
+      <li><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
+      <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
+      <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+      <li><a href="manage-product.html" class="active"><i class="fas fa-utensils"></i> Products</a></li>
+      <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-content">
+    <div class="management-header">
+      <h2>Manage Products</h2>
+      <button><i class="fas fa-plus"></i> Add Product</button>
+    </div>
+
+    <div class="search-filter">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search products...">
+      </div>
+      <div class="filter-dropdown">
+        <select>
+          <option>All Categories</option>
+          <option>Cakes</option>
+          <option>Breads</option>
+          <option>Pastries</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PR001</td>
+            <td>Chocolate Cake</td>
+            <td>Cakes</td>
+            <td>$25.00</td>
+            <td>30</td>
+            <td><span class="badge badge-success">Available</span></td>
+            <td>
+              <button class="action-btn"><i class="fas fa-edit"></i> Edit</button>
+              <button class="action-btn"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>PR002</td>
+            <td>Sourdough Bread</td>
+            <td>Breads</td>
+            <td>$10.00</td>
+            <td>12</td>
+            <td><span class="badge badge-success">Available</span></td>
+            <td>
+              <button class="action-btn"><i class="fas fa-edit"></i> Edit</button>
+              <button class="action-btn"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 </body>
 </html>
+
