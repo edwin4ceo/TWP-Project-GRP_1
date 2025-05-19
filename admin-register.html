@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="images/png" href="images/logo.png" />
   <title>Admin Registration - BakeEase</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
   <style>
     .auth-container {
       max-width: 500px;
@@ -94,8 +96,48 @@
       text-decoration: underline;
     }
   </style>
-</head>
 <body>
+<header>
+    <div class="header-bar">
+      <!-- Logo and Title -->
+      <div class="logo-left">
+        <a href="index.html">
+          <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        </a>
+      <h1 id="page-heading">Admin Registration</h1>
+      </div>
+
+    <!-- Right: Nav, Cart, Profile -->
+    <div class="header-right">
+      <div class="nav-dropdown">
+        <span class="nav-toggle" id="navToggle">☰</span>
+        <div class="dropdown-menu" id="navMenu">
+          <a href="index.html">Home</a>
+          <a href="products.html">Products</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+
+      <div class="cart-dropdown">
+        <span class="cart-icon" id="cartToggle">🛒</span>
+        <div class="dropdown-menu" id="cartMenu">
+          <a href="shoppingCart.html">View Cart</a>
+          <a href="checkout.html">Checkout</a>
+        </div>
+      </div>
+
+      <div class="profile-dropdown">
+        <span class="profile-icon" id="profileToggle">👤</span>
+        <div class="dropdown-menu" id="profileMenu">
+          <a href="register.html">Sign Up</a>
+          <a href="login.html">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </header>
+
   <div class="auth-container">
     <h2 class="form-title">Admin Registration</h2>
     <form action="admin-login.html" method="post">
@@ -128,5 +170,69 @@
       <p>Already have an account? <a href="admin-login.html">Login here</a></p>
     </div>
   </div>
+
+  <footer>
+    <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
+    });
+
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
+
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
+
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+      document.addEventListener("click", (e) => {
+      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      navMenu.style.display = "none";
+    }
+  });
+    });
+
+    toggles.forEach(({ btn, menu }) => {
+      const toggle = document.getElementById(btn);
+      const menuEl = document.getElementById(menu);
+
+      if (toggle && menuEl) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+        });
+      }
+    });
+
+    document.addEventListener("click", () => {
+      toggles.forEach(({ menu }) => {
+        const el = document.getElementById(menu);
+        if (el) el.style.display = "none";
+      });
+    });
+  ;
+  </script>
 </body>
 </html>
