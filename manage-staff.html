@@ -1,81 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Manage Staff - BakeEase</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BakeEase - Manage Staff</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .staff-container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    :root {
+      --primary: #e67e22;
+      --primary-dark: #d35400;
+      --brown: #5a3921;
+      --light: #f9f5f0;
+      --white: #ffffff;
+      --gray: #f0f0f0;
+      --dark-gray: #777;
     }
 
-    .staff-title {
-      font-size: 2rem;
-      text-align: center;
-      color: #5a3921;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    .admin-header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .admin-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .admin-nav .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .admin-nav .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .admin-nav .profile-name {
+      font-weight: 600;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      padding: 10px 0;
+      min-width: 180px;
+      z-index: 100;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f5f5f5;
+      color: var(--primary);
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--brown);
+      color: var(--white);
+      padding: 20px 0;
+      position: fixed;
+      height: calc(100vh - 80px);
+      top: 80px;
+      transition: all 0.3s;
+      z-index: 1;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--white);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-menu .menu-text {
+      font-size: 0.95rem;
+    }
+
+    /* Main Content */
+    .admin-content {
+      flex: 1;
+      padding: 30px;
+      margin-left: 250px;
+      padding-top: 80px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .management-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 30px;
     }
 
-    .staff-table {
+    .management-header h2 {
+      font-size: 1.8rem;
+      color: var(--brown);
+    }
+
+    .management-header .action-buttons button {
+      font-size: 1rem;
+      padding: 10px 15px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .management-header .action-buttons button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* Table Styles */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
 
-    .staff-table th, .staff-table td {
-      padding: 10px;
+    th, td {
+      padding: 12px 15px;
       border: 1px solid #ddd;
       text-align: left;
     }
 
-    .staff-action-btn {
-      background-color: #e67e22;
+    th {
+      background-color: var(--primary);
       color: white;
-      padding: 8px 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-      transition: background-color 0.3s;
     }
 
-    .staff-action-btn:hover {
-      background-color: #d35400;
+    .action-btn {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      margin-right: 5px;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background-color: #e6f7ee;
+      color: #2ecc71;
+    }
+
+    .badge-warning {
+      background-color: #fff4e5;
+      color: #e67e22;
+    }
+
+    .badge-danger {
+      background-color: #ffebee;
+      color: #e74c3c;
+    }
+
+    /* Footer */
+    .admin-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--white);
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-left: 250px;
     }
   </style>
 </head>
 <body>
-  <div class="staff-container">
-    <h2 class="staff-title">Manage Staff</h2>
-    <button class="staff-action-btn" onclick="window.location.href='add-staff.html'">Add Staff</button>
-    <table class="staff-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Example staff data, you can dynamically populate with backend data -->
-        <tr>
-          <td>1</td>
-          <td>John Doe</td>
-          <td>john@example.com</td>
-          <td>Manager</td>
-          <td>
-            <button class="staff-action-btn">Update</button>
-            <button class="staff-action-btn">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="logo-container">
+      <img src="images/logo.png" alt="BakeEase Logo">
+      <div class="logo-text">
+        <h1>BakeEase</h1>
+        <span>Admin Dashboard</span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="profile">
+        <img src="images/admin-avatar.jpg" alt="Admin Profile">
+        <span class="profile-name">Admin User</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <ul class="sidebar-menu">
+      <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
+      <li><a href="manage-members.html"><i class="fas fa-users"></i> Manage Members</a></li>
+      <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+      <li><a href="manage-products.html"><i class="fas fa-utensils"></i> Products</a></li>
+      <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
+      <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-content">
+    <div class="management-header">
+      <h2>Manage Staff</h2>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="openModal('addStaffModal')">
+          <i class="fas fa-plus"></i> Add Staff
+        </button>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="search-filter">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search staff...">
+      </div>
+      <div class="filter-dropdown">
+        <select>
+          <option>All Roles</option>
+          <option>Admin</option>
+          <option>Baker</option>
+          <option>Cashier</option>
+          <option>Delivery</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Staff Table -->
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ST001</td>
+            <td>John Baker</td>
+            <td>john@bakeease.com</td>
+            <td>Head Baker</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-outline action-btn" onclick="openModal('editStaffModal')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger action-btn">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          <!-- More rows -->
+        </tbody>
+      </table>
+    </div>
+  </main>
 </body>
 </html>
+
