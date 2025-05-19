@@ -1,75 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Manage Members - BakeEase</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BakeEase - Manage Members</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .member-container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    /* Copy all the CSS from your dashboard page here */
+    :root {
+      --primary: #e67e22;
+      --primary-dark: #d35400;
+      --brown: #5a3921;
+      --light: #f9f5f0;
+      --white: #ffffff;
+      --gray: #f0f0f0;
+      --dark-gray: #777;
     }
 
-    .member-title {
-      font-size: 2rem;
-      text-align: center;
-      color: #5a3921;
+    * {
+      margin: 0;    
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--light);
+      color: #333;
+      margin-top: 20px;
+    }
+    
+    /* Header Styles */
+    .admin-header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo-container img {
+      height: 50px;
+      margin-right: 15px;
+    }
+    
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+    
+    .admin-nav {
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-nav .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .admin-nav .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    
+    .admin-nav .profile-name {
+      font-weight: 600;
+    }
+    
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      padding: 10px 0;
+      min-width: 180px;
+      z-index: 100;
+    }
+    
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .dropdown-menu a:hover {
+      background-color: #f5f5f5;
+      color: var(--primary);
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+
+        /* Sidebar */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--brown);
+      color: var(--white);
+      padding: 20px 0;
+      position: fixed;
+      height: calc(100vh - 80px);
+      top: 80px;
+      transition: all 0.3s;
+      z-index: 1;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--white);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-menu .menu-text {
+      font-size: 0.95rem;
+    }
+
+    /* Main Content */
+    .admin-content {
+      flex: 1;
+      padding: 30px;
+      margin-left: 250px;
+      padding-top: 80px;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 30px;
+    }
+    
+    .page-title h2 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    
+    .page-title p {
+      color: #666;
+      margin: 2px 0 0;
+    }
+
+    /* Member Management Styles */
+    .member-table-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
     }
 
     .member-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 0px;
     }
 
     .member-table th, .member-table td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px 15px;
       text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .member-table th {
+      background-color: #f5f5f5;
+      color: #666;
+      font-weight: 600;
+      font-size: 0.85rem;
     }
 
     .member-action-btn {
-      background-color: #e67e22;
+      background-color: var(--primary);
       color: white;
+      border: none;
       padding: 8px 16px;
       border-radius: 5px;
       cursor: pointer;
-      margin: 5px;
+      margin-right: 5px;
       transition: background-color 0.3s;
+      font-size: 0.85rem;
     }
 
     .member-action-btn:hover {
-      background-color: #d35400;
+      background-color: var(--primary-dark);
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 0px; 
+      margin-bottom: 25px;
+    }
+
+    input[type="search"] {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 250px;
+      max-width: 100%;
+      transition: border-color 0.3s;
+    }
+    input[type="search"]:focus {
+      outline: none;
+      border-color: #e67e22; /* primary color */
+      box-shadow: 0 0 5px #e67e22;
+    }
+
+    .btn-add-member {
+      background-color: #e67e22; /* primary color */
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+
+    .btn-add-member:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-add-member i {
+      margin-right: 8px;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status.active {
+      background-color: #e6f7ee;
+      color: #2ecc71;
+    }
+
+    .status.inactive {
+      background-color: #ffebee;
+      color: #e74c3c;
+    }
+
+    .search-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .search-container .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+      font-size: 1rem;
+    }
+
+    .search-container input[type="search"] {
+      padding-left: 36px; 
+    }
+
+    /* Footer */
+    .admin-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--white);
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-left: 250px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 80px;
+      }
+
+      .admin-content, .admin-footer {
+        margin-left: 80px;
+      }
+
+      .sidebar-menu .menu-text {
+        display: none;
+      }
+
+      .sidebar-menu a {
+        justify-content: center;
+      }
+
+      .sidebar-menu i {
+        margin-right: 0;
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      
+      .page-actions {
+        margin-top: 15px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .admin-header .logo-container h1 {
+        font-size: 1.5rem;
+      }
+
+      .admin-nav {
+        width: 100%;
+        justify-content: space-between;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="member-container">
-    <h2 class="member-title">Manage Members</h2>
-    <button class="member-action-btn" onclick="window.location.href='add-member.html'">Add Member</button>
-    <table class="member-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Example member data -->
-        <tr>
-          <td>1</td>
-          <td>Jane Doe</td>
-          <td>jane@example.com</td>
-          <td>Active</td>
-          <td>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="logo-container">
+      <img src="images/logo.png" alt="BakeEase Logo">
+      <div class="logo-text">
+        <h1>BakeEase</h1>
+        <span>Admin Dashboard</span>
+      </div>
+    </div>
+    
+    <nav class="admin-nav">
+      <div class="profile" id="profileToggle">
+        <img src="images/admin-avatar.jpg" alt="Admin Profile">
+        <span class="profile-name">Admin User</span>
+        <i class="fas fa-chevron-down"></i>
+        
+        <div class="dropdown-menu" id="profileMenu">
+          <a href="#"><i class="fas fa-user"></i> My Profile</a>
+          <a href="#"><i class="fas fa-cog"></i> Settings</a>
+          <a href="admin-login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Admin Container -->
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <ul class="sidebar-menu">
+        <li>
+          <a href="admin-dashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="manage-staff.html">
+            <i class="fas fa-user-tie"></i>
+            <span class="menu-text">Manage Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href="manage-member.html" class="active">
+            <i class="fas fa-users"></i>
+            <span class="menu-text">Manage Members</span>
+          </a>
+        </li>
+        <li>
+          <a href="manage-categories.html">
+            <i class="fas fa-tags"></i>
+            <span class="menu-text">Categories</span>
+          </a>
+        </li>
+        <li>
+          <a href="manage-product.html">
+            <i class="fas fa-utensils"></i>
+            <span class="menu-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="manage-orders.html">
+            <i class="fas fa-shopping-basket"></i>
+            <span class="menu-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="sales-reports.html">
+            <i class="fas fa-chart-line"></i>
+            <span class="menu-text">Sales Reports</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="page-header">
+        <div class="page-title">
+          <h2>Manage Members</h2>
+          <p>View and manage all registered members</p>
+        </div>
+      </div>
+      <div class="top-controls">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="search" id="memberSearch" placeholder="Search members..." />
+        </div>
+        <button class="btn-add-member" onclick="window.location.href='add-member.html'">
+          <i class="fas fa-plus"></i> Add Member
+        </button>
+      </div>
+
+      <div class="member-table-container">
+        <table class="member-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Jane</td>
+              <td>jane@example.com</td>
+              <td>(123) 456-7890</td>
+              <td><span class="status active">Active</span></td>
+              <td>
+                <button class="member-action-btn"><i class="fas fa-edit"></i> Edit</button>
+                <button class="member-action-btn"><i class="fas fa-trash"></i> Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>John</td>
+              <td>john@example.com</td>
+              <td>(234) 567-8901</td>
+              <td><span class="status active">Active</span></td>
+              <td>
+                <button class="member-action-btn"><i class="fas fa-edit"></i> Edit</button>
+                <button class="member-action-btn"><i class="fas fa-trash"></i> Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Sarah </td>
+              <td>sarah@example.com</td>
+              <td>(345) 678-9012</td>
+              <td><span class="status inactive">Inactive</span></td>
+              <td>
             <button class="member-action-btn">Update</button>
             <button class="member-action-btn">Delete</button>
           </td>

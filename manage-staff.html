@@ -29,6 +29,7 @@
       display: flex;
       min-height: 100vh;
       flex-direction: column;
+      margin-top: 20px;
     }
 
     /* Header Styles */
@@ -169,8 +170,7 @@
       flex: 1;
       padding: 30px;
       margin-left: 250px;
-      padding-top: 80px;
-      transition: all 0.3s ease-in-out;
+      padding-top: 80px;  
     }
 
     .management-header {
@@ -185,17 +185,18 @@
       color: var(--brown);
     }
 
-    .management-header .action-buttons button {
+    .management-header button {
       font-size: 1rem;
       padding: 10px 15px;
       background-color: var(--primary);
       color: var(--white);
-      border: none;
+      border: none; 
       cursor: pointer;
       border-radius: 5px;
     }
 
-    .management-header .action-buttons button:hover {
+
+    .management-header button:hover {
       background-color: var(--primary-dark);
     }
 
@@ -207,7 +208,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     th, td {
@@ -285,9 +286,9 @@
     <ul class="sidebar-menu">
       <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
       <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
-      <li><a href="manage-members.html"><i class="fas fa-users"></i> Manage Members</a></li>
+      <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
       <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
-      <li><a href="manage-products.html"><i class="fas fa-utensils"></i> Products</a></li>
+      <li><a href="manage-product.html"><i class="fas fa-utensils"></i> Products</a></li>
       <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
       <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
     </ul>
@@ -296,12 +297,9 @@
   <!-- Main Content -->
   <main class="admin-content">
     <div class="management-header">
-      <h2>Manage Staff</h2>
-      <div class="action-buttons">
-        <button class="btn btn-primary" onclick="openModal('addStaffModal')">
-          <i class="fas fa-plus"></i> Add Staff
-        </button>
-      </div>
+      <div class="page-title">
+          <h2>Manage Staff</h2>
+        </div>
     </div>
 
     <!-- Search & Filter -->
@@ -319,7 +317,88 @@
           <option>Delivery</option>
         </select>
       </div>
+      <div class="action-buttons">
+        <button onclick="openModal('addStaffModal')">
+          <i class="fas fa-plus"></i> Add Staff
+        </button>
+      </div>
     </div>
+
+    <style>
+      .search-filter {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 15px;
+      }
+
+      .action-buttons{
+        margin-left: auto;
+      }
+      .search-filter .action-buttons button{
+        font-size: 1rem;
+        padding: 10px 15px;
+        background-color: var(--primary);
+        color: var(--white);
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      .search-filter .action-buttons button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .search-box {
+        position: relative;
+        flex: 1; 
+        max-width: 400px;
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--dark-gray);
+        pointer-events: none;
+        font-size: 1rem;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 5px var(--primary);
+      }
+
+      .filter-dropdown select {
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: var(--white);
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        min-width: 160px;
+      }
+
+      .filter-dropdown select:hover,
+      .filter-dropdown select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 5px var(--primary);
+      }
+    </style>
 
     <!-- Staff Table -->
     <div class="table-responsive">
@@ -337,8 +416,8 @@
         <tbody>
           <tr>
             <td>ST001</td>
-            <td>John Baker</td>
-            <td>john@bakeease.com</td>
+            <td>Edwin Baker</td>
+            <td>Edwin@bakeease.com</td>
             <td>Head Baker</td>
             <td><span class="badge badge-success">Active</span></td>
             <td>
@@ -350,11 +429,39 @@
               </button>
             </td>
           </tr>
-          <!-- More rows -->
+          <tr>
+            <td>ST002</td>
+            <td>Kit Baker</td>
+            <td>Kit@bakeease.com</td>
+            <td>Assistance Baker</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-outline action-btn" onclick="openModal('editStaffModal')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger action-btn">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>ST003</td>
+            <td>Yi Baker</td>
+            <td>Yi@bakeease.com</td>
+            <td>Assistance Baker</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-outline action-btn" onclick="openModal('editStaffModal')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger action-btn">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
   </main>
 </body>
 </html>
-
