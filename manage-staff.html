@@ -224,9 +224,19 @@
     }
 
     .action-btn {
-      padding: 5px 10px;
-      font-size: 0.8rem;
+      background-color: #e67e22; 
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
       margin-right: 5px;
+      transition: background-color 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .member-action-btn:hover {
+      background-color: var(--primary-dark);
     }
 
     .badge {
@@ -251,6 +261,27 @@
       color: #e74c3c;
     }
 
+    .btn-logout {
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+  }
+
+  .btn-logout i {
+    margin-right: 8px; 
+  }
+
+  .btn-logout:hover {
+    background-color: var(--primary-dark); 
+  }
+
     /* Footer */
     .admin-footer {
       text-align: center;
@@ -274,11 +305,10 @@
       </div>
     </div>
     <nav class="admin-nav">
-      <div class="profile">
-        <img src="images/admin-avatar.jpg" alt="Admin Profile">
-        <span class="profile-name">Admin User</span>
-        <i class="fas fa-chevron-down"></i>
-      </div>
+      <!-- Logout Button -->
+      <button class="btn-logout" onclick="window.location.href='index.html'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
     </nav>
   </header>
 
@@ -299,7 +329,7 @@
   <main class="admin-content">
     <div class="management-header">
       <div class="page-title">
-          <h2>Manage Staff</h2>
+          <h2>Staff Management</h2>
         </div>
     </div>
 
@@ -465,5 +495,9 @@
       </table>
     </div>
   </main>
+  <!-- Footer -->
+  <footer class="admin-footer">
+    <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+  </footer>
 </body>
 </html>

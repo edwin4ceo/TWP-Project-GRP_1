@@ -350,6 +350,27 @@
       text-decoration: underline;
     }
 
+    .btn-logout {
+      font-size: 1rem;
+      padding: 10px 20px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+
+    .btn-logout i {
+      margin-right: 8px; /* Space between icon and text */
+    }
+
+    .btn-logout:hover {
+      background-color: var(--primary-dark); /* Darken the button on hover */
+    }
+
     /* Footer */
     .admin-footer {
       text-align: center;
@@ -418,19 +439,11 @@
         <span>Admin Dashboard</span>
       </div>
     </div>
-    
     <nav class="admin-nav">
-      <div class="profile" id="profileToggle">
-        <img src="images/admin-avatar.jpg" alt="Admin Profile">
-        <span class="profile-name">Admin User</span>
-        <i class="fas fa-chevron-down"></i>
-        
-        <div class="dropdown-menu" id="profileMenu">
-          <a href="#"><i class="fas fa-user"></i> My Profile</a>
-          <a href="#"><i class="fas fa-cog"></i> Settings</a>
-          <a href="admin-login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-      </div>
+      <!-- Logout Button -->
+      <button class="btn-logout" onclick="window.location.href='index.html'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
     </nav>
   </header>
 

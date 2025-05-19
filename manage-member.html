@@ -6,7 +6,6 @@
   <title>BakeEase - Manage Members</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Copy all the CSS from your dashboard page here */
     :root {
       --primary: #e67e22;
       --primary-dark: #d35400;
@@ -23,13 +22,16 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     body {
       background-color: var(--light);
       color: #333;
       margin-top: 20px;
+      min-height: 100vh; /* Ensure body takes full height of the viewport */
+      display: flex;
+      flex-direction: column; /* Flex column to stack header, content, footer */
     }
-    
+
     /* Header Styles */
     .admin-header {
       background-color: var(--white);
@@ -43,82 +45,51 @@
       top: 0;
       z-index: 1000;
     }
-    
+
     .logo-container {
       display: flex;
       align-items: center;
     }
-    
+
     .logo-container img {
       height: 50px;
       margin-right: 15px;
     }
-    
+
     .logo-text h1 {
       color: var(--brown);
       margin: 0;
       font-size: 1.8rem;
     }
-    
+
     .logo-text span {
       color: var(--primary);
       font-size: 0.9rem;
     }
-    
+
     .admin-nav {
       display: flex;
       align-items: center;
     }
-    
+
     .admin-nav .profile {
       display: flex;
       align-items: center;
       cursor: pointer;
       position: relative;
     }
-    
+
     .admin-nav .profile img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       margin-right: 10px;
     }
-    
+
     .admin-nav .profile-name {
       font-weight: 600;
     }
-    
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: var(--white);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-      padding: 10px 0;
-      min-width: 180px;
-      z-index: 100;
-    }
-    
-    .dropdown-menu a {
-      display: block;
-      padding: 8px 20px;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-    
-    .dropdown-menu a:hover {
-      background-color: #f5f5f5;
-      color: var(--primary);
-    }
-    
-    .dropdown-menu.show {
-      display: block;
-    }
 
-        /* Sidebar */
     /* Sidebar */
     .admin-sidebar {
       width: 250px;
@@ -167,25 +138,25 @@
 
     /* Main Content */
     .admin-content {
-      flex: 1;
+      flex: 1; /* Take remaining space */
       padding: 30px;
       margin-left: 250px;
       padding-top: 80px;
     }
-    
+
     .page-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
-    
+
     .page-title h2 {
       color: var(--brown);
       margin: 0;
       font-size: 1.8rem;
     }
-    
+
     .page-title p {
       color: #666;
       margin: 2px 0 0;
@@ -202,24 +173,28 @@
     .member-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 0px;
+      margin-top: 10px;
     }
 
     .member-table th, .member-table td {
       padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #ddd;
     }
 
     .member-table th {
-      background-color: #f5f5f5;
-      color: #666;
+      background-color: var(--primary);
+      color: white;
       font-weight: 600;
       font-size: 0.85rem;
     }
 
+    .member-table td {
+      font-size: 0.9rem;
+    }
+
     .member-action-btn {
-      background-color: var(--primary);
+      background-color: #e67e22; /* match staff table button color */
       color: white;
       border: none;
       padding: 8px 16px;
@@ -252,6 +227,7 @@
       max-width: 100%;
       transition: border-color 0.3s;
     }
+
     input[type="search"]:focus {
       outline: none;
       border-color: #e67e22; /* primary color */
@@ -279,6 +255,28 @@
       margin-right: 8px;
     }
 
+    /* Logout Button */
+    .btn-logout {
+      font-size: 1rem;
+      padding: 10px 20px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+
+    .btn-logout i {
+      margin-right: 8px; 
+    }
+
+    .btn-logout:hover {
+      background-color: var(--primary-dark); 
+    }
+
     .status {
       padding: 5px 10px;
       border-radius: 20px;
@@ -289,11 +287,19 @@
     .status.active {
       background-color: #e6f7ee;
       color: #2ecc71;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
     .status.inactive {
       background-color: #ffebee;
       color: #e74c3c;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
     .search-container {
@@ -314,24 +320,13 @@
       padding-left: 36px; 
     }
 
-    /* Footer */
-    .admin-footer {
-      text-align: center;
-      padding: 20px;
-      background-color: var(--white);
-      color: #666;
-      font-size: 0.9rem;
-      border-top: 1px solid #eee;
-      margin-left: 250px;
-    }
-
     /* Responsive Design */
     @media (max-width: 992px) {
       .admin-sidebar {
         width: 80px;
       }
 
-      .admin-content, .admin-footer {
+      .admin-content {
         margin-left: 60px;
       }
 
@@ -370,6 +365,22 @@
         justify-content: space-between;
       }
     }
+
+    /* Footer */
+    .admin-footer {
+      position: absolute;  /* Fix the footer at the bottom */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;  /* Center the content */
+      padding: 20px;
+      background-color: var(--white);
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-left: 250px;
+    }
+
   </style>
 </head>
 <body>
@@ -384,40 +395,33 @@
     </div>
     
     <nav class="admin-nav">
-      <div class="profile" id="profileToggle">
-        <img src="images/admin-avatar.jpg" alt="Admin Profile">
-        <span class="profile-name">Admin User</span>
-        <i class="fas fa-chevron-down"></i>
-        
-        <div class="dropdown-menu" id="profileMenu">
-          <a href="#"><i class="fas fa-user"></i> My Profile</a>
-          <a href="#"><i class="fas fa-cog"></i> Settings</a>
-          <a href="admin-login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-      </div>
+      <!-- Logout Button -->
+      <button class="btn-logout" onclick="window.location.href='index.html'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
     </nav>
   </header>
 
   <!-- Admin Container -->
   <div class="admin-container">
-     <!-- Sidebar -->
-  <aside class="admin-sidebar">
-    <ul class="sidebar-menu">
-      <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-      <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
-      <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
-      <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
-      <li><a href="manage-product.html"><i class="fas fa-utensils"></i> Products</a></li>
-      <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
-      <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
-    </ul>
-  </aside>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <ul class="sidebar-menu">
+        <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
+        <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
+        <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+        <li><a href="manage-product.html"><i class="fas fa-utensils"></i> Products</a></li>
+        <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
+        <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
+      </ul>
+    </aside>
     
     <!-- Main Content -->
     <main class="admin-content">
       <div class="page-header">
         <div class="page-title">
-          <h2>Manage Members</h2>
+          <h2>Members Management</h2>
           <p>View and manage all registered members</p>
         </div>
       </div>
@@ -445,10 +449,10 @@
           </thead>
           <tbody>
             <tr>
-              <td>1</td>
+              <td>M0001</td>
               <td>Jane</td>
               <td>jane@example.com</td>
-              <td>(123) 456-7890</td>
+              <td>(+60) 11-13178902</td>
               <td><span class="status active">Active</span></td>
               <td>
                 <button class="member-action-btn"><i class="fas fa-edit"></i> Edit</button>
@@ -456,10 +460,10 @@
               </td>
             </tr>
             <tr>
-              <td>2</td>
+              <td>M0002</td>
               <td>John</td>
               <td>john@example.com</td>
-              <td>(234) 567-8901</td>
+              <td>(+60) 17-23435343</td>
               <td><span class="status active">Active</span></td>
               <td>
                 <button class="member-action-btn"><i class="fas fa-edit"></i> Edit</button>
@@ -467,18 +471,25 @@
               </td>
             </tr>
             <tr>
-              <td>3</td>
+              <td>M0003</td>
               <td>Sarah </td>
               <td>sarah@example.com</td>
-              <td>(345) 678-9012</td>
+              <td>(+60) 16-07548531</td>
               <td><span class="status inactive">Inactive</span></td>
               <td>
-            <button class="member-action-btn">Update</button>
-            <button class="member-action-btn">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <button class="member-action-btn">Update</button>
+                <button class="member-action-btn">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
   </div>
+  
+  <!-- Footer -->
+  <footer class="admin-footer">
+    <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+  </footer>
 </body>
 </html>
