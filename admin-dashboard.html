@@ -163,6 +163,29 @@
       font-size: 0.95rem;
     }
 
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;  
+      color: inherit;         
+    }
+
+    .logo-container img {
+      height: 50px; 
+      margin-right: 15px;
+    }
+
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
     /* Main Content */
     .admin-content {
       flex: 1;
@@ -433,11 +456,13 @@
   <!-- Admin Header -->
   <header class="admin-header">
     <div class="logo-container">
-      <img src="images/logo.png" alt="BakeEase Logo">
-      <div class="logo-text">
-        <h1>BakeEase</h1>
-        <span>Admin </span>
-      </div>
+      <a href="admin-dashboard.html" class="logo-link">
+        <img src="images/logo.png" alt="BakeEase Logo">
+        <div class="logo-text">
+          <h1>BakeEase</h1>
+          <span>Admin </span>
+        </div>
+      </a>
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
@@ -610,36 +635,5 @@
     <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
   </footer>
   
-  <script>
-    // Profile dropdown toggle
-    const profileToggle = document.getElementById("profileToggle");
-    const profileMenu = document.getElementById("profileMenu");
-    
-    profileToggle.addEventListener("click", () => {
-      profileMenu.classList.toggle("show");
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!profileToggle.contains(e.target)) {
-        profileMenu.classList.remove("show");
-      }
-    });
-    
-    // Add active class to clicked sidebar item
-    const sidebarItems = document.querySelectorAll(".sidebar-menu a");
-    const currentPage = window.location.pathname.split('/').pop() || 'admin-dashboard.html';
-    
-    sidebarItems.forEach(item => {
-      if (item.getAttribute('href') === currentPage) {
-        item.classList.add("active");
-      }
-      
-      item.addEventListener("click", () => {
-        sidebarItems.forEach(i => i.classList.remove("active"));
-        item.classList.add("active");
-      });
-    });
-  </script>
 </body>
 </html>

@@ -277,6 +277,29 @@
       background-color: var(--primary-dark); /* Darken the button on hover */
     }
 
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-container img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
     /* Footer */
     .admin-footer {
       text-align: center;
@@ -293,11 +316,13 @@
   <!-- Admin Header -->
   <header class="admin-header">
     <div class="logo-container">
-      <img src="images/logo.png" alt="BakeEase Logo">
-      <div class="logo-text">
-        <h1>BakeEase</h1>
-        <span>Admin</span>
-      </div>
+      <a href="admin-dashboard.html" class="logo-link">
+        <img src="images/logo.png" alt="BakeEase Logo">
+        <div class="logo-text">
+          <h1>BakeEase</h1>
+          <span>Admin</span>
+        </div>
+      </a>
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
@@ -309,10 +334,10 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar">
     <ul class="sidebar-menu">
-      <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
       <li><a href="manage-staff.html"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
       <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
-      <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+      <li><a href="manage-categories.html" class="active"><i class="fas fa-tags"></i> Categories</a></li>
       <li><a href="manage-product.html"><i class="fas fa-utensils"></i> Products</a></li>
       <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
       <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>

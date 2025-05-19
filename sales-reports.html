@@ -130,19 +130,20 @@
       flex: 1;
       padding: 30px;
       margin-left: 250px;
-      padding-top: 100px;
+      padding-top: 80px;
     }
 
     .management-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .management-header h2 {
       font-size: 1.8rem;
       color: var(--brown);
+      margin-bottom: 5px;
     }
 
     .date-selection-form {
@@ -318,6 +319,29 @@
       background-color: var(--primary-dark);
     }
 
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-container img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .logo-text h1 {
+      color: var(--brown);
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
     /* Footer */
     .admin-footer {
       text-align: center;
@@ -358,11 +382,13 @@
 <body>
   <header class="admin-header">
     <div class="logo-container">
-      <img src="images/logo.png" alt="BakeEase Logo">
-      <div class="logo-text">
-        <h1>BakeEase</h1>
-        <span>Admin Dashboard</span>
-      </div>
+      <a href="admin-dashboard.html" class="logo-link">
+        <img src="images/logo.png" alt="BakeEase Logo">
+        <div class="logo-text">
+          <h1>BakeEase</h1>
+          <span>Admin </span>
+        </div>
+      </a>
     </div>
     <nav class="admin-nav">
       <button class="btn-logout" onclick="window.location.href='index.html'">
