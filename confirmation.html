@@ -117,6 +117,58 @@
       background-color: #4a2e1c;
     }
 
+    .cart-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+      max-width: 800px; /* Match confirmation-container max-width */
+    }
+    
+    .cart-steps::after {
+      content: "";
+      position: absolute;
+      top: 34px;
+      left: 0;
+      right: calc(33.33% - 15px); /* Adjusted to end near the last step */
+      height: 2px;
+      background-color: #ddd;
+      z-index: 1;
+    }
+    
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      width: 100px; /* Fixed width for steps to ensure even spacing */
+    }
+    
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ddd;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+    
+    .step.active .step-number {
+      background-color: #e67e22;
+    }
+    
+    .step.completed .step-number {
+      background-color: #2ecc71;
+    }
+    
+    .step-label {
+      font-size: 14px;
+      color: #5a3921;
+      font-weight: bold;
+    }
+
     @media (max-width: 768px) {
       .confirmation-container {
         margin: 20px;
@@ -136,6 +188,14 @@
         width: 100%;
         padding: 10px;
         font-size: 14px;
+      }
+
+      .cart-steps {
+        max-width: 100%;
+      }
+
+      .step {
+        width: 80px;
       }
     }
   </style>
@@ -184,9 +244,25 @@
 
   <main>
     <div class="confirmation-container">
+      <!-- Cart Steps -->
+      <div class="cart-steps">
+        <div class="step completed">
+          <div class="step-number">1</div>
+          <div class="step-label">Cart</div>
+        </div>
+        <div class="step completed">
+          <div class="step-number">2</div>
+          <div class="step-label">Checkout</div>
+        </div>
+        <div class="step active">
+          <div class="step-number">3</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+      </div>
+
       <h2 class="confirmation-title">Thank You for Your Order!</h2>
-      <p class="confirmation-message">
-        Your order <strong>#ORD-20250522-0756</strong> has been successfully placed at 07:56 PM +08 on Thursday, May 22, 2025. We’ll send you a confirmation email shortly.
+      <p class="confirmation-message" id="confirmation-message">
+        <!-- Message will be populated by script -->
       </p>
 
       <div class="order-details">
@@ -259,8 +335,26 @@
       });
     });
 
-    // Load order details from sessionStorage
+    // Load order details and generate real-time confirmation message
     document.addEventListener("DOMContentLoaded", () => {
+      // Get current date and time
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeZoneOffset = '+08'; // Fixed to +08 for this context
+      const orderNumber = `#ORD-${year}${month}${day}-${hours}${minutes}`;
+      const formattedTime = `${hours}:${minutes} PM ${timeZoneOffset}`;
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayName = days[now.getDay()];
+
+      // Set confirmation message
+      const confirmationMessage = document.getElementById("confirmation-message");
+      confirmationMessage.textContent = `Your order ${orderNumber} has been successfully placed at ${formattedTime} on ${dayName}, May ${day}, ${year}. We’ll send you a confirmation email shortly.`;
+
+      // Load order details from sessionStorage
       const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
       const orderItemsContainer = document.getElementById("order-items");
 
@@ -276,6 +370,9 @@
       document.getElementById("summary-shipping").textContent = `RM ${orderDetails.shipping.toFixed(2)}`;
       document.getElementById("summary-tax").textContent = `RM ${orderDetails.tax.toFixed(2)}`;
       document.getElementById("summary-total").textContent = `RM ${orderDetails.total.toFixed(2)}`;
+
+      // Clear sessionStorage after displaying the order
+      sessionStorage.removeItem('orderDetails');
     });
   </script>
 </body>
