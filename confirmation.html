@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
   <title>Order Confirmation - BakeEase</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
@@ -122,7 +122,7 @@
       justify-content: space-between;
       margin-bottom: 30px;
       position: relative;
-      max-width: 800px; /* Match confirmation-container max-width */
+      max-width: 800px;
     }
     
     .cart-steps::after {
@@ -130,7 +130,7 @@
       position: absolute;
       top: 34px;
       left: 0;
-      right: calc(33.33% - 15px); /* Adjusted to end near the last step */
+      right: calc(33.33% - 15px);
       height: 2px;
       background-color: #ddd;
       z-index: 1;
@@ -140,7 +140,7 @@
       text-align: center;
       position: relative;
       z-index: 2;
-      width: 100px; /* Fixed width for steps to ensure even spacing */
+      width: 100px;
     }
     
     .step-number {
@@ -203,7 +203,6 @@
 <body>
   <header>
     <div class="header-bar">
-      <!-- Logo only -->
       <div class="logo-left">
         <a href="index.html">
           <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
@@ -211,7 +210,6 @@
         <h1 id="page-heading">Order Confirmation</h1>
       </div>
       
-      <!-- Right: Nav, Cart, Profile -->
       <div class="header-right">
         <div class="nav-dropdown">
           <span class="nav-toggle" id="navToggle">☰</span>
@@ -244,7 +242,6 @@
 
   <main>
     <div class="confirmation-container">
-      <!-- Cart Steps -->
       <div class="cart-steps">
         <div class="step completed">
           <div class="step-number">1</div>
@@ -303,73 +300,93 @@
 
   <script>
     // Dropdown toggle logic
-    const toggles = [
-      { btn: "navToggle", menu: "navMenu" },
-      { btn: "cartToggle", menu: "cartMenu" },
-      { btn: "profileToggle", menu: "profileMenu" }
-    ];
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
 
-    toggles.forEach(({ btn, menu }) => {
-      const toggle = document.getElementById(btn);
-      const menuEl = document.getElementById(menu);
-      
-      if (toggle && menuEl) {
-        toggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
-          toggles.forEach(({ menu: otherMenu }) => {
-            if (otherMenu !== menu) {
-              document.getElementById(otherMenu).style.display = "none";
-            }
-          });
-        });
-      }
-    });
+    if (profileToggle && profileMenu) {
+      profileToggle.addEventListener("click", () => {
+        profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+        if (cartMenu) cartMenu.style.display = "none";
+      });
+    }
+
+    if (cartToggle && cartMenu) {
+      cartToggle.addEventListener("click", () => {
+        cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+        if (profileMenu) profileMenu.style.display = "none";
+      });
+    }
+
+    if (navToggle && navMenu) {
+      navToggle.addEventListener("click", () => {
+        navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+      });
+    }
 
     document.addEventListener("click", (e) => {
-      toggles.forEach(({ menu }) => {
-        const el = document.getElementById(menu);
-        if (el && !el.contains(e.target) && !document.getElementById(toggles.find(t => t.menu === menu).btn).contains(e.target)) {
-          el.style.display = "none";
-        }
-      });
+      if (profileMenu && !profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (cartMenu && !cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+      if (navMenu && !navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+        navMenu.style.display = "none";
+      }
     });
 
     // Load order details and generate real-time confirmation message
     document.addEventListener("DOMContentLoaded", () => {
-      // Get current date and time
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const timeZoneOffset = '+08'; // Fixed to +08 for this context
-      const orderNumber = `#ORD-${year}${month}${day}-${hours}${minutes}`;
-      const formattedTime = `${hours}:${minutes} PM ${timeZoneOffset}`;
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = days[now.getDay()];
-
-      // Set confirmation message
+      // Generate real-time confirmation message
       const confirmationMessage = document.getElementById("confirmation-message");
-      confirmationMessage.textContent = `Your order ${orderNumber} has been successfully placed at ${formattedTime} on ${dayName}, May ${day}, ${year}. We’ll send you a confirmation email shortly.`;
+      if (confirmationMessage) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const timeZoneOffset = '+08';
+        const orderNumber = `#ORD-${year}${month}${day}-${hours}${minutes}`;
+        const formattedTime = `${hours}:${minutes} PM ${timeZoneOffset}`;
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = days[now.getDay()];
+
+        confirmationMessage.textContent = `Your order ${orderNumber} has been successfully placed at ${formattedTime} on ${dayName}, May ${day}, ${year}. We’ll send you a confirmation email shortly.`;
+      } else {
+        console.warn("Element with ID 'confirmation-message' not found");
+      }
 
       // Load order details from sessionStorage
-      const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
       const orderItemsContainer = document.getElementById("order-items");
+      const summarySubtotal = document.getElementById("summary-subtotal");
+      const summaryShipping = document.getElementById("summary-shipping");
+      const summaryTax = document.getElementById("summary-tax");
+      const summaryTotal = document.getElementById("summary-total");
 
-      if (orderDetails.items.length > 0) {
+      let orderDetails = { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
+      try {
+        orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || orderDetails;
+      } catch (e) {
+        console.error("Error parsing order details from sessionStorage:", e);
+      }
+
+      if (orderDetails.items.length > 0 && orderItemsContainer) {
         orderItemsContainer.innerHTML = orderDetails.items.map(item => `
           <p>${item.name} - Quantity: ${item.quantity} - RM ${(item.price * item.quantity).toFixed(2)}</p>
         `).join('');
       } else {
-        orderItemsContainer.innerHTML = '<p>No items in this order.</p>';
+        if (orderItemsContainer) orderItemsContainer.innerHTML = '<p>No items in this order.</p>';
       }
 
-      document.getElementById("summary-subtotal").textContent = `RM ${orderDetails.subtotal.toFixed(2)}`;
-      document.getElementById("summary-shipping").textContent = `RM ${orderDetails.shipping.toFixed(2)}`;
-      document.getElementById("summary-tax").textContent = `RM ${orderDetails.tax.toFixed(2)}`;
-      document.getElementById("summary-total").textContent = `RM ${orderDetails.total.toFixed(2)}`;
+      if (summarySubtotal) summarySubtotal.textContent = `RM ${orderDetails.subtotal.toFixed(2)}`;
+      if (summaryShipping) summaryShipping.textContent = `RM ${orderDetails.shipping.toFixed(2)}`;
+      if (summaryTax) summaryTax.textContent = `RM ${orderDetails.tax.toFixed(2)}`;
+      if (summaryTotal) summaryTotal.textContent = `RM ${orderDetails.total.toFixed(2)}`;
 
       // Clear sessionStorage after displaying the order
       sessionStorage.removeItem('orderDetails');
