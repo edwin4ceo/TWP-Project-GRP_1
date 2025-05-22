@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <title>Order Confirmation - BakeEase</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .confirmation-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .confirmation-title {
+      color: #5a3921;
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .confirmation-message {
+      color: #5a3921;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .order-details {
+      background-color: #f9f3e9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .order-details h3 {
+      color: #5a3921;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e67e22;
+      padding-bottom: 5px;
+    }
+
+    .order-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .order-summary-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f0e6d9;
+      color: #5a3921;
+    }
+
+    .order-summary-table td:first-child {
+      font-weight: bold;
+    }
+
+    .order-summary-table tr:last-child td {
+      border-bottom: none;
+      font-weight: bold;
+      color: #e67e22;
+      font-size: 1.1em;
+    }
+
+    .order-items {
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #eee;
+      border-radius: 5px;
+    }
+
+    .order-items p {
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .confirmation-actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .confirmation-btn {
+      background-color: #e67e22;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .confirmation-btn:hover {
+      background-color: #d35400;
+      transform: translateY(-2px);
+    }
+
+    .confirmation-btn:active {
+      transform: translateY(0);
+    }
+
+    .confirmation-btn.secondary {
+      background-color: #5a3921;
+    }
+
+    .confirmation-btn.secondary:hover {
+      background-color: #4a2e1c;
+    }
+
+    @media (max-width: 768px) {
+      .confirmation-container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .order-details {
+        padding: 15px;
+      }
+
+      .confirmation-actions {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .confirmation-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <!-- Logo only -->
+      <div class="logo-left">
+        <a href="index.html">
+          <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        </a>
+        <h1 id="page-heading">Order Confirmation</h1>
+      </div>
+      
+      <!-- Right: Nav, Cart, Profile -->
+      <div class="header-right">
+        <div class="nav-dropdown">
+          <span class="nav-toggle" id="navToggle">☰</span>
+          <div class="dropdown-menu" id="navMenu">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+        
+        <div class="cart-dropdown">
+          <span class="cart-icon" id="cartToggle">🛒</span>
+          <div class="dropdown-menu" id="cartMenu">
+            <a href="shoppingCart.html">View Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        
+        <div class="profile-dropdown">
+          <span class="profile-icon" id="profileToggle">👤</span>
+          <div class="dropdown-menu" id="profileMenu">
+            <a href="register.html">Sign Up</a>
+            <a href="login.html">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="confirmation-container">
+      <h2 class="confirmation-title">Thank You for Your Order!</h2>
+      <p class="confirmation-message">
+        Your order <strong>#ORD-20250522-0756</strong> has been successfully placed at 07:56 PM +08 on Thursday, May 22, 2025. We’ll send you a confirmation email shortly.
+      </p>
+
+      <div class="order-details">
+        <h3>Order Details</h3>
+        <div class="order-items" id="order-items">
+          <!-- Items will be loaded dynamically -->
+        </div>
+        <table class="order-summary-table">
+          <tr>
+            <td>Subtotal:</td>
+            <td id="summary-subtotal">RM 0.00</td>
+          </tr>
+          <tr>
+            <td>Shipping:</td>
+            <td id="summary-shipping">RM 0.00</td>
+          </tr>
+          <tr>
+            <td>Tax (7%):</td>
+            <td id="summary-tax">RM 0.00</td>
+          </tr>
+          <tr>
+            <td>Total:</td>
+            <td id="summary-total">RM 0.00</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="confirmation-actions">
+        <a href="products.html" class="confirmation-btn">Continue Shopping</a>
+        <a href="#" class="confirmation-btn secondary">View Order History</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 BakeEase Bakery. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Dropdown toggle logic
+    const toggles = [
+      { btn: "navToggle", menu: "navMenu" },
+      { btn: "cartToggle", menu: "cartMenu" },
+      { btn: "profileToggle", menu: "profileMenu" }
+    ];
+
+    toggles.forEach(({ btn, menu }) => {
+      const toggle = document.getElementById(btn);
+      const menuEl = document.getElementById(menu);
+      
+      if (toggle && menuEl) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menuEl.style.display = menuEl.style.display === "block" ? "none" : "block";
+          toggles.forEach(({ menu: otherMenu }) => {
+            if (otherMenu !== menu) {
+              document.getElementById(otherMenu).style.display = "none";
+            }
+          });
+        });
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      toggles.forEach(({ menu }) => {
+        const el = document.getElementById(menu);
+        if (el && !el.contains(e.target) && !document.getElementById(toggles.find(t => t.menu === menu).btn).contains(e.target)) {
+          el.style.display = "none";
+        }
+      });
+    });
+
+    // Load order details from sessionStorage
+    document.addEventListener("DOMContentLoaded", () => {
+      const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
+      const orderItemsContainer = document.getElementById("order-items");
+
+      if (orderDetails.items.length > 0) {
+        orderItemsContainer.innerHTML = orderDetails.items.map(item => `
+          <p>${item.name} - Quantity: ${item.quantity} - RM ${(item.price * item.quantity).toFixed(2)}</p>
+        `).join('');
+      } else {
+        orderItemsContainer.innerHTML = '<p>No items in this order.</p>';
+      }
+
+      document.getElementById("summary-subtotal").textContent = `RM ${orderDetails.subtotal.toFixed(2)}`;
+      document.getElementById("summary-shipping").textContent = `RM ${orderDetails.shipping.toFixed(2)}`;
+      document.getElementById("summary-tax").textContent = `RM ${orderDetails.tax.toFixed(2)}`;
+      document.getElementById("summary-total").textContent = `RM ${orderDetails.total.toFixed(2)}`;
+    });
+  </script>
+</body>
+</html>
