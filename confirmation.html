@@ -289,7 +289,7 @@
 
       <div class="confirmation-actions">
         <a href="products.html" class="confirmation-btn">Continue Shopping</a>
-        <a href="#" class="confirmation-btn secondary">View Order History</a>
+        <a href="order-history.html" class="confirmation-btn secondary">View Order History</a>
       </div>
     </div>
   </main>
@@ -343,6 +343,8 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Generate real-time confirmation message
       const confirmationMessage = document.getElementById("confirmation-message");
+      let orderNumber = "";
+      let timestamp = "";
       if (confirmationMessage) {
         const now = new Date();
         const year = now.getFullYear();
@@ -351,12 +353,9 @@
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const timeZoneOffset = '+08';
-        const orderNumber = `#ORD-${year}${month}${day}-${hours}${minutes}`;
-        const formattedTime = `${hours}:${minutes} PM ${timeZoneOffset}`;
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayName = days[now.getDay()];
-
-        confirmationMessage.textContent = `Your order ${orderNumber} has been successfully placed at ${formattedTime} on ${dayName}, May ${day}, ${year}. We’ll send you a confirmation email shortly.`;
+        orderNumber = `#ORD-${year}${month}${day}-${hours}${minutes}`;
+        timestamp = `${hours}:${minutes} PM ${timeZoneOffset} on ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][now.getDay()]}, May ${day}, ${year}`;
+        confirmationMessage.textContent = `Your order ${orderNumber} has been successfully placed at ${timestamp}. We’ll send you a confirmation email shortly.`;
       } else {
         console.warn("Element with ID 'confirmation-message' not found");
       }
@@ -387,6 +386,21 @@
       if (summaryShipping) summaryShipping.textContent = `RM ${orderDetails.shipping.toFixed(2)}`;
       if (summaryTax) summaryTax.textContent = `RM ${orderDetails.tax.toFixed(2)}`;
       if (summaryTotal) summaryTotal.textContent = `RM ${orderDetails.total.toFixed(2)}`;
+
+      // Save order to localStorage for order history
+      if (orderDetails.items.length > 0) {
+        const orderHistory = JSON.parse(localStorage.getItem('bakeeaseOrderHistory')) || [];
+        orderHistory.push({
+          orderNumber: orderNumber,
+          timestamp: timestamp,
+          items: orderDetails.items,
+          subtotal: orderDetails.subtotal,
+          shipping: orderDetails.shipping,
+          tax: orderDetails.tax,
+          total: orderDetails.total
+        });
+        localStorage.setItem('bakeeaseOrderHistory', JSON.stringify(orderHistory));
+      }
 
       // Clear sessionStorage after displaying the order
       sessionStorage.removeItem('orderDetails');
