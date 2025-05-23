@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <title>Order History - BakeEase</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .history-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .history-title {
+      color: #5a3921;
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .no-orders {
+      color: #5a3921;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .order-card {
+      background-color: #f9f3e9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .order-card h3 {
+      color: #5a3921;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #e67e22;
+      padding-bottom: 5px;
+    }
+
+    .order-card p {
+      color: #666;
+      margin: 5px 0;
+    }
+
+    .order-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .order-summary-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f0e6d9;
+      color: #5a3921;
+    }
+
+    .order-summary-table td:first-child {
+      font-weight: bold;
+    }
+
+    .order-summary-table tr:last-child td {
+      border-bottom: none;
+      font-weight: bold;
+      color: #e67e22;
+      font-size: 1.1em;
+    }
+
+    .history-actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .history-btn {
+      background-color: #e67e22;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .history-btn:hover {
+      background-color: #d35400;
+      transform: translateY(-2px);
+    }
+
+    .history-btn:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .history-container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      .order-card {
+        padding: 15px;
+      }
+
+      .history-actions {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .history-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <div class="logo-left">
+        <a href="index.html">
+          <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
+        </a>
+        <h1 id="page-heading">Order History</h1>
+      </div>
+      
+      <div class="header-right">
+        <div class="nav-dropdown">
+          <span class="nav-toggle" id="navToggle">☰</span>
+          <div class="dropdown-menu" id="navMenu">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+        
+        <div class="cart-dropdown">
+          <span class="cart-icon" id="cartToggle">🛒</span>
+          <div class="dropdown-menu" id="cartMenu">
+            <a href="shoppingCart.html">View Cart</a>
+            <a href="checkout.html">Checkout</a>
+          </div>
+        </div>
+        
+        <div class="profile-dropdown">
+          <span class="profile-icon" id="profileToggle">👤</span>
+          <div class="dropdown-menu" id="profileMenu">
+            <a href="register.html">Sign Up</a>
+            <a href="login.html">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="history-container">
+      <h2 class="history-title">Your Order History</h2>
+      <div id="order-history-list">
+        <!-- Orders will be loaded dynamically -->
+      </div>
+      <div id="no-orders" class="no-orders" style="display: none;">
+        <p>No orders found. Start shopping to create your order history!</p>
+        <div class="history-actions">
+          <a href="products.html" class="history-btn">Shop Now</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 BakeEase Bakery. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Dropdown toggle logic
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    if (profileToggle && profileMenu) {
+      profileToggle.addEventListener("click", () => {
+        profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+        if (cartMenu) cartMenu.style.display = "none";
+      });
+    }
+
+    if (cartToggle && cartMenu) {
+      cartToggle.addEventListener("click", () => {
+        cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+        if (profileMenu) profileMenu.style.display = "none";
+      });
+    }
+
+    if (navToggle && navMenu) {
+      navToggle.addEventListener("click", () => {
+        navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+      });
+    }
+
+    document.addEventListener("click", (e) => {
+      if (profileMenu && !profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (cartMenu && !cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+      if (navMenu && !navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+        navMenu.style.display = "none";
+      }
+    });
+
+    // Load order history from localStorage
+    document.addEventListener("DOMContentLoaded", () => {
+      const orderHistoryList = document.getElementById("order-history-list");
+      const noOrders = document.getElementById("no-orders");
+
+      let orderHistory = [];
+      try {
+        orderHistory = JSON.parse(localStorage.getItem('bakeeaseOrderHistory')) || [];
+      } catch (e) {
+        console.error("Error parsing order history from localStorage:", e);
+      }
+
+      if (orderHistory.length === 0) {
+        if (noOrders) noOrders.style.display = "block";
+        if (orderHistoryList) orderHistoryList.style.display = "none";
+        return;
+      }
+
+      if (noOrders) noOrders.style.display = "none";
+      if (orderHistoryList) {
+        orderHistoryList.style.display = "block";
+        orderHistoryList.innerHTML = orderHistory.map(order => `
+          <div class="order-card">
+            <h3>Order ${order.orderNumber}</h3>
+            <p><strong>Placed on:</strong> ${order.timestamp}</p>
+            <div>
+              ${order.items.map(item => `
+                <p>${item.name} - Quantity: ${item.quantity} - RM ${(item.price * item.quantity).toFixed(2)}</p>
+              `).join('')}
+            </div>
+            <table class="order-summary-table">
+              <tr>
+                <td>Subtotal:</td>
+                <td>RM ${order.subtotal.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td>Shipping:</td>
+                <td>RM ${order.shipping.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td>Tax (7%):</td>
+                <td>RM ${order.tax.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td>Total:</td>
+                <td>RM ${order.total.toFixed(2)}</td>
+              </tr>
+            </table>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>
