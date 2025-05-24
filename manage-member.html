@@ -392,17 +392,23 @@
 
     /* Footer */
     .admin-footer {
-      position: absolute;  /* Fix the footer at the bottom */
-      bottom: 0;
-      left: 0;
-      right: 0;
-      text-align: center;  /* Center the content */
+      text-align: center;
       padding: 20px;
       background-color: var(--white);
       color: #666;
       font-size: 0.9rem;
       border-top: 1px solid #eee;
       margin-left: 250px;
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 80px;
+      }
+      .main-wrapper,
+      .admin-footer {
+        margin-left: 80px;
+      }
     }
 
   </style>
@@ -429,7 +435,7 @@
   </header>
 
   <!-- Admin Container -->
-  <div class="admin-container">
+  <div class="admin-container" style="display: flex; flex-direction: column; min-height: 100vh;">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
       <ul class="sidebar-menu">

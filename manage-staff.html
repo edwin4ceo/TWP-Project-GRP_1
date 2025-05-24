@@ -375,11 +375,9 @@
         </select>
       </div>
       <div class="action-buttons">
-        <a href="add-admin.html" class="button-link">
-            <button onclick="openModal('addStaffModal')">
-                <i class="fas fa-plus"></i> Add Staff
-            </button>
-        </a>
+        <button onclick="openModal('addStaffModal')">
+          <i class="fas fa-plus"></i> Add Staff
+        </button>
       </div>
     </div>
 
@@ -527,5 +525,255 @@
   <footer class="admin-footer">
     <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
   </footer>
+
+  <div id="addStaffModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Add New Staff</h3>
+      <span class="close-modal" onclick="closeModal('addStaffModal')">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="addStaffForm">
+        <div class="form-group">
+          <label for="staffName">Full Name</label>
+          <input type="text" id="staffName" name="staffName" placeholder="Enter full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="staffEmail">Email</label>
+          <input type="email" id="staffEmail" name="staffEmail" placeholder="Enter email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="staffPhone">Phone Number</label>
+          <input type="tel" id="staffPhone" name="staffPhone" placeholder="Enter phone number" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="staffRole">Role</label>
+          <select id="staffRole" name="staffRole" required>
+            <option value="" disabled selected>Select role</option>
+            <option value="admin">Admin</option>
+            <option value="baker">Baker</option>
+            <option value="cashier">Cashier</option>
+            <option value="delivery">Delivery</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="staffPassword">Temporary Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="staffPassword" name="staffPassword" placeholder="Create temporary password" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('staffPassword')">
+              <i class="far fa-eye"></i>
+            </button>
+          </div>
+          <small class="password-hint">Minimum 8 characters with at least 1 number</small>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal('addStaffModal')">Cancel</button>
+          <button type="submit" class="btn-submit">Add Staff</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .modal-content {
+    background-color: var(--white);
+    margin: 5% auto;
+    padding: 0;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .modal-header {
+    padding: 20px;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .close-modal {
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .close-modal:hover {
+    transform: scale(1.2);
+  }
+  
+  .modal-body {
+    padding: 25px;
+  }
+  
+  /* Form Styles */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--brown);
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+  }
+  
+  .password-wrapper {
+    position: relative;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--dark-gray);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .password-hint {
+    display: block;
+    margin-top: 5px;
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+  }
+  
+  /* Button Styles */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+  }
+  
+  .btn-cancel {
+    padding: 12px 20px;
+    background-color: var(--white);
+    color: var(--dark-gray);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .btn-submit {
+    padding: 12px 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-submit:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+<script>
+  // Modal Functions
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+  
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    document.body.style.overflow = 'auto'; // Re-enable scrolling
+  }
+  
+  // Password Toggle
+  function togglePasswordVisibility(inputId) {
+  const input = document.getElementById(inputId);
+  const icon = document.querySelector(`#${inputId} + button i`);
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+  } 
+  else {
+    input.type = 'password';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  }
+}
+  
+  // Form Submission
+  document.getElementById('addStaffForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Add your form submission logic here
+    alert('Staff added successfully!');
+    closeModal('addStaffModal');
+    this.reset();
+  });
+  
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  }
+</script>
 </body>
 </html>
