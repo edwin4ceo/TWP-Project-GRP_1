@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['edit_staff'])) {
         // Edit staff
-        $id = $_POST['editStaffId'];
+        $id = $_POST['editStaffId'];  
         $name = $_POST['editStaffName'];
         $email = $_POST['editStaffEmail'];
         $phone = $_POST['editStaffPhone'];
@@ -520,41 +520,78 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       background-color: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(3px);
       animation: fadeIn 0.3s ease-out;
+      display: none;
+      position: fixed;
+      z-index: 2000;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-20%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes modalSlideOut {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-20%);
+        opacity: 0;
+      }
     }
     
     .modal-content {
-      background-color: var(--white);
-      margin: 5% auto;
-      padding: 0;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-    
-    .modal-header {
+      background-color: #fefefe;
+      margin: 15% auto;
       padding: 20px;
-      background-color: var(--primary);
-      color: white;
+      border: 1px solid #888;
+      width: 50%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    #addStaffModal .modal-content {
+      margin-top: 5%; 
+      margin-bottom: auto; 
+    }
+
+    #editStaffModal .modal-content {
+      margin-top: 5%; 
+    }
+
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
     }
-    
-    .modal-header h3 {
-      margin: 0;
+
+    .modal-title {
       font-size: 1.5rem;
+      color: var(--brown);
+      font-weight: 600;
+      margin: 0; 
     }
-    
-    .close-modal {
-      font-size: 1.8rem;
+
+    .close, .close-modal {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: color 0.3s;
     }
-    
-    .close-modal:hover {
-      transform: scale(1.2);
+
+    .close:hover, .close-modal:hover {
+      color: black;
     }
     
     .modal-body {
@@ -792,12 +829,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         )">
           <i class="fas fa-edit"></i> Edit
         </button>
-        <form method="POST" action="manage-staff.php" style="display: inline;">
-          <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
-          <button type="submit" class="action-btn" onclick="return confirm('Are you sure you want to delete this staff member?')">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-        </form>
+        <button type="button" class="action-btn" onclick="openDeleteModal('<?= $row['id'] ?>')">
+        <i class="fas fa-trash"></i> Delete
+      </button>
       </td>
     </tr>
   <?php endforeach; ?>
@@ -820,8 +854,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <div id="addStaffModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Add New Staff</h3>
-        <span class="close-modal" onclick="closeModal('addStaffModal')">&times;</span>
+        <h3 class="modal-title">Add New Staff</h3>
+        <span class="close" onclick="closeModal('addStaffModal')">&times;</span>
       </div>
       <div class="modal-body">
         <form id="addStaffForm" method="POST" action="manage-staff.php">
@@ -858,7 +892,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             <div class="password-wrapper">
               <input type="password" id="staffPassword" name="staffPassword" placeholder="Create temporary password" required>
               <button type="button" class="toggle-password" onclick="togglePasswordVisibility('staffPassword')">
-                <i class="far fa-eye"></i>
+                <i class="fas fa-eye-slash"></i> 
               </button>
             </div>
             <small class="password-hint">Minimum 8 characters with at least 1 number</small>
@@ -877,8 +911,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <div id="editStaffModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Edit Staff</h3>
-        <span class="close-modal" onclick="closeModal('editStaffModal')">&times;</span>
+        <h3 class="modal-title">Edit Staff</h3>
+        <span class="close" onclick="closeModal('editStaffModal')">&times;</span>
       </div>
       <div class="modal-body">
         <form id="editStaffForm" method="POST" action="manage-staff.php">
@@ -929,6 +963,24 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     </div>
   </div>
 
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+      </div>
+      <form method="POST" action="manage-staff.php">
+        <input type="hidden" id="deleteStaffId" name="delete_id">
+        <p>Are you sure you want to delete this staff member? This action cannot be undone.</p>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+          <button type="submit" class="btn-submit">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // Modal Functions
     function openModal(modalId) {
@@ -959,10 +1011,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       
       if (input.type === 'password') {
         input.type = 'text';
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye'); 
       } else {
         input.type = 'password';
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash'); 
       }
     }
     
@@ -979,6 +1033,28 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     window.onclick = function(event) {
       if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Open delete confirmation modal
+    function openDeleteModal(id) {
+      document.getElementById('deleteStaffId').value = id;
+      openModal('deleteModal');
+    }
+
+    // Close delete modal
+    function closeDeleteModal() {
+      closeModal('deleteModal');
+    }
+
+    // Close all modals when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        const modals = document.getElementsByClassName('modal');
+        for (let i = 0; i < modals.length; i++) {
+          modals[i].style.display = 'none';
+        }
         document.body.style.overflow = 'auto';
       }
     }
