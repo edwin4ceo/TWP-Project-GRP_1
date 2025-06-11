@@ -2,11 +2,11 @@
 session_start();
 require_once 'db_connection.php';
 
-// Check if admin is logged in
-// if (!isset($_SESSION['admin_id'])) {
-//     header("Location: admin-login.php");
-//     exit();
-// }
+//Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+     header("Location: admin-login.php");
+     exit();
+}
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -99,6 +99,8 @@ $stmt = $conn->prepare($query);
 
 if (!empty($params)) {
     $stmt->execute($params);
+} else {
+    $stmt->execute();
 }
 
 // Replace get_result() with fetch()
@@ -684,7 +686,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <img src="images/logo.png" alt="BakeEase Logo">
         <div class="logo-text">
           <h1>BakeEase</h1>
-          <span>Admin Panel</span>
+          <span>Admin</span>
         </div>
       </a>
     </div>
@@ -738,14 +740,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       </form>
       <form method="GET" action="manage-staff.php" class="filter-dropdown">
         <select name="role" onchange="this.form.submit()">
-          <option value="">All Roles</option>
-          <option value="Admin" <?= ($role_filter === 'Admin') ? 'selected' : '' ?>>Admin</option>
-          <option value="Manager" <?= ($role_filter === 'Manager') ? 'selected' : '' ?>>Manager</option>
-          <option value="Head Baker" <?= ($role_filter === 'Head Baker') ? 'selected' : '' ?>>Head Baker</option>
-          <option value="Baker" <?= ($role_filter === 'Baker') ? 'selected' : '' ?>>Baker</option>
-          <option value="Cashier" <?= ($role_filter === 'Cashier') ? 'selected' : '' ?>>Cashier</option>
-          <option value="Delivery" <?= ($role_filter === 'Delivery') ? 'selected' : '' ?>>Delivery</option>
-        </select>
+        <option value="All Roles" <?= (empty($role_filter) || $role_filter === 'All Roles') ? 'selected' : '' ?>>All Roles</option>
+        <option value="Admin" <?= ($role_filter === 'Admin') ? 'selected' : '' ?>>Admin</option>
+        <option value="Manager" <?= ($role_filter === 'Manager') ? 'selected' : '' ?>>Manager</option>
+        <option value="Head Baker" <?= ($role_filter === 'Head Baker') ? 'selected' : '' ?>>Head Baker</option>
+        <option value="Baker" <?= ($role_filter === 'Baker') ? 'selected' : '' ?>>Baker</option>
+        <option value="Cashier" <?= ($role_filter === 'Cashier') ? 'selected' : '' ?>>Cashier</option>
+        <option value="Delivery" <?= ($role_filter === 'Delivery') ? 'selected' : '' ?>>Delivery</option>
+      </select>
       </form>
       <div class="action-buttons">
         <button onclick="openModal('addStaffModal')">

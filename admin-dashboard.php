@@ -1,3 +1,79 @@
+<?php
+session_start();
+require_once 'db_connection.php';
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: admin-login.php");
+    exit();
+}
+
+// Get admin name for welcome message
+$admin_name = $_SESSION['admin_name'] ?? 'Admin';
+
+// Fetch stats from database
+$today_orders = 0;
+$yesterday_orders = 0;
+$total_revenue = 0;
+$last_week_revenue = 0;
+$new_customers = 0;
+$last_month_customers = 0;
+$total_products = 0;
+$low_stock_products = 0;
+
+try {
+    // Today's orders
+    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE()");
+    $today_orders = $stmt->fetchColumn();
+    
+    // Yesterday's orders for comparison
+    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
+    $yesterday_orders = $stmt->fetchColumn();
+    
+    // Today's revenue
+    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = CURDATE()");
+    $total_revenue = $stmt->fetchColumn() ?? 0;
+    
+    // Last week's revenue (same day last week)
+    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+    $last_week_revenue = $stmt->fetchColumn() ?? 0;
+    
+    // New customers today
+    $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = CURDATE()");
+    $new_customers = $stmt->fetchColumn();
+    
+    // New customers same day last month
+    $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 MONTH)");
+    $last_month_customers = $stmt->fetchColumn();
+    
+    // Total products
+    $stmt = $conn->query("SELECT COUNT(*) FROM products");
+    $total_products = $stmt->fetchColumn();
+    
+    // Low stock products (assuming you have a 'stock' column)
+    $stmt = $conn->query("SELECT COUNT(*) FROM products WHERE stock < 5"); // Adjust threshold as needed
+    $low_stock_products = $stmt->fetchColumn();
+    
+    // Fetch recent orders
+    $recent_orders = [];
+    $stmt = $conn->query("SELECT * FROM orders ORDER BY order_date DESC LIMIT 5");
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $recent_orders[] = $row;
+    }
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+}
+
+// Calculate percentage changes
+$order_percentage_change = $yesterday_orders > 0 ? 
+    round((($today_orders - $yesterday_orders) / $yesterday_orders) * 100, 1) : 0;
+
+$revenue_percentage_change = $last_week_revenue > 0 ? 
+    round((($total_revenue - $last_week_revenue) / $last_week_revenue) * 100, 1) : 0;
+
+$customer_percentage_change = $last_month_customers > 0 ? 
+    round((($new_customers - $last_month_customers) / $last_month_customers) * 100, 1) : 0;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,52 +146,25 @@
       align-items: center;
     }
     
-    .admin-nav .profile {
+    .btn-logout {
+      font-size: 1rem;
+      padding: 10px 20px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
       display: flex;
       align-items: center;
-      cursor: pointer;
-      position: relative;
+      transition: background-color 0.3s;
     }
-    
-    .admin-nav .profile img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
+
+    .btn-logout i {
+      margin-right: 8px;
     }
-    
-    .admin-nav .profile-name {
-      font-weight: 600;
-    }
-    
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: var(--white);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-      padding: 10px 0;
-      min-width: 180px;
-      z-index: 100;
-    }
-    
-    .dropdown-menu a {
-      display: block;
-      padding: 8px 20px;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-    
-    .dropdown-menu a:hover {
-      background-color: #f5f5f5;
-      color: var(--primary);
-    }
-    
-    .dropdown-menu.show {
-      display: block;
+
+    .btn-logout:hover {
+      background-color: var(--primary-dark);
     }
 
     /* Sidebar */
@@ -160,31 +209,11 @@
       font-size: 1.1rem;
     }
 
-    .sidebar-menu .menu-text {
-      font-size: 0.95rem;
-    }
-
     .logo-link {
       display: flex;
       align-items: center;
       text-decoration: none;  
       color: inherit;         
-    }
-
-    .logo-container img {
-      height: 50px; 
-      margin-right: 15px;
-    }
-
-    .logo-text h1 {
-      color: var(--brown);
-      margin: 0;
-      font-size: 1.8rem;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-      font-size: 0.9rem;
     }
 
     /* Main Content */
@@ -216,9 +245,9 @@
     /* Stats Cards */
     .stats-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .card {
@@ -298,6 +327,9 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       padding: 20px;
+      overflow-x: auto;
+      grid-column: 1 / -1; 
+      margin-top: 0; 
     }
 
     .section-header {
@@ -317,15 +349,27 @@
       color: var(--primary);
       text-decoration: none;
       font-size: 0.9rem;
+      transition: color 0.3s;
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
     }
 
     .view-all:hover {
-      text-decoration: underline;
+      color: var(--primary-dark);
+      background-color: rgba(230, 126, 34, 0.1);
+      text-decoration: none;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 800px;
     }
 
     table th {
@@ -335,12 +379,14 @@
       color: #666;
       font-weight: 600;
       font-size: 0.85rem;
+      border-bottom: 2px solid #eee;
     }
 
     table td {
       padding: 12px 15px;
       border-bottom: 1px solid #eee;
       font-size: 0.9rem;
+      vertical-align: middle;
     }
 
     .status {
@@ -348,6 +394,9 @@
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 500;
+      display: inline-block;
+      min-width: 80px;
+      text-align: center;
     }
 
     .status.pending {
@@ -368,31 +417,13 @@
     .text-primary {
       color: var(--primary);
       text-decoration: none;
+      transition: color 0.3s;
+      font-weight: 500;
     }
 
     .text-primary:hover {
+      color: var(--primary-dark);
       text-decoration: underline;
-    }
-
-    .btn-logout {
-      font-size: 1rem;
-      padding: 10px 20px;
-      background-color: var(--primary);
-      color: var(--white);
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      transition: background-color 0.3s;
-    }
-
-    .btn-logout i {
-      margin-right: 8px; /* Space between icon and text */
-    }
-
-    .btn-logout:hover {
-      background-color: var(--primary-dark); /* Darken the button on hover */
     }
 
     /* Footer */
@@ -430,25 +461,15 @@
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
       .stats-cards {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
       }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 768px) {
       .stats-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .admin-header .logo-container h1 {
-        font-size: 1.8rem;
-        color: var(--brown);
-      }
-
-      .admin-nav {
-        width: 100%;
-        justify-content: space-between;
+        grid-template-columns: 1fr; /* 1 column on small screens */
       }
     }
   </style>
@@ -457,7 +478,7 @@
   <!-- Admin Header -->
   <header class="admin-header">
     <div class="logo-container">
-      <a href="admin-dashboard.html" class="logo-link">
+      <a href="admin-dashboard.php" class="logo-link">
         <img src="images/logo.png" alt="BakeEase Logo">
         <div class="logo-text">
           <h1>BakeEase</h1>
@@ -467,7 +488,7 @@
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='index.html'">
+      <button class="btn-logout" onclick="window.location.href='logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>
@@ -478,13 +499,13 @@
       <!-- Sidebar -->
   <aside class="admin-sidebar">
     <ul class="sidebar-menu">
-      <li><a href="admin-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="admin-dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
       <li><a href="manage-staff.php"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
-      <li><a href="manage-member.html"><i class="fas fa-users"></i> Manage Members</a></li>
-      <li><a href="manage-categories.html"><i class="fas fa-tags"></i> Categories</a></li>
-      <li><a href="manage-product.html"><i class="fas fa-utensils"></i> Products</a></li>
-      <li><a href="manage-orders.html"><i class="fas fa-shopping-basket"></i> Orders</a></li>
-      <li><a href="sales-reports.html"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
+      <li><a href="manage-member.php"><i class="fas fa-users"></i> Manage Members</a></li>
+      <li><a href="manage-categories.php"><i class="fas fa-tags"></i> Categories</a></li>
+      <li><a href="manage-product.php"><i class="fas fa-utensils"></i> Products</a></li>
+      <li><a href="manage-orders.php"><i class="fas fa-shopping-basket"></i> Orders</a></li>
+      <li><a href="sales-reports.php"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
     </ul>
   </aside>
     
@@ -493,12 +514,13 @@
       <div class="page-header">
         <div class="page-title">
           <h2>Dashboard Overview</h2>
-          <p>Welcome back, Admin! Here's what's happening with your store today.</p>
+          <p>Welcome back, <?php echo htmlspecialchars($admin_name); ?>! Here's what's happening with your store today.</p>
         </div>
       </div>
       
       <!-- Stats Cards -->
       <div class="stats-cards">
+        <!-- Today's Orders Card -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Today's Orders</h3>
@@ -507,13 +529,18 @@
             </div>
           </div>
           <div class="card-body">
-            <h3>24</h3>
+            <h3><?php echo $today_orders; ?></h3>
           </div>
           <div class="card-footer">
-            <span class="text-success"><i class="fas fa-arrow-up"></i> 12% from yesterday</span>
+            <?php if ($order_percentage_change >= 0): ?>
+              <span class="text-success"><i class="fas fa-arrow-up"></i> <?php echo abs($order_percentage_change); ?>% from yesterday</span>
+            <?php else: ?>
+              <span class="text-danger"><i class="fas fa-arrow-down"></i> <?php echo abs($order_percentage_change); ?>% from yesterday</span>
+            <?php endif; ?>
           </div>
         </div>
-        
+
+        <!-- Total Revenue Card -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Total Revenue</h3>
@@ -522,13 +549,18 @@
             </div>
           </div>
           <div class="card-body">
-            <h3>$1,845</h3>
+            <h3>$<?php echo number_format($total_revenue, 2); ?></h3>
           </div>
           <div class="card-footer">
-            <span class="text-success"><i class="fas fa-arrow-up"></i> 8% from last week</span>
+            <?php if ($revenue_percentage_change >= 0): ?>
+              <span class="text-success"><i class="fas fa-arrow-up"></i> <?php echo abs($revenue_percentage_change); ?>% from last week</span>
+            <?php else: ?>
+              <span class="text-danger"><i class="fas fa-arrow-down"></i> <?php echo abs($revenue_percentage_change); ?>% from last week</span>
+            <?php endif; ?>
           </div>
         </div>
-        
+
+        <!-- New Customers Card -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">New Customers</h3>
@@ -537,13 +569,18 @@
             </div>
           </div>
           <div class="card-body">
-            <h3>8</h3>
+            <h3><?php echo $new_customers; ?></h3>
           </div>
           <div class="card-footer">
-            <span class="text-success"><i class="fas fa-arrow-up"></i> 3% from last month</span>
+            <?php if ($customer_percentage_change >= 0): ?>
+              <span class="text-success"><i class="fas fa-arrow-up"></i> <?php echo abs($customer_percentage_change); ?>% from last month</span>
+            <?php else: ?>
+              <span class="text-danger"><i class="fas fa-arrow-down"></i> <?php echo abs($customer_percentage_change); ?>% from last month</span>
+            <?php endif; ?>
           </div>
         </div>
-        
+
+        <!-- Products Card -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Products</h3>
@@ -552,81 +589,64 @@
             </div>
           </div>
           <div class="card-body">
-            <h3>42</h3>
+            <h3><?php echo $total_products; ?></h3>
           </div>
           <div class="card-footer">
-            <span class="text-danger"><i class="fas fa-arrow-down"></i> 2 low in stock</span>
+            <?php if ($low_stock_products > 0): ?>
+              <span class="text-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $low_stock_products; ?> low in stock</span>
+            <?php else: ?>
+              <span class="text-success"><i class="fas fa-check-circle"></i> All products in stock</span>
+            <?php endif; ?>
           </div>
         </div>
-      </div>
       
       <!-- Recent Orders -->
       <div class="recent-orders">
         <div class="section-header">
           <h3 class="section-title">Recent Orders</h3>
-          <a href="manage-orders.html" class="view-all">View All</a>
+          <a href="manage-orders.php" class="view-all">
+            <i class="fas fa-list"></i> View All
+          </a>
         </div>
         
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Items</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>#BE-1001</td>
-              <td>John Smith</td>
-              <td>3</td>
-              <td>$45.99</td>
-              <td>May 18, 2025</td>
-              <td><span class="status completed">Completed</span></td>
-              <td><a href="#" class="text-primary">View</a></td>
-            </tr>
-            <tr>
-              <td>#BE-1002</td>
-              <td>Sarah Johnson</td>
-              <td>5</td>
-              <td>$72.50</td>
-              <td>May 18, 2025</td>
-              <td><span class="status pending">Pending</span></td>
-              <td><a href="#" class="text-primary">View</a></td>
-            </tr>
-            <tr>
-              <td>#BE-1003</td>
-              <td>Michael Brown</td>
-              <td>2</td>
-              <td>$28.75</td>
-              <td>May 17, 2025</td>
-              <td><span class="status completed">Completed</span></td>
-              <td><a href="#" class="text-primary">View</a></td>
-            </tr>
-            <tr>
-              <td>#BE-1004</td>
-              <td>Emily Davis</td>
-              <td>1</td>
-              <td>$12.99</td>
-              <td>May 17, 2025</td>
-              <td><span class="status cancelled">Cancelled</span></td>
-              <td><a href="#" class="text-primary">View</a></td>
-            </tr>
-            <tr>
-              <td>#BE-1005</td>
-              <td>Robert Wilson</td>
-              <td>4</td>
-              <td>$56.80</td>
-              <td>May 16, 2025</td>
-              <td><span class="status completed">Completed</span></td>
-              <td><a href="#" class="text-primary">View</a></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (!empty($recent_orders)): ?>
+                <?php foreach ($recent_orders as $order): ?>
+                  <tr>
+                    <td>#<?php echo htmlspecialchars($order['order_id']); ?></td>
+                    <td><?php echo htmlspecialchars($order['customer_name'] ?? 'N/A'); ?></td>
+                    <td><?php echo $order['item_count'] ?? 0; ?></td>
+                    <td>$<?php echo number_format($order['total_amount'] ?? 0, 2); ?></td>
+                    <td><?php echo date('M j, Y', strtotime($order['order_date'])); ?></td>
+                    <td>
+                      <span class="status <?php echo strtolower($order['status'] ?? 'pending'); ?>">
+                        <?php echo htmlspecialchars($order['status'] ?? 'Pending'); ?>
+                      </span>
+                    </td>
+                    <td><a href="order-details.php?id=<?php echo $order['order_id']; ?>" class="text-primary">View</a></td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>  
+                  <td colspan="7" style="text-align: center;">No recent orders found</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
