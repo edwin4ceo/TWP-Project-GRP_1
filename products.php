@@ -73,7 +73,7 @@ include("db_connection.php");
     echo '<h4>' . htmlspecialchars($row['name']) . '</h4>';
     echo '<p>' . htmlspecialchars($row['description']) . '</p>';
     echo '<p><strong>RM ' . htmlspecialchars($row['price']) . '</strong></p>';
-    echo '<a href="product-detail.php" class="button">View Details</a>';
+    echo '<a href="product-detail.php?id=' . $row['id'] . '" class="button">View Details</a>';
     echo '<button class="button add-to-cart" data-name="' . htmlspecialchars($row['name']) . '" data-price="' . htmlspecialchars($row['price']) . '" data-desc="' . htmlspecialchars($row['description']) . '">Add to Cart</button>';
     echo '</article>';
   }
