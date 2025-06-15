@@ -51,24 +51,39 @@ include("db_connection.php");
   </header>
 
   <main>
-    <section class="product-grid">
-      <?php
-      $query = "SELECT * FROM products";
-      $result = mysqli_query($conn, $query);
-      
-      while ($row = mysqli_fetch_assoc($result)) {
-        echo '<article class="product-card" data-name="' . htmlspecialchars($row['name']) . '" data-desc="' . htmlspecialchars($row['description']) . '">';
-        echo '<img src="' . htmlspecialchars($row['image']) . '" alt="' . htmlspecialchars($row['name']) . '" />';
-        echo '<h4>' . htmlspecialchars($row['name']) . '</h4>';
-        echo '<p>' . htmlspecialchars($row['description']) . '</p>';
-        echo '<p><strong>RM ' . htmlspecialchars($row['price']) . '</strong></p>';
-        echo '<a href="product-detail.html" class="button">View Details</a>';
-        echo '<button class="button add-to-cart" data-name="' . htmlspecialchars($row['name']) . '" data-price="' . htmlspecialchars($row['price']) . '" data-desc="' . htmlspecialchars($row['description']) . '">Add to Cart</button>';
-        echo '</article>';
+  <?php
+  $query = "SELECT * FROM products ORDER BY category, name";
+  $result = mysqli_query($conn, $query);
+
+  $currentCategory = '';
+
+  while ($row = mysqli_fetch_assoc($result)) {
+    // Start a new category section
+    if ($row['category'] !== $currentCategory) {
+      if ($currentCategory !== '') {
+        echo '</section>'; // Close previous section
       }
-      ?>
-    </section>
-  </main>
+      $currentCategory = $row['category'];
+      echo '<h2 style="padding: 20px; color: #5a3921;">' . htmlspecialchars($currentCategory) . '</h2>';
+      echo '<section class="product-grid">';
+    }
+
+    echo '<article class="product-card" data-name="' . htmlspecialchars($row['name']) . '" data-desc="' . htmlspecialchars($row['description']) . '">';
+    echo '<img src="' . htmlspecialchars($row['image']) . '" alt="' . htmlspecialchars($row['name']) . '" />';
+    echo '<h4>' . htmlspecialchars($row['name']) . '</h4>';
+    echo '<p>' . htmlspecialchars($row['description']) . '</p>';
+    echo '<p><strong>RM ' . htmlspecialchars($row['price']) . '</strong></p>';
+    echo '<a href="product-detail.html" class="button">View Details</a>';
+    echo '<button class="button add-to-cart" data-name="' . htmlspecialchars($row['name']) . '" data-price="' . htmlspecialchars($row['price']) . '" data-desc="' . htmlspecialchars($row['description']) . '">Add to Cart</button>';
+    echo '</article>';
+  }
+
+  // Close the last section
+  if ($currentCategory !== '') {
+    echo '</section>';
+  }
+  ?>
+</main>
 
   <footer>
     <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
