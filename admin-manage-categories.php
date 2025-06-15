@@ -69,6 +69,7 @@ try {
   <link rel="icon" type="images/png" href="images/logo.png" />
   <title>BakeEase - Manage Categories</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="sidebar.css">
   <style>
     :root {
       --primary: #e67e22;
@@ -152,72 +153,6 @@ try {
 
     .admin-nav .profile-name {
       font-weight: 600;
-    }
-
-    /* Sidebar */
-    .admin-sidebar {
-      width: 250px;
-      background-color: var(--brown);
-      color: var(--white);
-      padding: 20px 0;
-      position: fixed;
-      height: calc(100vh - 80px);
-      top: 80px;
-      transition: all 0.3s;
-      z-index: 1;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar-menu li {
-      margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--white);
-      text-decoration: none;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
-    .sidebar-menu a:hover, .sidebar-menu a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-menu a i {
-      margin-right: 10px;
-      font-size: 1.1rem;
-    }
-
-    /* Responsive Design for Sidebar */
-    @media (max-width: 992px) {
-      .admin-sidebar {
-        width: 80px;
-      }
-
-      .admin-content, .admin-footer {
-        margin-left: 80px;
-      }
-
-      .sidebar-menu .menu-text {
-        display: none;
-      }
-
-      .sidebar-menu a {
-        justify-content: center;
-      }
-
-      .sidebar-menu i {
-        margin-right: 0;
-        font-size: 1.3rem;
-      }
     }
 
     /* Main Content */
@@ -396,7 +331,25 @@ try {
       margin-left: 250px;
     }
 
-    /* Modal Styles */
+    /* Alert Messages */
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .alert-success {
+      background-color: #e6f7ee;
+      color: #2ecc71;
+      border: 1px solid #2ecc71;
+    }
+
+    .alert-error {
+      background-color: #ffebee;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -407,16 +360,28 @@ try {
       height: 100%;
       overflow: auto;
       background-color: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
       background-color: #fefefe;
-      margin: 15% auto;
       padding: 20px;
       border: 1px solid #888;
       width: 50%;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     .modal-header {
@@ -501,25 +466,6 @@ try {
     .btn-secondary:hover {
       background-color: #555;
     }
-
-    /* Alert Messages */
-    .alert {
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 4px;
-    }
-
-    .alert-success {
-      background-color: #e6f7ee;
-      color: #2ecc71;
-      border: 1px solid #2ecc71;
-    }
-
-    .alert-error {
-      background-color: #ffebee;
-      color: #e74c3c;
-      border: 1px solid #e74c3c;
-    }
   </style>
 </head>
 <body>
@@ -546,12 +492,12 @@ try {
   <aside class="admin-sidebar">
     <ul class="sidebar-menu">
       <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span></a></li>
-      <li><a href="manage-staff.php"><i class="fas fa-user-tie"></i> <span class="menu-text">Manage Staff</span></a></li>
-      <li><a href="manage-member.php"><i class="fas fa-users"></i> <span class="menu-text">Manage Members</span></a></li>
-      <li><a href="manage-categories.php" class="active"><i class="fas fa-tags"></i> <span class="menu-text">Categories</span></a></li>
-      <li><a href="manage-product.php"><i class="fas fa-utensils"></i> <span class="menu-text">Products</span></a></li>
-      <li><a href="manage-orders.php"><i class="fas fa-shopping-basket"></i> <span class="menu-text">Orders</span></a></li>
-      <li><a href="sales-reports.php"><i class="fas fa-chart-line"></i> <span class="menu-text">Sales Reports</span></a></li>
+      <li><a href="admin-manage-staff.php"><i class="fas fa-user-tie"></i> <span class="menu-text">Manage Staff</span></a></li>
+      <li><a href="admin-manage-member.php"><i class="fas fa-users"></i> <span class="menu-text">Manage Members</span></a></li>
+      <li><a href="admin-manage-categories.php" class="active"><i class="fas fa-tags"></i> <span class="menu-text">Categories</span></a></li>
+      <li><a href="admin-manage-product.php"><i class="fas fa-utensils"></i> <span class="menu-text">Products</span></a></li>
+      <li><a href="admin-manage-orders.php"><i class="fas fa-shopping-basket"></i> <span class="menu-text">Orders</span></a></li>
+      <li><a href="admin-sales-reports.php"><i class="fas fa-chart-line"></i> <span class="menu-text">Sales Reports</span></a></li>
     </ul>
   </aside>
 
@@ -560,7 +506,6 @@ try {
     <div class="management-header">
       <div class="page-title">
         <h2>Categories Management</h2>
-        <p>Manage your product categories</p>
       </div>
     </div>
 
@@ -587,7 +532,9 @@ try {
           </option>
         <?php endforeach; ?>
       </select>
-      <button onclick="openAddModal()"><i class="fas fa-plus"></i> Add Category</button>
+        <button class="btn-add-category" onclick="openAddCategoryModal()">
+          <i class="fas fa-plus"></i> Add Category
+        </button>
     </div>
 
     <!-- Categories Table -->
@@ -613,10 +560,10 @@ try {
                 <td><?php echo htmlspecialchars($category['name']); ?></td>
                 <td><?php echo htmlspecialchars($category['description']); ?></td>
                 <td>
-                  <button class="action-btn" onclick="openEditModal(
-                    <?php echo $category['id']; ?>, 
-                    '<?php echo htmlspecialchars($category['name'], ENT_QUOTES); ?>', 
-                    '<?php echo htmlspecialchars($category['description'], ENT_QUOTES); ?>'
+                  <button class="action-btn" onclick="openEditCategoryModal(
+                    <?php echo $category['id']; ?>,
+                    '<?php echo htmlspecialchars($category['name'], ENT_QUOTES); ?>',
+                    '<?php echo htmlspecialchars($category['description'] ?? '', ENT_QUOTES); ?>'
                   )">
                     <i class="fas fa-edit"></i> Edit
                   </button>
@@ -638,23 +585,23 @@ try {
   </footer>
 
   <!-- Add Category Modal -->
-  <div id="addModal" class="modal">
+  <div id="addCategoryModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Add New Category</h3>
-        <span class="close" onclick="closeAddModal()">&times;</span>
+        <span class="close" onclick="closeAddCategoryModal()">&times;</span>
       </div>
-      <form action="manage-categories.php" method="POST">
+      <form action="admin-manage-categories.php" method="POST">
         <div class="form-group">
-          <label for="add-category-name">Category Name</label>
-          <input type="text" id="add-category-name" name="category_name" required>
+          <label for="category-name">Category Name</label>
+          <input type="text" id="category-name" name="category_name" required>
         </div>
         <div class="form-group">
-          <label for="add-category-description">Description</label>
-          <textarea id="add-category-description" name="category_description"></textarea>
+          <label for="category-description">Description</label>
+          <textarea id="category-description" name="category_description"></textarea>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+          <button type="button" class="btn btn-secondary" onclick="closeAddCategoryModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" name="add_category">Save</button>
         </div>
       </form>
@@ -662,13 +609,13 @@ try {
   </div>
 
   <!-- Edit Category Modal -->
-  <div id="editModal" class="modal">
+  <div id="editCategoryModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Edit Category</h3>
-        <span class="close" onclick="closeEditModal()">&times;</span>
+        <span class="close" onclick="closeEditCategoryModal()">&times;</span>
       </div>
-      <form action="manage-categories.php" method="POST">
+      <form action="admin-manage-categories.php" method="POST">
         <input type="hidden" id="edit-category-id" name="category_id">
         <div class="form-group">
           <label for="edit-category-name">Category Name</label>
@@ -679,7 +626,7 @@ try {
           <textarea id="edit-category-description" name="category_description"></textarea>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+          <button type="button" class="btn btn-secondary" onclick="closeEditCategoryModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" name="update_category">Update</button>
         </div>
       </form>
@@ -687,61 +634,61 @@ try {
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <div id="deleteModal" class="modal">
+  <div id="deleteCategoryModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Confirm Delete</h3>
-        <span class="close" onclick="closeDeleteModal()">&times;</span>
+        <span class="close" onclick="closeDeleteCategoryModal()">&times;</span>
       </div>
-      <form action="manage-categories.php" method="POST">
+      <form action="admin-manage-categories.php" method="POST">
         <input type="hidden" id="delete-category-id" name="category_id">
         <p>Are you sure you want to delete this category? This action cannot be undone.</p>
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+          <button type="button" class="btn btn-secondary" onclick="closeDeleteCategoryModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" name="delete_category">Delete</button>
         </div>
       </form>
     </div>
   </div>
-
   <script>
-    // Modal functions
-    function openAddModal() {
-      document.getElementById('addModal').style.display = 'block';
+    // Category Modal functions
+    function openAddCategoryModal() {
+      document.getElementById('addCategoryModal').style.display = 'block';
     }
 
-    function closeAddModal() {
-      document.getElementById('addModal').style.display = 'none';
+    function closeAddCategoryModal() {
+      document.getElementById('addCategoryModal').style.display = 'none';
     }
 
-    function openEditModal(id, name, description) {
+    function openEditCategoryModal(id, name, description) {
       document.getElementById('edit-category-id').value = id;
       document.getElementById('edit-category-name').value = name;
       document.getElementById('edit-category-description').value = description;
-      document.getElementById('editModal').style.display = 'block';
+      document.getElementById('editCategoryModal').style.display = 'block';
     }
 
-    function closeEditModal() {
-      document.getElementById('editModal').style.display = 'none';
+    function closeEditCategoryModal() {
+      document.getElementById('editCategoryModal').style.display = 'none';
     }
 
-    function confirmDelete(id) {
+    function confirmDeleteCategory(id) {
       document.getElementById('delete-category-id').value = id;
-      document.getElementById('deleteModal').style.display = 'block';
+      document.getElementById('deleteCategoryModal').style.display = 'block';
     }
 
-    function closeDeleteModal() {
-      document.getElementById('deleteModal').style.display = 'none';
+    function closeDeleteCategoryModal() {
+      document.getElementById('deleteCategoryModal').style.display = 'none';
     }
 
     // Close modals when clicking outside
     window.onclick = function(event) {
       if (event.target.className === 'modal') {
-        document.getElementById('addModal').style.display = 'none';
-        document.getElementById('editModal').style.display = 'none';
-        document.getElementById('deleteModal').style.display = 'none';
+        document.getElementById('addCategoryModal').style.display = 'none';
+        document.getElementById('editCategoryModal').style.display = 'none';
+        document.getElementById('deleteCategoryModal').style.display = 'none';
       }
     }
+
 
     // Filter categories
     document.getElementById('category-filter').addEventListener('change', function() {

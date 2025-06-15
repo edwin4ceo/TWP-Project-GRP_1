@@ -238,32 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #f5c6cb;
         }
         
-        /* Back to Main Page Button */
-        .back-button {
-            position: fixed;
-            top: 130px;
-            left: 47px;
-            padding: 12px 24px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        }
-        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .auth-container {
@@ -286,12 +260,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .password-wrapper {
                 width: 100%;
             }
-            
-            .back-button {
-                top: 100px;
-                left: 20px;
-                padding: 10px 20px;
-            }
         }
     </style>
 </head>
@@ -304,35 +272,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline">
                 </a>
                 <h1 id="page-heading">Admin Login</h1>
-            </div>
-
-            <!-- Right: Nav, Cart, Profile -->
-            <div class="header-right">
-                <div class="nav-dropdown">
-                    <span class="nav-toggle" id="navToggle">☰</span>
-                    <div class="dropdown-menu" id="navMenu">
-                        <a href="index.php">Home</a>
-                        <a href="products.php">Products</a>
-                        <a href="about.php">About Us</a>
-                        <a href="contact.php">Contact</a>
-                    </div>
-                </div>
-
-                <div class="cart-dropdown">
-                    <span class="cart-icon" id="cartToggle">🛒</span>
-                    <div class="dropdown-menu" id="cartMenu">
-                        <a href="shoppingCart.php">View Cart</a>
-                        <a href="checkout.php">Checkout</a>
-                    </div>
-                </div>
-
-                <div class="profile-dropdown">
-                    <span class="profile-icon" id="profileToggle">👤</span>
-                    <div class="dropdown-menu" id="profileMenu">
-                        <a href="register.php">Sign Up</a>
-                        <a href="login.php">Login</a>
-                    </div>
-                </div>
             </div>
         </div>
     </header>
@@ -377,50 +316,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
 
-    <!-- Back to Main Page Button -->
-    <button class="back-button" onclick="window.location.href='index.php'">
-        <i class="fas fa-arrow-left"></i> Back to Main Page
-    </button>
-
     <script>
         // DOM Elements
-        const profileToggle = document.getElementById("profileToggle");
-        const profileMenu = document.getElementById("profileMenu");
-        const cartToggle = document.getElementById("cartToggle");
-        const cartMenu = document.getElementById("cartMenu");
-        const navToggle = document.getElementById("navToggle");
-        const navMenu = document.getElementById("navMenu");
         const togglePassword = document.getElementById('togglePassword');
         const password = document.getElementById('password');
         const eyeIcon = togglePassword.querySelector('i');
-
-        // Toggle dropdown menus
-        function setupDropdown(toggle, menu) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isOpen = menu.style.display === 'block';
-                
-                // Close all menus first
-                [profileMenu, cartMenu, navMenu].forEach(m => {
-                    if (m !== menu) m.style.display = 'none';
-                });
-                
-                // Toggle current menu
-                menu.style.display = isOpen ? 'none' : 'block';
-            });
-        }
-
-        // Initialize dropdowns
-        setupDropdown(profileToggle, profileMenu);
-        setupDropdown(cartToggle, cartMenu);
-        setupDropdown(navToggle, navMenu);
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', () => {
-            [profileMenu, cartMenu, navMenu].forEach(menu => {
-                menu.style.display = 'none';
-            });
-        });
 
         // Password toggle functionality
         togglePassword.addEventListener('click', function() {

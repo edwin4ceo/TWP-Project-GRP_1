@@ -82,6 +82,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
   <link rel="icon" type="images/png" href="images/logo.png" />
   <title>BakeEase - Admin Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="sidebar.css">
   <style>
   :root {
       --primary: #e67e22;
@@ -165,48 +166,6 @@ $customer_percentage_change = $last_month_customers > 0 ?
 
     .btn-logout:hover {
       background-color: var(--primary-dark);
-    }
-
-    /* Sidebar */
-    .admin-sidebar {
-      width: 250px;
-      background-color: var(--brown);
-      color: var(--white);
-      padding: 20px 0;
-      position: fixed;  
-      height: calc(100vh - 80px);
-      top: 80px;
-      transition: all 0.3s;
-      z-index: 1;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar-menu li {
-      margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--white);
-      text-decoration: none;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
-    .sidebar-menu a:hover, .sidebar-menu a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-menu a i {
-      margin-right: 10px;
-      font-size: 1.1rem;
     }
 
     .logo-link {
@@ -437,30 +396,6 @@ $customer_percentage_change = $last_month_customers > 0 ?
       margin-left: 250px;
     }
 
-    /* Responsive Design */
-    @media (max-width: 992px) {
-      .admin-sidebar {
-        width: 80px;
-      }
-
-      .admin-content, .admin-footer {
-        margin-left: 100px;
-      }
-
-      .sidebar-menu .menu-text {
-        display: none;
-      }
-
-      .sidebar-menu a {
-        justify-content: center;
-      }
-
-      .sidebar-menu i {
-        margin-right: 0;
-        font-size: 1.3rem;
-      }
-    }
-
     @media (max-width: 1200px) {
       .stats-cards {
         grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
@@ -499,13 +434,13 @@ $customer_percentage_change = $last_month_customers > 0 ?
       <!-- Sidebar -->
   <aside class="admin-sidebar">
     <ul class="sidebar-menu">
-      <li><a href="admin-dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-      <li><a href="manage-staff.php"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
-      <li><a href="manage-member.php"><i class="fas fa-users"></i> Manage Members</a></li>
-      <li><a href="manage-categories.php"><i class="fas fa-tags"></i> Categories</a></li>
-      <li><a href="manage-product.php"><i class="fas fa-utensils"></i> Products</a></li>
-      <li><a href="manage-orders.php"><i class="fas fa-shopping-basket"></i> Orders</a></li>
-      <li><a href="sales-reports.php"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
+      <li><a href="admin-dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span></a></li>
+      <li><a href="admin-manage-staff.php"><i class="fas fa-user-tie"></i> <span class="menu-text">Manage Staff</span></a></li>
+      <li><a href="admin-manage-member.php"><i class="fas fa-users"></i> <span class="menu-text">Manage Members</span></a></li>
+      <li><a href="admin-manage-categories.php"><i class="fas fa-tags"></i> <span class="menu-text">Categories</span></a></li>
+      <li><a href="admin-manage-product.php"><i class="fas fa-utensils"></i> <span class="menu-text">Products</span></a></li>
+      <li><a href="admin-manage-orders.php"><i class="fas fa-shopping-basket"></i> <span class="menu-text">Orders</span></a></li>
+      <li><a href="admin-sales-reports.php"><i class="fas fa-chart-line"></i> <span class="menu-text">Sales Reports</span></a></li>
     </ul>
   </aside>
     
@@ -604,7 +539,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
       <div class="recent-orders">
         <div class="section-header">
           <h3 class="section-title">Recent Orders</h3>
-          <a href="manage-orders.php" class="view-all">
+          <a href="admin-manage-orders.php" class="view-all">
             <i class="fas fa-list"></i> View All
           </a>
         </div>
@@ -636,7 +571,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
                         <?php echo htmlspecialchars($order['status'] ?? 'Pending'); ?>
                       </span>
                     </td>
-                    <td><a href="order-details.php?id=<?php echo $order['order_id']; ?>" class="text-primary">View</a></td>
+                    <td><a href="admin-order-details.php?id=<?php echo $order['order_id']; ?>" class="text-primary">View</a></td>
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>

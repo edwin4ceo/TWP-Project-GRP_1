@@ -122,6 +122,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <link rel="icon" type="images/png" href="images/logo.png" />
   <title>BakeEase - Manage Staff</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="sidebar.css">
   <style>
     :root {
       --primary: #e67e22;
@@ -235,51 +236,6 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     .dropdown-menu.show {
       display: block;
-    }
-
-    /* Sidebar */
-    .admin-sidebar {
-      width: 250px;
-      background-color: var(--brown);
-      color: var(--white);
-      padding: 20px 0;
-      position: fixed;
-      height: calc(100vh - 80px);
-      top: 80px;
-      transition: all 0.3s;
-      z-index: 1;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar-menu li {
-      margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--white);
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-
-    .sidebar-menu a:hover, .sidebar-menu a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-menu i {
-      margin-right: 10px;
-      font-size: 1.1rem;
-    }
-
-    .sidebar-menu .menu-text {
-      font-size: 0.95rem;
     }
 
     /* Main Content */
@@ -512,17 +468,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     .modal {
       display: none;
       position: fixed;
-      z-index: 2000;
+      z-index: 1050;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.5);
       backdrop-filter: blur(3px);
       animation: fadeIn 0.3s ease-out;
-      display: none;
-      position: fixed;
-      z-index: 2000;
     }
 
     @keyframes modalSlideIn {
@@ -548,17 +502,29 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
     
     .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 50%;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      background-color: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      padding: 20px;
+    }
+
+    @media (max-width: 576px) {
+      .modal-content {
+        width: 95%;
+        padding: 15px;
+      }
     }
 
     #addStaffModal .modal-content {
-      margin-top: 5%; 
+      margin-top: 0%; 
       margin-bottom: auto; 
     }
 
@@ -739,12 +705,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <aside class="admin-sidebar">
     <ul class="sidebar-menu">
       <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-      <li><a href="manage-staff.php" class="active"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
-      <li><a href="manage-member.php"><i class="fas fa-users"></i> Manage Members</a></li>
-      <li><a href="manage-categories.php"><i class="fas fa-tags"></i> Categories</a></li>
-      <li><a href="manage-product.php"><i class="fas fa-utensils"></i> Products</a></li>
-      <li><a href="manage-orders.php"><i class="fas fa-shopping-basket"></i> Orders</a></li>
-      <li><a href="sales-reports.php"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
+      <li><a href="admin-manage-staff.php" class="active"><i class="fas fa-user-tie"></i> Manage Staff</a></li>
+      <li><a href="admin-manage-member.php"><i class="fas fa-users"></i> Manage Members</a></li>
+      <li><a href="admin-manage-categories.php"><i class="fas fa-tags"></i> Categories</a></li>
+      <li><a href="admin-manage-product.php"><i class="fas fa-utensils"></i> Products</a></li>
+      <li><a href="admin-manage-orders.php"><i class="fas fa-shopping-basket"></i> Orders</a></li>
+      <li><a href="admin-sales-reports.php"><i class="fas fa-chart-line"></i> Sales Reports</a></li>
     </ul>
   </aside>
 
@@ -771,11 +737,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     <!-- Search & Filter -->
     <div class="search-filter">
-      <form method="GET" action="manage-staff.php" class="search-box">
+      <form method="GET" action="admin-manage-staff.php" class="search-box">
         <i class="fas fa-search"></i>
         <input type="text" name="search" placeholder="Search staff..." value="<?= htmlspecialchars($search) ?>">
       </form>
-      <form method="GET" action="manage-staff.php" class="filter-dropdown">
+      <form method="GET" action="admin-manage-staff.php" class="filter-dropdown">
         <select name="role" onchange="this.form.submit()">
         <option value="All Roles" <?= (empty($role_filter) || $role_filter === 'All Roles') ? 'selected' : '' ?>>All Roles</option>
         <option value="Admin" <?= ($role_filter === 'Admin') ? 'selected' : '' ?>>Admin</option>
@@ -858,7 +824,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <span class="close" onclick="closeModal('addStaffModal')">&times;</span>
       </div>
       <div class="modal-body">
-        <form id="addStaffForm" method="POST" action="manage-staff.php">
+        <form id="addStaffForm" method="POST" action="admin-manage-staff.php">
           <div class="form-group">
             <label for="staffName">Full Name</label>
             <input type="text" id="staffName" name="staffName" placeholder="Enter full name" required>
@@ -915,7 +881,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <span class="close" onclick="closeModal('editStaffModal')">&times;</span>
       </div>
       <div class="modal-body">
-        <form id="editStaffForm" method="POST" action="manage-staff.php">
+        <form id="editStaffForm" method="POST" action="admin-manage-staff.php">
           <input type="hidden" id="editStaffId" name="editStaffId">
           
           <div class="form-group">
@@ -970,7 +936,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <h3 class="modal-title">Confirm Delete</h3>
         <span class="close" onclick="closeModal('deleteModal')">&times;</span>
       </div>
-      <form method="POST" action="manage-staff.php">
+      <form method="POST" action="admin-manage-staff.php">
         <input type="hidden" id="deleteStaffId" name="delete_id">
         <p>Are you sure you want to delete this staff member? This action cannot be undone.</p>
         <div class="form-actions">

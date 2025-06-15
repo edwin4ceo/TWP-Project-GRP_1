@@ -20,7 +20,7 @@ if (isset($_POST['add_member'])) {
         $status = $_POST['member_status'];
         
         try {
-            $stmt = $conn->prepare("INSERT INTO members (name, email, phone, address, status) VALUES (?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO customers (name, email, phone, address, status) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$name, $email, $phone, $address, $status]);
             $success_message = "Member added successfully!";
         } catch (PDOException $e) {
@@ -36,7 +36,7 @@ if (isset($_POST['add_member'])) {
         $status = $_POST['member_status'];
         
         try {
-            $stmt = $conn->prepare("UPDATE members SET name = ?, email = ?, phone = ?, address = ?, status = ? WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE customers SET name = ?, email = ?, phone = ?, address = ?, status = ? WHERE id = ?");
             $stmt->execute([$name, $email, $phone, $address, $status, $id]);
             $success_message = "Member updated successfully!";
         } catch (PDOException $e) {
@@ -48,7 +48,7 @@ if (isset($_POST['add_member'])) {
 $members = [];
 try {
     $search = $_GET['search'] ?? '';
-    $query = "SELECT * FROM members";
+    $query = "SELECT * FROM customers";
     
     if (!empty($search)) {
         $query .= " WHERE name LIKE :search OR email LIKE :search OR phone LIKE :search";
@@ -72,6 +72,7 @@ try {
   <link rel="icon" type="images/png" href="images/logo.png" />
   <title>BakeEase - Manage Members</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="sidebar.css">
   <style>
     :root {
       --primary: #e67e22;
@@ -137,48 +138,6 @@ try {
     .admin-nav {
       display: flex;
       align-items: center;
-    }
-
-    /* Sidebar */
-    .admin-sidebar {
-      width: 250px;
-      background-color: var(--brown);
-      color: var(--white);
-      padding: 20px 0;
-      position: fixed;  
-      height: calc(100vh - 80px);
-      top: 80px;
-      transition: all 0.3s;
-      z-index: 1;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar-menu li {
-      margin-bottom: 5px;
-    }
-
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--white);
-      text-decoration: none;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
-    .sidebar-menu a:hover, .sidebar-menu a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-menu a i {
-      margin-right: 10px;
-      font-size: 1.1rem;
     }
 
     /* Main Content */
@@ -259,7 +218,7 @@ try {
       gap: 10px;
       flex-wrap: wrap;
       align-items: center;
-      margin-top: 0px; 
+      margin-top: 16px; 
       margin-bottom: 25px;
     }
 
@@ -355,30 +314,6 @@ try {
 
     .search-container input[type="search"] {
       padding-left: 36px; 
-    }
-
-    /* Responsive Design */
-    @media (max-width: 992px) {
-      .admin-sidebar {
-        width: 80px;
-      }
-
-      .admin-content {
-        margin-left: 80px;
-      }
-
-      .sidebar-menu .menu-text {
-        display: none;
-      }
-
-      .sidebar-menu a {
-        justify-content: center;
-      }
-
-      .sidebar-menu i {
-        margin-right: 0;
-        font-size: 1.3rem;
-      }
     }
 
     @media (max-width: 768px) {
@@ -600,12 +535,12 @@ try {
     <aside class="admin-sidebar">
       <ul class="sidebar-menu">
         <li><a href="admin-dashboard.php"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span></a></li>
-        <li><a href="manage-staff.php"><i class="fas fa-user-tie"></i> <span class="menu-text">Manage Staff</span></a></li>
-        <li><a href="manage-member.php" class="active"><i class="fas fa-users"></i> <span class="menu-text">Manage Members</span></a></li>
-        <li><a href="manage-categories.php"><i class="fas fa-tags"></i> <span class="menu-text">Categories</span></a></li>
-        <li><a href="manage-product.php"><i class="fas fa-utensils"></i> <span class="menu-text">Products</span></a></li>
-        <li><a href="manage-orders.php"><i class="fas fa-shopping-basket"></i> <span class="menu-text">Orders</span></a></li>
-        <li><a href="sales-reports.php"><i class="fas fa-chart-line"></i> <span class="menu-text">Sales Reports</span></a></li>
+        <li><a href="admin-manage-staff.php"><i class="fas fa-user-tie"></i> <span class="menu-text">Manage Staff</span></a></li>
+        <li><a href="admin-manage-member.php" class="active"><i class="fas fa-users"></i> <span class="menu-text">Manage Members</span></a></li>
+        <li><a href="admin-manage-categories.php"><i class="fas fa-tags"></i> <span class="menu-text">Categories</span></a></li>
+        <li><a href="admin-manage-product.php"><i class="fas fa-utensils"></i> <span class="menu-text">Products</span></a></li>
+        <li><a href="admin-manage-orders.php"><i class="fas fa-shopping-basket"></i> <span class="menu-text">Orders</span></a></li>
+        <li><a href="admin-sales-reports.php"><i class="fas fa-chart-line"></i> <span class="menu-text">Sales Reports</span></a></li>
       </ul>
     </aside>
     
@@ -631,7 +566,7 @@ try {
       <?php endif; ?>
 
       <div class="top-controls">
-        <form method="GET" action="manage-member.php" class="search-container">
+        <form method="GET" action="admin-manage-member.php" class="search-container">
           <i class="fas fa-search search-icon"></i>
           <input type="search" id="memberSearch" name="search" placeholder="Search members..." 
                  value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" />
@@ -708,7 +643,7 @@ try {
         <h3 class="modal-title">Add New Member</h3>
         <span class="close" onclick="closeAddModal()">&times;</span>
       </div>
-      <form action="manage-member.php" method="POST">
+      <form action="admin-manage-member.php" method="POST">
         <div class="form-group">
           <label for="add-member-name">Name</label>
           <input type="text" id="add-member-name" name="member_name" required>
@@ -747,7 +682,7 @@ try {
         <h3 class="modal-title">Edit Member</h3>
         <span class="close" onclick="closeEditModal()">&times;</span>
       </div>
-      <form action="manage-member.php" method="POST">
+      <form action="admin-manage-member.php" method="POST">
         <input type="hidden" id="edit-member-id" name="member_id">
         <div class="form-group">
           <label for="edit-member-name">Name</label>
@@ -787,7 +722,7 @@ try {
         <h3 class="modal-title">Confirm Delete</h3>
         <span class="close" onclick="closeDeleteModal()">&times;</span>
       </div>
-      <form action="manage-member.php" method="POST">
+      <form action="admin-manage-member.php" method="POST">
         <input type="hidden" id="delete-member-id" name="member_id">
         <p>Are you sure you want to delete this member? This action cannot be undone.</p>
         <div class="form-actions">
