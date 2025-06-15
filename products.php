@@ -109,7 +109,7 @@ include("db_connection.php");
         }
 
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        window.location.href = "shoppingCart.html";
+        window.location.href = "shoppingCart.php";
       });
     });
   </script>

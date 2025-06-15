@@ -110,7 +110,7 @@ $product = mysqli_fetch_assoc($result);
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
-      window.location.href = "shoppingCart.html";
+      window.location.href = "shoppingCart.php";
     });
 
     // Dropdown toggle logic
