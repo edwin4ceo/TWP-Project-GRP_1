@@ -2,20 +2,20 @@
 session_start();
 require_once 'db_connection.php';
 
-//Check if admin is logged in
+// Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-     header("Location: admin-login.php");
-     exit();
+    header("Location: admin-login.php");
+    exit();
 }
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_staff'])) {
         // Add new staff
-        $name = $_POST['staffName'];
-        $email = $_POST['staffEmail'];
-        $phone = $_POST['staffPhone'];
-        $role = $_POST['staffRole'];
+        $name = $conn->real_escape_string($_POST['staffName']);
+        $email = $conn->real_escape_string($_POST['staffEmail']);
+        $phone = $conn->real_escape_string($_POST['staffPhone']);
+        $role = $conn->real_escape_string($_POST['staffRole']);
         $password = password_hash($_POST['staffPassword'], PASSWORD_DEFAULT);
         
         // Generate staff ID
@@ -23,73 +23,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $prefix . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
         
         $stmt = $conn->prepare("INSERT INTO admins (id, name, email, phone, role, password) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bindParam(1, $id);
-        $stmt->bindParam(2, $name);
-        $stmt->bindParam(3, $email);
-        $stmt->bindParam(4, $phone);
-        $stmt->bindParam(5, $role);
-        $stmt->bindParam(6, $password);
+        $stmt->bind_param('ssssss', $id, $name, $email, $phone, $role, $password);
         
         if ($stmt->execute()) {
             $_SESSION['message'] = "Staff added successfully!";
         } else {
-            $_SESSION['error'] = "Error adding staff: " . $conn->errorInfo();
+            $_SESSION['error'] = "Error adding staff: " . $conn->error;
         }
+        $stmt->close();
     } elseif (isset($_POST['delete_id'])) {
         // Delete staff
-        $id = $_POST['delete_id'];
+        $id = $conn->real_escape_string($_POST['delete_id']);
         $stmt = $conn->prepare("DELETE FROM admins WHERE id = ?");
-        $stmt->bindParam(1, $id);
+        $stmt->bind_param('s', $id);
         
         if ($stmt->execute()) {
             $_SESSION['message'] = "Staff deleted successfully!";
         } else {
-            $_SESSION['error'] = "Error deleting staff: " . $conn->errorInfo();
+            $_SESSION['error'] = "Error deleting staff: " . $conn->error;
         }
+        $stmt->close();
     } elseif (isset($_POST['edit_staff'])) {
         // Edit staff
-        $id = $_POST['editStaffId'];  
-        $name = $_POST['editStaffName'];
-        $email = $_POST['editStaffEmail'];
-        $phone = $_POST['editStaffPhone'];
-        $role = $_POST['editStaffRole'];
-        $status = $_POST['editStaffStatus'];
+        $id = $conn->real_escape_string($_POST['editStaffId']);
+        $name = $conn->real_escape_string($_POST['editStaffName']);
+        $email = $conn->real_escape_string($_POST['editStaffEmail']);
+        $phone = $conn->real_escape_string($_POST['editStaffPhone']);
+        $role = $conn->real_escape_string($_POST['editStaffRole']);
+        $status = $conn->real_escape_string($_POST['editStaffStatus']);
         
         $stmt = $conn->prepare("UPDATE admins SET name = ?, email = ?, phone = ?, role = ?, status = ? WHERE id = ?");
-        $stmt->bindParam(1, $name);
-        $stmt->bindParam(2, $email);
-        $stmt->bindParam(3, $phone);
-        $stmt->bindParam(4, $role);
-        $stmt->bindParam(5, $status);
-        $stmt->bindParam(6, $id);
+        $stmt->bind_param('ssssss', $name, $email, $phone, $role, $status, $id);
         
         if ($stmt->execute()) {
             $_SESSION['message'] = "Staff updated successfully!";
         } else {
-            $_SESSION['error'] = "Error updating staff: " . $conn->errorInfo();
+            $_SESSION['error'] = "Error updating staff: " . $conn->error;
         }
+        $stmt->close();
     }
 }
 
 // Handle search and filter
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$role_filter = isset($_GET['role']) ? $_GET['role'] : '';
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$role_filter = isset($_GET['role']) ? $conn->real_escape_string($_GET['role']) : '';
 
 $query = "SELECT * FROM admins WHERE 1=1";
-$params = [];
 $types = '';
+$params = [];
 
 if (!empty($search)) {
     $query .= " AND (name LIKE ? OR email LIKE ? OR id LIKE ?)";
     $search_term = "%$search%";
-    $params = array_merge($params, [$search_term, $search_term, $search_term]);
     $types .= 'sss';
+    array_push($params, $search_term, $search_term, $search_term);
 }
 
 if (!empty($role_filter) && $role_filter !== 'All Roles') {
     $query .= " AND role = ?";
-    $params[] = $role_filter;
     $types .= 's';
+    $params[] = $role_filter;
 }
 
 $query .= " ORDER BY FIELD(role, 'Admin', 'Manager', 'Head Baker', 'Baker', 'Cashier', 'Delivery'), name";
@@ -98,21 +91,14 @@ $query .= " ORDER BY FIELD(role, 'Admin', 'Manager', 'Head Baker', 'Baker', 'Cas
 $stmt = $conn->prepare($query);
 
 if (!empty($params)) {
-    $stmt->execute($params);
-} else {
-    $stmt->execute();
+    $stmt->bind_param($types, ...$params);
 }
 
-// Replace get_result() with fetch()
-$result = [];
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $result[] = $row;
-}
-
-// Use $result to display or process the data
+$stmt->execute();
+$result = $stmt->get_result();
+$staff_members = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -694,8 +680,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       </a>
     </div>
     <nav class="admin-nav">
-      <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='logout.php'">
+      <button class="btn-logout" onclick="window.location.href='admin-logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>
@@ -718,8 +703,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <main class="admin-content">
     <div class="management-header">
       <div class="page-title">
-          <h2>Staff Management</h2>
-        </div>
+        <h2>Staff Management</h2>
+      </div>
     </div>
 
     <!-- Display messages -->
@@ -743,14 +728,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       </form>
       <form method="GET" action="admin-manage-staff.php" class="filter-dropdown">
         <select name="role" onchange="this.form.submit()">
-        <option value="All Roles" <?= (empty($role_filter) || $role_filter === 'All Roles') ? 'selected' : '' ?>>All Roles</option>
-        <option value="Admin" <?= ($role_filter === 'Admin') ? 'selected' : '' ?>>Admin</option>
-        <option value="Manager" <?= ($role_filter === 'Manager') ? 'selected' : '' ?>>Manager</option>
-        <option value="Head Baker" <?= ($role_filter === 'Head Baker') ? 'selected' : '' ?>>Head Baker</option>
-        <option value="Baker" <?= ($role_filter === 'Baker') ? 'selected' : '' ?>>Baker</option>
-        <option value="Cashier" <?= ($role_filter === 'Cashier') ? 'selected' : '' ?>>Cashier</option>
-        <option value="Delivery" <?= ($role_filter === 'Delivery') ? 'selected' : '' ?>>Delivery</option>
-      </select>
+          <option value="All Roles" <?= (empty($role_filter) || $role_filter === 'All Roles') ? 'selected' : '' ?>>All Roles</option>
+          <option value="Admin" <?= ($role_filter === 'Admin') ? 'selected' : '' ?>>Admin</option>
+          <option value="Manager" <?= ($role_filter === 'Manager') ? 'selected' : '' ?>>Manager</option>
+          <option value="Head Baker" <?= ($role_filter === 'Head Baker') ? 'selected' : '' ?>>Head Baker</option>
+          <option value="Baker" <?= ($role_filter === 'Baker') ? 'selected' : '' ?>>Baker</option>
+          <option value="Cashier" <?= ($role_filter === 'Cashier') ? 'selected' : '' ?>>Cashier</option>
+          <option value="Delivery" <?= ($role_filter === 'Delivery') ? 'selected' : '' ?>>Delivery</option>
+        </select>
       </form>
       <div class="action-buttons">
         <button onclick="openModal('addStaffModal')">
@@ -774,43 +759,46 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           </tr>
         </thead>
         <tbody>
-           <?php if (count($result) > 0): ?>
-  <!-- Loop through and display results -->
-  <?php foreach ($result as $row): ?>
-    <tr>
-      <td><?= htmlspecialchars($row['id']) ?></td>
-      <td><?= htmlspecialchars($row['name']) ?></td>
-      <td><?= htmlspecialchars($row['email']) ?></td>
-      <td><?= htmlspecialchars($row['phone']) ?></td>
-      <td><?= htmlspecialchars($row['role']) ?></td>
-      <td><span class="badge <?= $row['status'] === 'Active' ? 'badge-success' : 'badge-danger' ?>"><?= htmlspecialchars($row['status']) ?></span></td>
-      <td>
-        <button class="action-btn" onclick="openEditModal(
-          '<?= $row['id'] ?>',
-          '<?= addslashes($row['name']) ?>',
-          '<?= $row['email'] ?>',
-          '<?= $row['phone'] ?>',
-          '<?= $row['role'] ?>',
-          '<?= $row['status'] ?>'
-        )">
-          <i class="fas fa-edit"></i> Edit
-        </button>
-        <button type="button" class="action-btn" onclick="openDeleteModal('<?= $row['id'] ?>')">
-        <i class="fas fa-trash"></i> Delete
-      </button>
-      </td>
-    </tr>
-  <?php endforeach; ?>
-<?php else: ?>
-  <tr>
-    <td colspan="7" style="text-align: center;">No staff members found</td>
-  </tr>
-<?php endif; ?>
-
+          <?php if (count($staff_members) > 0): ?>
+            <?php foreach ($staff_members as $row): ?>
+              <tr>
+                <td><?= htmlspecialchars($row['id']) ?></td>
+                <td><?= htmlspecialchars($row['name']) ?></td>
+                <td><?= htmlspecialchars($row['email']) ?></td>
+                <td><?= htmlspecialchars($row['phone']) ?></td>
+                <td><?= htmlspecialchars($row['role']) ?></td>
+                <td>
+                  <span class="badge <?= $row['status'] === 'Active' ? 'badge-success' : 'badge-danger' ?>">
+                    <?= htmlspecialchars($row['status']) ?>
+                  </span>
+                </td>
+                <td>
+                  <button class="action-btn" onclick="openEditModal(
+                    '<?= $row['id'] ?>',
+                    '<?= addslashes($row['name']) ?>',
+                    '<?= $row['email'] ?>',
+                    '<?= $row['phone'] ?>',
+                    '<?= $row['role'] ?>',
+                    '<?= $row['status'] ?>'
+                  )">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <button type="button" class="action-btn" onclick="openDeleteModal('<?= $row['id'] ?>')">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="7" style="text-align: center;">No staff members found</td>
+            </tr>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
   </main>
+
   <!-- Footer -->
   <footer class="admin-footer">
     <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
@@ -951,12 +939,12 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     // Modal Functions
     function openModal(modalId) {
       document.getElementById(modalId).style.display = 'block';
-      document.body.style.overflow = 'hidden'; // Prevent scrolling
+      document.body.style.overflow = 'hidden';
     }
     
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
-      document.body.style.overflow = 'auto'; // Re-enable scrolling
+      document.body.style.overflow = 'auto';
     }
     
     // Open edit modal with staff data
@@ -994,24 +982,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         alert('Password must be at least 8 characters long and contain at least one number');
       }
     });
-    
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-        document.body.style.overflow = 'auto';
-      }
-    }
 
     // Open delete confirmation modal
     function openDeleteModal(id) {
       document.getElementById('deleteStaffId').value = id;
       openModal('deleteModal');
-    }
-
-    // Close delete modal
-    function closeDeleteModal() {
-      closeModal('deleteModal');
     }
 
     // Close all modals when clicking outside

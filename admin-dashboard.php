@@ -24,43 +24,43 @@ $low_stock_products = 0;
 try {
     // Today's orders
     $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE()");
-    $today_orders = $stmt->fetchColumn();
+    $today_orders = $stmt->fetch_row()[0];
     
     // Yesterday's orders for comparison
     $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
-    $yesterday_orders = $stmt->fetchColumn();
+    $yesterday_orders = $stmt->fetch_row()[0];
     
     // Today's revenue
     $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = CURDATE()");
-    $total_revenue = $stmt->fetchColumn() ?? 0;
+    $total_revenue = $stmt->fetch_row()[0] ?? 0;
     
     // Last week's revenue (same day last week)
     $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
-    $last_week_revenue = $stmt->fetchColumn() ?? 0;
+    $last_week_revenue = $stmt->fetch_row()[0] ?? 0;
     
     // New customers today
     $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = CURDATE()");
-    $new_customers = $stmt->fetchColumn();
+    $new_customers = $stmt->fetch_row()[0];
     
     // New customers same day last month
     $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 MONTH)");
-    $last_month_customers = $stmt->fetchColumn();
+    $last_month_customers = $stmt->fetch_row()[0];
     
     // Total products
     $stmt = $conn->query("SELECT COUNT(*) FROM products");
-    $total_products = $stmt->fetchColumn();
+    $total_products = $stmt->fetch_row()[0];
     
-    // Low stock products (assuming you have a 'stock' column)
-    $stmt = $conn->query("SELECT COUNT(*) FROM products WHERE stock < 5"); // Adjust threshold as needed
-    $low_stock_products = $stmt->fetchColumn();
+    // Low stock products
+    $stmt = $conn->query("SELECT COUNT(*) FROM products WHERE stock < 5");
+    $low_stock_products = $stmt->fetch_row()[0];
     
     // Fetch recent orders
     $recent_orders = [];
     $stmt = $conn->query("SELECT * FROM orders ORDER BY order_date DESC LIMIT 5");
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $stmt->fetch_assoc()) {
         $recent_orders[] = $row;
     }
-} catch (PDOException $e) {
+} catch (Exception $e) {
     error_log("Database error: " . $e->getMessage());
 }
 
@@ -423,7 +423,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='logout.php'">
+      <button class="btn-logout" onclick="window.location.href='admin-logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>
@@ -449,7 +449,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
       <div class="page-header">
         <div class="page-title">
           <h2>Dashboard Overview</h2>
-          <p>Welcome back, <?php echo htmlspecialchars($admin_name); ?>! Here's what's happening with your store today.</p>
+          <p>Welcome back, <?php echo htmlspecialchars($admin_name); ?> ! Here's what's happening with your store today.</p>
         </div>
       </div>
       

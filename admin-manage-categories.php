@@ -14,51 +14,56 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_category'])) {
         // Add new category
-        $name = $_POST['category_name'];
-        $description = $_POST['category_description'];
+        $name = $conn->real_escape_string($_POST['category_name']);
+        $description = $conn->real_escape_string($_POST['category_description']);
         
-        try {
-            $stmt = $conn->prepare("INSERT INTO categories (name, description) VALUES (?, ?)");
-            $stmt->execute([$name, $description]);
+        $stmt = $conn->prepare("INSERT INTO categories (name, description) VALUES (?, ?)");
+        $stmt->bind_param("ss", $name, $description);
+        
+        if ($stmt->execute()) {
             $success_message = "Category added successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error adding category: " . $e->getMessage();
+        } else {
+            $error_message = "Error adding category: " . $conn->error;
         }
+        $stmt->close();
     } elseif (isset($_POST['update_category'])) {
         // Update existing category
-        $id = $_POST['category_id'];
-        $name = $_POST['category_name'];
-        $description = $_POST['category_description'];
+        $id = $conn->real_escape_string($_POST['category_id']);
+        $name = $conn->real_escape_string($_POST['category_name']);
+        $description = $conn->real_escape_string($_POST['category_description']);
         
-        try {
-            $stmt = $conn->prepare("UPDATE categories SET name = ?, description = ? WHERE id = ?");
-            $stmt->execute([$name, $description, $id]);
+        $stmt = $conn->prepare("UPDATE categories SET name = ?, description = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $name, $description, $id);
+        
+        if ($stmt->execute()) {
             $success_message = "Category updated successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error updating category: " . $e->getMessage();
+        } else {
+            $error_message = "Error updating category: " . $conn->error;
         }
+        $stmt->close();
     } elseif (isset($_POST['delete_category'])) {
         // Delete category
-        $id = $_POST['category_id'];
+        $id = $conn->real_escape_string($_POST['category_id']);
         
-        try {
-            $stmt = $conn->prepare("DELETE FROM categories WHERE id = ?");
-            $stmt->execute([$id]);
+        $stmt = $conn->prepare("DELETE FROM categories WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        
+        if ($stmt->execute()) {
             $success_message = "Category deleted successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error deleting category: " . $e->getMessage();
+        } else {
+            $error_message = "Error deleting category: " . $conn->error;
         }
+        $stmt->close();
     }
 }
 
 // Get all categories from database
 $categories = [];
-try {
-    $stmt = $conn->query("SELECT * FROM categories ORDER BY name");
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $error_message = "Error fetching categories: " . $e->getMessage();
+$stmt = $conn->query("SELECT * FROM categories ORDER BY name");
+while ($row = $stmt->fetch_assoc()) {
+    $categories[] = $row;
 }
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -482,7 +487,7 @@ try {
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='logout.php'">
+      <button class="btn-logout" onclick="window.location.href='admin-logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>
@@ -567,7 +572,7 @@ try {
                   )">
                     <i class="fas fa-edit"></i> Edit
                   </button>
-                  <button class="action-btn" onclick="confirmDelete(<?php echo $category['id']; ?>)">
+                  <button class="action-btn" onclick="confirmDeleteCategory(<?php echo $category['id']; ?>)">
                     <i class="fas fa-trash"></i> Delete
                   </button>
                 </td>
@@ -688,7 +693,6 @@ try {
         document.getElementById('deleteCategoryModal').style.display = 'none';
       }
     }
-
 
     // Filter categories
     document.getElementById('category-filter').addEventListener('change', function() {

@@ -12,56 +12,63 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 
 // Handle form submissions
 if (isset($_POST['add_member'])) {
-        // Add new member
-        $name = $_POST['member_name'];
-        $email = $_POST['member_email'];
-        $phone = $_POST['member_phone'];
-        $address = $_POST['member_address']; // New field
-        $status = $_POST['member_status'];
-        
-        try {
-            $stmt = $conn->prepare("INSERT INTO customers (name, email, phone, address, status) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $email, $phone, $address, $status]);
-            $success_message = "Member added successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error adding member: " . $e->getMessage();
-        }
-    } elseif (isset($_POST['update_member'])) {
-        // Update existing member
-        $id = $_POST['member_id'];
-        $name = $_POST['member_name'];
-        $email = $_POST['member_email'];
-        $phone = $_POST['member_phone'];
-        $address = $_POST['member_address']; // New field
-        $status = $_POST['member_status'];
-        
-        try {
-            $stmt = $conn->prepare("UPDATE customers SET name = ?, email = ?, phone = ?, address = ?, status = ? WHERE id = ?");
-            $stmt->execute([$name, $email, $phone, $address, $status, $id]);
-            $success_message = "Member updated successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error updating member: " . $e->getMessage();
-        }
+    // Add new member
+    $name = $conn->real_escape_string($_POST['member_name']);
+    $email = $conn->real_escape_string($_POST['member_email']);
+    $phone = $conn->real_escape_string($_POST['member_phone']);
+    $address = $conn->real_escape_string($_POST['member_address']);
+    $status = $conn->real_escape_string($_POST['member_status']);
+    
+    $stmt = $conn->prepare("INSERT INTO customers (name, email, phone, address, status) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $name, $email, $phone, $address, $status);
+    
+    if ($stmt->execute()) {
+        $success_message = "Member added successfully!";
+    } else {
+        $error_message = "Error adding member: " . $conn->error;
     }
+    $stmt->close();
+} elseif (isset($_POST['update_member'])) {
+    // Update existing member
+    $id = $conn->real_escape_string($_POST['member_id']);
+    $name = $conn->real_escape_string($_POST['member_name']);
+    $email = $conn->real_escape_string($_POST['member_email']);
+    $phone = $conn->real_escape_string($_POST['member_phone']);
+    $address = $conn->real_escape_string($_POST['member_address']);
+    $status = $conn->real_escape_string($_POST['member_status']);
+    
+    $stmt = $conn->prepare("UPDATE customers SET name = ?, email = ?, phone = ?, address = ?, status = ? WHERE id = ?");
+    $stmt->bind_param("sssssi", $name, $email, $phone, $address, $status, $id);
+    
+    if ($stmt->execute()) {
+        $success_message = "Member updated successfully!";
+    } else {
+        $error_message = "Error updating member: " . $conn->error;
+    }
+    $stmt->close();
+}
 
 // Get all members from database
 $members = [];
-try {
-    $search = $_GET['search'] ?? '';
-    $query = "SELECT * FROM customers";
-    
-    if (!empty($search)) {
-        $query .= " WHERE name LIKE :search OR email LIKE :search OR phone LIKE :search";
-        $stmt = $conn->prepare($query);
-        $stmt->execute(['search' => "%$search%"]);
-    } else {
-        $stmt = $conn->query($query);
-    }
-    
-    $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $error_message = "Error fetching members: " . $e->getMessage();
+$search = $_GET['search'] ?? '';
+$query = "SELECT * FROM customers";
+
+if (!empty($search)) {
+    $query .= " WHERE name LIKE ? OR email LIKE ? OR phone LIKE ?";
+    $stmt = $conn->prepare($query);
+    $search_term = "%$search%";
+    $stmt->bind_param("sss", $search_term, $search_term, $search_term);
+} else {
+    $stmt = $conn->prepare($query);
 }
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $members[] = $row;
+}
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -523,7 +530,7 @@ try {
     
     <nav class="admin-nav">
       <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='logout.php'">
+      <button class="btn-logout" onclick="window.location.href='admin-logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>

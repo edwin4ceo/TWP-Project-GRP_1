@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-// Database connection
 require_once 'db_connection.php';
 
 // Initialize variables
@@ -18,15 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please fill in all fields';
     } else {
         // Prepare SQL statement to prevent SQL injection
-        $stmt = $conn->prepare("SELECT id, password, role FROM admins WHERE email = ?");
-        $stmt->execute([$email]);
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $conn->prepare("SELECT id, name, password, role FROM admins WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $admin = $result->fetch_assoc();
 
         if ($admin && password_verify($password, $admin['password'])) {
             // Authentication successful
             $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_name'] = $admin['name'];
             $_SESSION['admin_role'] = $admin['role'];
             $_SESSION['admin_email'] = $email;
+            session_regenerate_id(true);
             
             // Redirect to dashboard
             header('Location: admin-dashboard.php');
@@ -37,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,22 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transform: translateY(-2px);
         }
         
-        .auth-links {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .auth-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .auth-links a:hover {
-            text-decoration: underline;
-            color: var(--primary-hover);
-        }
-        
         .form-title {
             color: var(--text-color);
             text-align: center;
@@ -225,6 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         #page-heading {
             font-size: 2rem;
+            margin-right: 43%;
         }
         
         /* Error message */
@@ -317,12 +305,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </footer>
 
     <script>
-        // DOM Elements
+        // Password toggle functionality
         const togglePassword = document.getElementById('togglePassword');
         const password = document.getElementById('password');
         const eyeIcon = togglePassword.querySelector('i');
 
-        // Password toggle functionality
         togglePassword.addEventListener('click', function() {
             const isHidden = password.getAttribute('type') === 'password';
             

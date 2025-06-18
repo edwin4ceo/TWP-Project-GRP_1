@@ -59,44 +59,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Get all products from database
 $products = [];
+$search = $_GET['search'] ?? '';
+$category_filter = $_GET['category'] ?? '';
+
+$query = "SELECT * FROM products";
+$conditions = [];
+$params = [];
+$types = '';
+
+if (!empty($search)) {
+    $conditions[] = "name LIKE ?";
+    $params[] = "%$search%";
+    $types .= 's';
+}
+
+if (!empty($category_filter)) {
+    $conditions[] = "category = ?";
+    $params[] = $category_filter;
+    $types .= 's';
+}
+
+if (!empty($conditions)) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
+}
+
+$query .= " ORDER BY name";
+
 try {
-    $search = $_GET['search'] ?? '';
-    $category_filter = $_GET['category'] ?? '';
+    $stmt = $conn->prepare($query);
     
-    $query = "SELECT * FROM products";
-    $params = [];
-    
-    if (!empty($search) || !empty($category_filter)) {
-        $conditions = [];
-        
-        if (!empty($search)) {
-            $conditions[] = "name LIKE ?";
-            $params[] = "%$search%";
-        }
-        
-        if (!empty($category_filter)) {
-            $conditions[] = "category = ?";
-            $params[] = $category_filter;
-        }
-        
-        $query .= " WHERE " . implode(" AND ", $conditions);
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
     }
     
-    $query .= " ORDER BY name";
-    
-    $stmt = $conn->prepare($query);
-    $stmt->execute($params);
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $products = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+} catch (Exception $e) {
     $error_message = "Error fetching products: " . $e->getMessage();
 }
 
 // Get distinct categories for filter dropdown
 $categories = [];
 try {
-    $stmt = $conn->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL");
-    $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
-} catch (PDOException $e) {
+    $result = $conn->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL");
+    $categories = array_column($result->fetch_all(MYSQLI_ASSOC), 'category');
+    $result->close();
+} catch (Exception $e) {
     // If error, categories dropdown will just show "All Categories"
 }
 ?>
@@ -567,7 +577,7 @@ try {
     </div>
     <nav class="admin-nav">
       <!-- Logout Button -->
-      <button class="btn-logout" onclick="window.location.href='logout.php'">
+      <button class="btn-logout" onclick="window.location.href='admin-logout.php'">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </nav>
