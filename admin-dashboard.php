@@ -23,27 +23,39 @@ $low_stock_products = 0;
 
 try {
     // Today's orders
-    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE()");
+    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE() AND status = 'completed'");
     $today_orders = $stmt->fetch_row()[0];
     
     // Yesterday's orders for comparison
-    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
+    $stmt = $conn->query("SELECT COUNT(*) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND status = 'completed'");
     $yesterday_orders = $stmt->fetch_row()[0];
     
     // Today's revenue
-    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = CURDATE()");
+    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = CURDATE() AND status = 'completed'");
     $total_revenue = $stmt->fetch_row()[0] ?? 0;
     
-    // Last week's revenue (same day last week)
-    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+    // Last week's revenue (same day last week, only completed orders)
+    $stmt = $conn->query("SELECT SUM(total_amount) FROM orders WHERE DATE(order_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND status = 'completed'");
     $last_week_revenue = $stmt->fetch_row()[0] ?? 0;
     
     // New customers today
-    $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = CURDATE()");
+    $stmt = $conn->query("
+        SELECT COUNT(DISTINCT c.id) 
+        FROM customers c
+        JOIN orders o ON c.id = o.customer_id 
+        WHERE DATE(c.created_at) = CURDATE() 
+        AND o.status = 'completed'
+    ");
     $new_customers = $stmt->fetch_row()[0];
     
     // New customers same day last month
-    $stmt = $conn->query("SELECT COUNT(*) FROM customers WHERE DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 MONTH)");
+    $stmt = $conn->query("
+        SELECT COUNT(DISTINCT c.id) 
+        FROM customers c
+        JOIN orders o ON c.id = o.customer_id 
+        WHERE DATE(c.created_at) = DATE_SUB(CURDATE(), INTERVAL 1 MONTH) 
+        AND o.status = 'completed'
+    ");
     $last_month_customers = $stmt->fetch_row()[0];
     
     // Total products
@@ -602,7 +614,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
                     <td>#<?php echo htmlspecialchars($order['id']); ?></td>
                     <td>
                       <?php if (!empty($order['customer_id'])): ?>
-                        <a href="admin-manage-member.php?customer_id=<?php echo $order['customer_id']; ?>">
+                        <a href="admin-manage-member.php?customer_id=<?php echo $order['customer_id']; ?>" style="color: inherit; text-decoration: none;">
                           <?php echo htmlspecialchars($order['customer_name'] ?? 'Guest'); ?>
                         </a>
                       <?php else: ?>

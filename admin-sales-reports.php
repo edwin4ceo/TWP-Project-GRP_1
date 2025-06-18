@@ -38,7 +38,7 @@ try {
     $stmt = $conn->prepare("
         SELECT o.id, o.order_date, o.total_amount, o.status, o.delivery_address, 
               IFNULL(c.id, 0) AS customer_id, 
-              IFNULL(c.name, 'Customer doesn\'t exist') AS customer_name, 
+              COALESCE(c.name, o.customer_name, 'Guest') AS customer_name,
               IFNULL(c.email, 'N/A') AS customer_email, 
               IFNULL(c.phone, 'N/A') AS customer_phone,
               COUNT(oi.id) AS item_count
@@ -59,6 +59,7 @@ try {
         SELECT COUNT(id) AS order_count, SUM(total_amount) AS sales_total
         FROM orders
         WHERE DATE(order_date) BETWEEN ? AND ?
+        AND status = 'completed'
     ");
     $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
@@ -74,6 +75,7 @@ try {
         SELECT COUNT(id) AS order_count, SUM(total_amount) AS sales_total
         FROM orders
         WHERE DATE(order_date) BETWEEN ? AND ?
+        AND status = 'completed'
     ");
     $stmt->bind_param("ss", $prev_start_date, $prev_end_date);
     $stmt->execute();
@@ -102,6 +104,7 @@ try {
         JOIN products p ON oi.product_id = p.id
         JOIN orders o ON oi.order_id = o.id
         WHERE DATE(o.order_date) BETWEEN ? AND ?
+        AND o.status = 'completed'
         GROUP BY p.id
         ORDER BY total_quantity DESC
         LIMIT 1
@@ -120,6 +123,7 @@ try {
         SELECT DATE(order_date) AS day, SUM(total_amount) AS daily_sales
         FROM orders
         WHERE DATE(order_date) BETWEEN ? AND ?
+        AND status = 'completed'
         GROUP BY DATE(order_date)
         ORDER BY DATE(order_date)
     ");
@@ -848,7 +852,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                   <tr>
                     <td><?php echo date('Y-m-d', strtotime($order['order_date'])); ?></td>
                     <td>ORD-<?php echo str_pad($order['id'], 4, '0', STR_PAD_LEFT); ?></td>
-                    <td><?php echo htmlspecialchars($order['customer_name']); ?></td>
+                    <td>
+                        <?php echo htmlspecialchars($order['customer_name']); ?>
+                    </td>
                     <td><?php echo $order['item_count']; ?></td>
                     <td>RM <?php echo number_format($order['total_amount'], 2); ?></td>
                     <td>

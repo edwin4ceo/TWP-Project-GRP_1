@@ -28,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 // Handle new order creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_order'])) {
     $customer_id = !empty($_POST['customer_id']) ? intval($_POST['customer_id']) : NULL;
-    $customer_name = trim($_POST['customer_name']);
+    $customer_name = trim($_POST['customer_name']); 
     $total_amount = floatval($_POST['total_amount']);
     $status = $_POST['status'];
     $delivery_address = trim($_POST['delivery_address']);
     
     try {
         if ($customer_id !== NULL) {
-            $check_stmt = $conn->prepare("SELECT id FROM customers WHERE id = ?");
+            $check_stmt = $conn->prepare("SELECT id, name, email, phone FROM customers WHERE id = ?");
             $check_stmt->bind_param('i', $customer_id);
             $check_stmt->execute();
             $check_result = $check_stmt->get_result();
@@ -44,43 +44,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_order'])) {
                 echo "<script>alert('Customer ID does not exist');</script>";
                 echo "<script>window.location.href = 'admin-manage-orders.php';</script>";
                 exit();
+            } else {
+                $customer_data = $check_result->fetch_assoc();
+                $customer_name = $customer_data['name'];
+                $customer_email = $customer_data['email'];
+                $customer_phone = $customer_data['phone'];
             }
         }
-                $stmt = $conn->prepare("INSERT INTO orders (customer_id, total_amount, status, delivery_address, order_date) 
-                               VALUES (?, ?, ?, ?, NOW())");
-        $stmt->bind_param('idss', $customer_id, $total_amount, $status, $delivery_address);
+        
+        // Set default name if empty
+        if (empty($customer_name)) {
+            $customer_name = 'Guest';
+        }
+        
+        $stmt = $conn->prepare("INSERT INTO orders 
+            (customer_id, customer_name, customer_email, customer_phone, 
+            total_amount, status, delivery_address, order_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param('isssdss', $customer_id, $customer_name, $customer_email, 
+                        $customer_phone, $total_amount, $status, $delivery_address);
         $stmt->execute();
         
         $success_message = "Order created successfully!";
-        // Refresh the page to show the new order
         header("Location: admin-manage-orders.php");
         exit();
     } catch (Exception $e) {
         $error_message = "Error creating order: " . $e->getMessage();
-    }
-}
-
-// Handle new order submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_order'])) {
-    $customer_id = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : null;
-    $total_amount = floatval($_POST['total_amount']);
-    $status = $conn->real_escape_string($_POST['status']);
-    $delivery_address = $conn->real_escape_string($_POST['delivery_address']);
-    
-    try {
-        $stmt = $conn->prepare("INSERT INTO orders (customer_id, total_amount, status, delivery_address) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param('idss', $customer_id, $total_amount, $status, $delivery_address);
-        
-        if ($stmt->execute()) {
-            $order_id = $stmt->insert_id;
-            // Here you would also add code to insert order items if needed
-            $success_message = "Order #$order_id added successfully!";
-        } else {
-            $error_message = "Error adding order: " . $conn->error;
-        }
-        $stmt->close();
-    } catch (Exception $e) {
-        $error_message = "Error adding order: " . $e->getMessage();
     }
 }
 
@@ -90,13 +79,14 @@ try {
     $search = $_GET['search'] ?? '';
     $status_filter = $_GET['status'] ?? '';
 
-    $query = "SELECT o.id, o.customer_id, o.total_amount, o.status, 
-                     o.order_date, o.delivery_address,
-                     c.name AS customer_name, c.email AS customer_email, 
-                     c.phone AS customer_phone
-              FROM orders o 
-              LEFT JOIN customers c ON o.customer_id = c.id
-              WHERE 1=1";
+    $query = "SELECT o.id, o.customer_id, 
+             COALESCE(c.name, o.customer_name, 'Guest') AS customer_name,
+             o.total_amount, o.status, o.order_date, o.delivery_address,
+             COALESCE(o.customer_email, c.email, 'Not provided') AS customer_email, 
+             COALESCE(o.customer_phone, c.phone, 'Not provided') AS customer_phone
+      FROM orders o 
+      LEFT JOIN customers c ON o.customer_id = c.id
+      WHERE 1=1";
     
     $params = [];
     $types = '';
@@ -821,15 +811,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])) {
                             <tr>
                                 <td><?php echo htmlspecialchars($order['id']); ?></td>
                                 <td>
-                                    <?php if (!empty($order['customer_id'])): ?>
-                                        <a href="admin-manage-member.php?customer_id=<?php echo $order['customer_id']; ?>">
-                                            <?php echo htmlspecialchars($order['customer_name'] ?? 'Guest'); ?>
-                                        </a>
-                                    <?php else: ?>
-                                        <?php echo htmlspecialchars($order['customer_name'] ?? 'Guest'); ?>
-                                    <?php endif; ?>
-                                    <br>
-                                    <small><?php echo htmlspecialchars($order['customer_email'] ?? ''); ?></small>
+                                    <?php 
+                                    $displayName = !empty($order['customer_name']) ? $order['customer_name'] : 'Guest';
+                                    echo htmlspecialchars($displayName); 
+                                    ?>
                                 </td>
                                 <td>RM<?php echo number_format($order['total_amount'], 2); ?></td>
                                 <td><?php echo date('M d, Y H:i', strtotime($order['order_date'])); ?></td>
@@ -839,23 +824,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])) {
                                     </span>
                                 </td>
                                 <td>
-                                  <button class="order-action-btn" onclick="openOrderDetailsModal(
-                                      '<?php echo $order['id']; ?>',
-                                      '<?php echo htmlspecialchars($order['customer_name'] ?? 'Guest', ENT_QUOTES); ?>',
-                                      '<?php echo $order['customer_id'] ?? ''; ?>',
-                                      '<?php echo $order['total_amount']; ?>',
-                                      '<?php echo $order['order_date']; ?>',
-                                      '<?php echo htmlspecialchars($order['status'], ENT_QUOTES); ?>',
-                                      '<?php echo htmlspecialchars($order['customer_email'] ?? '', ENT_QUOTES); ?>',
-                                      '<?php echo htmlspecialchars($order['customer_phone'] ?? '', ENT_QUOTES); ?>',
-                                      '<?php echo htmlspecialchars($order['delivery_address'] ?? '', ENT_QUOTES); ?>'
-                                  )">
-                                      <i class="fas fa-eye"></i> View
-                                  </button>
-                                  <button class="order-action-btn" onclick="confirmDelete(<?php echo $order['id']; ?>)">
-                                      <i class="fas fa-trash"></i> Delete
-                                  </button>
-                              </td>
+                                    <button class="order-action-btn" onclick="openOrderDetailsModal(
+                                        '<?php echo $order['id']; ?>',
+                                        '<?php echo htmlspecialchars($order['customer_name'] ?? 'Guest', ENT_QUOTES); ?>',
+                                        '<?php echo $order['customer_id'] ?? ''; ?>',
+                                        '<?php echo $order['total_amount']; ?>',
+                                        '<?php echo $order['order_date']; ?>',
+                                        '<?php echo htmlspecialchars($order['status'], ENT_QUOTES); ?>',
+                                        '<?php echo htmlspecialchars($order['customer_email'] ?? '', ENT_QUOTES); ?>',
+                                        '<?php echo htmlspecialchars($order['customer_phone'] ?? '', ENT_QUOTES); ?>',
+                                        '<?php echo htmlspecialchars($order['delivery_address'] ?? '', ENT_QUOTES); ?>'
+                                    )">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="order-action-btn" onclick="confirmDelete(<?php echo $order['id']; ?>)">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
