@@ -122,7 +122,7 @@ $stmt->close();
     }
 
     .logo-container img {
-      height: 50px;
+      height: 65px;
       margin-right: 15px;
     }
 
@@ -307,22 +307,6 @@ $stmt->close();
       align-items: center;
       text-decoration: none;
       color: inherit;
-    }
-
-    .logo-container img {
-      height: 50px;
-      margin-right: 15px;
-    }
-
-    .logo-text h1 {
-      color: var(--brown);
-      margin: 0;
-      font-size: 1.8rem;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-      font-size: 0.9rem;
     }
 
     /* Footer */

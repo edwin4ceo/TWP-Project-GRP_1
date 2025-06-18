@@ -34,7 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_order'])) {
     $delivery_address = trim($_POST['delivery_address']);
     
     try {
-        $stmt = $conn->prepare("INSERT INTO orders (customer_id, total_amount, status, delivery_address, order_date) 
+        if ($customer_id !== NULL) {
+            $check_stmt = $conn->prepare("SELECT id FROM customers WHERE id = ?");
+            $check_stmt->bind_param('i', $customer_id);
+            $check_stmt->execute();
+            $check_result = $check_stmt->get_result();
+            
+            if ($check_result->num_rows === 0) {
+                echo "<script>alert('Customer ID does not exist');</script>";
+                echo "<script>window.location.href = 'admin-manage-orders.php';</script>";
+                exit();
+            }
+        }
+                $stmt = $conn->prepare("INSERT INTO orders (customer_id, total_amount, status, delivery_address, order_date) 
                                VALUES (?, ?, ?, ?, NOW())");
         $stmt->bind_param('idss', $customer_id, $total_amount, $status, $delivery_address);
         $stmt->execute();
@@ -115,6 +127,33 @@ try {
     $orders = $result->fetch_all(MYSQLI_ASSOC);
 } catch (Exception $e) {
     $error_message = "Error fetching orders: " . $e->getMessage();
+}
+
+// Handle order deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order'])) {
+    $order_id = intval($_POST['order_id']);
+    
+    try {
+        // First delete order items (if they exist in a separate table)
+        // $conn->query("DELETE FROM order_items WHERE order_id = $order_id");
+        
+        // Then delete the order
+        $stmt = $conn->prepare("DELETE FROM orders WHERE id = ?");
+        $stmt->bind_param('i', $order_id);
+        $stmt->execute();
+        
+        if ($stmt->affected_rows > 0) {
+            $success_message = "Order deleted successfully!";
+        } else {
+            $error_message = "Order not found or already deleted";
+        }
+        
+        // Refresh the page to show updated list
+        header("Location: admin-manage-orders.php");
+        exit();
+    } catch (Exception $e) {
+        $error_message = "Error deleting order: " . $e->getMessage();
+    }
 }
 ?>
 
@@ -200,7 +239,7 @@ try {
         }
 
         .logo-container img {
-            height: 50px;
+            height: 65px;
             margin-right: 15px;
         }
 
@@ -232,7 +271,7 @@ try {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 21px;
         }
 
         .page-title h2 {
@@ -242,18 +281,26 @@ try {
         }
 
         /* Order Table Styles */
-        .order-table-container {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 20px;
+        .table-responsive {
             overflow-x: auto;
+            margin-top: 20px;
         }
 
-        .order-table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
         }
 
         .order-table th, .order-table td {
@@ -361,12 +408,12 @@ try {
         .alert {
             padding: 15px;
             margin-bottom: 20px;
-            border-radius: 4px;
-        }
+            border-radius: 4px; 
+        } 
 
-        .alert-success {
-            background-color: #e6f7ee;
-            color: #2ecc71;
+        .alert-success {  
+            background-color: #e6f7ee;  
+            color: #2ecc71; 
             border: 1px solid #2ecc71;
         }
 
@@ -399,7 +446,7 @@ try {
         .modal {
             display: none;
             position: fixed;
-            z-index: 1050;
+            z-index: 1001;
             left: 0;
             top: 0;
             width: 100%;
@@ -410,6 +457,10 @@ try {
             animation: fadeIn 0.3s ease-out;
         }
 
+        #deleteModal .modal-content {
+            max-width: 500px;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -417,13 +468,18 @@ try {
 
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
             max-width: 800px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -483,6 +539,7 @@ try {
             border-radius: 4px;
         }
 
+
         .order-items-table {
             width: 100%;
             border-collapse: collapse;
@@ -540,11 +597,9 @@ try {
             padding: 10px 15px;
             font-size: 1rem;
             border: 1px solid #ccc;
-            border-radius: 6px;
-            background-color: var(--white);
-            cursor: pointer;
-            transition: border-color 0.3s;
-            min-width: 160px;
+            border-radius: 5px;
+            width: 150px;
+            min-width: 135px; 
         }
 
         .filter-dropdown select:hover,
@@ -575,6 +630,93 @@ try {
             justify-content: flex-end;
             gap: 10px;
             margin-top: 20px;
+        }
+
+
+        .search-filter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            margin-top: -6px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .filter-dropdown select {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .action-buttons {
+            flex: 0 0 auto;
+            margin-left: auto;
+        }
+
+        .action-buttons button {
+            font-size: 1rem;
+            padding: 10px 15px;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-buttons button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white; 
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: #777;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #555;
         }
     </style>
 </head>
@@ -632,39 +774,37 @@ try {
             </div>
         <?php endif; ?>
 
-        <!-- Search and Filter Controls -->
-        <div class="top-controls">
-            <form method="GET" action="admin-manage-orders.php" class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="search" name="search" placeholder="Search orders..." 
-                      value="<?php echo htmlspecialchars($search); ?>">
-            </form>
-            
-            <form method="GET" action="admin-manage-orders.php" class="filter-dropdown">
-                <select name="status" onchange="this.form.submit()" style="width: 150px;">
-                    <option value="">All Statuses</option>
-                    <option value="pending" <?php echo ($status_filter === 'pending') ? 'selected' : ''; ?>>Pending</option>
-                    <option value="processing" <?php echo ($status_filter === 'processing') ? 'selected' : ''; ?>>Processing</option>
-                    <option value="completed" <?php echo ($status_filter === 'completed') ? 'selected' : ''; ?>>Completed</option>
-                    <option value="cancelled" <?php echo ($status_filter === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                </select>
-                <?php if (isset($_GET['search'])): ?>
-                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']); ?>">
-                <?php endif; ?>
-            </form>
-
-            <button class="order-action-btn" onclick="openAddOrderModal()">
-                <i class="fas fa-plus"></i> Add Order
-            </button>
+        <div class="search-filter">
+          <form method="GET" action="admin-manage-orders.php" class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" placeholder="Search orders..." value="<?php echo htmlspecialchars($search); ?>">
+          </form>
+          
+          <form method="GET" action="admin-manage-orders.php" class="filter-dropdown">
+            <select name="status" onchange="this.form.submit()">
+              <option value="">All Statuses</option>
+              <option value="pending" <?php echo ($status_filter === 'pending') ? 'selected' : ''; ?>>Pending</option>
+              <option value="processing" <?php echo ($status_filter === 'processing') ? 'selected' : ''; ?>>Processing</option>
+              <option value="completed" <?php echo ($status_filter === 'completed') ? 'selected' : ''; ?>>Completed</option>
+              <option value="cancelled" <?php echo ($status_filter === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
+            </select>
+            <?php if (isset($_GET['search'])): ?>
+              <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']); ?>">
+            <?php endif; ?>
+          </form>
+          
+          <div class="action-buttons">
+            <button onclick="openAddOrderModal()"><i class="fas fa-plus"></i> Add Order</button>
+          </div>
         </div>
 
         <!-- Orders Table -->
-        <div class="order-table-container">
+        <div class="table-responsive  ">
             <table class="order-table">
                 <thead>
                     <tr>
                         <th>Order ID</th>
-                        <th>Customer</th>
+                        <th>Customer Name</th>
                         <th>Total Amount</th>
                         <th>Order Date</th>
                         <th>Status</th>
@@ -699,20 +839,23 @@ try {
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="order-action-btn" onclick="openOrderDetailsModal(
-                                        '<?php echo $order['id']; ?>',
-                                        '<?php echo htmlspecialchars($order['customer_name'] ?? 'Guest', ENT_QUOTES); ?>',
-                                        '<?php echo $order['customer_id'] ?? ''; ?>',
-                                        '<?php echo $order['total_amount']; ?>',
-                                        '<?php echo $order['order_date']; ?>',
-                                        '<?php echo htmlspecialchars($order['status'], ENT_QUOTES); ?>',
-                                        '<?php echo htmlspecialchars($order['customer_email'] ?? '', ENT_QUOTES); ?>',
-                                        '<?php echo htmlspecialchars($order['customer_phone'] ?? '', ENT_QUOTES); ?>',
-                                        '<?php echo htmlspecialchars($order['delivery_address'] ?? '', ENT_QUOTES); ?>'
-                                    )">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </td>
+                                  <button class="order-action-btn" onclick="openOrderDetailsModal(
+                                      '<?php echo $order['id']; ?>',
+                                      '<?php echo htmlspecialchars($order['customer_name'] ?? 'Guest', ENT_QUOTES); ?>',
+                                      '<?php echo $order['customer_id'] ?? ''; ?>',
+                                      '<?php echo $order['total_amount']; ?>',
+                                      '<?php echo $order['order_date']; ?>',
+                                      '<?php echo htmlspecialchars($order['status'], ENT_QUOTES); ?>',
+                                      '<?php echo htmlspecialchars($order['customer_email'] ?? '', ENT_QUOTES); ?>',
+                                      '<?php echo htmlspecialchars($order['customer_phone'] ?? '', ENT_QUOTES); ?>',
+                                      '<?php echo htmlspecialchars($order['delivery_address'] ?? '', ENT_QUOTES); ?>'
+                                  )">
+                                      <i class="fas fa-eye"></i> View
+                                  </button>
+                                  <button class="order-action-btn" onclick="confirmDelete(<?php echo $order['id']; ?>)">
+                                      <i class="fas fa-trash"></i> Delete
+                                  </button>
+                              </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -828,8 +971,8 @@ try {
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button type="button" class="order-action-btn" onclick="closeOrderDetailsModal()">Close</button>
-                            <button type="submit" class="order-action-btn" name="update_status">Update Status</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeOrderDetailsModal()">Close</button>
+                            <button type="submit" class="btn btn-primary" name="update_status">Update Status</button>
                         </div>
                     </form>
                 </div>
@@ -883,86 +1026,115 @@ try {
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="order-action-btn" onclick="closeAddOrderModal()">Cancel</button>
-                    <button type="submit" class="order-action-btn" name="add_order">Save Order</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddOrderModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" name="add_order">Save Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Delete</h3>
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <form action="  admin-manage-orders.php" method="POST">
+                <input type="hidden" id="delete-order-id" name="order_id">
+                <p>Are you sure you want to delete this order? This action cannot be undone.</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" name="delete_order">Delete</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Open order details modal with data
-        function openOrderDetailsModal(id, name, customerId, total, date, status, email, phone, address) {
-            // Populate modal fields
-            document.getElementById('modalOrderId').textContent = id;
-            document.getElementById('modalOrderIdInput').value = id;
-            
-            const customerNameElement = document.getElementById('modalCustomerName');
-            if (customerId) {
-                customerNameElement.innerHTML = `<a href="admin-manage-member.php?customer_id=${customerId}">${name}</a>`;
-            } else {
-                customerNameElement.textContent = name;
-            }
-            
-            document.getElementById('modalCustomerEmail').textContent = email || 'Not provided';
-            document.getElementById('modalCustomerPhone').textContent = phone || 'Not provided';
-            document.getElementById('modalOrderDate').textContent = new Date(date).toLocaleString();
-            document.getElementById('modalDeliveryAddress').textContent = address || 'Not provided';
-
-            // Set status
-            document.getElementById('modalCurrentStatus').innerHTML = `<span class="status ${status.toLowerCase()}">${status}</span>`;
-            
-            // Set selected status in dropdown
-            document.getElementById('statusSelect').value = status;
-            
-            // For demo purposes, we'll create some sample order items
-            const itemsBody = document.getElementById('orderItemsBody');
-            itemsBody.innerHTML = `
-                <tr>
-                    <td>Chocolate Cake</td>
-                    <td>1</td>
-                    <td>RM45.00</td>
-                    <td>RM45.00</td>
-                </tr>
-                <tr>
-                    <td>Vanilla Cupcakes (6-pack)</td>
-                    <td>2</td>
-                    <td>RM18.00</td>
-                    <td>RM36.00</td>
-                </tr>
-            `;
-            
-            // Calculate totals
-            const subtotal = 81.00;
-            const shipping = 8.00;
-            const totalAmount = subtotal + shipping;
-            
-            document.getElementById('modalSubtotal').textContent = `RM${subtotal.toFixed(2)}`;
-            document.getElementById('modalShippingFee').textContent = `RM${shipping.toFixed(2)}`;
-            document.getElementById('modalTotalAmount').textContent = `RM${totalAmount.toFixed(2)}`;
-            
-            // Show modal
-            document.getElementById('orderDetailsModal').style.display = 'block';
+    // Open order details modal with data
+    function openOrderDetailsModal(id, name, customerId, total, date, status, email, phone, address) {
+        // Populate modal fields
+        document.getElementById('modalOrderId').textContent = id;
+        document.getElementById('modalOrderIdInput').value = id;
+        
+        const customerNameElement = document.getElementById('modalCustomerName');
+        if (customerId) {
+            customerNameElement.innerHTML = `<a href="admin-manage-member.php?customer_id=${customerId}">${name}</a>`;
+        } else {
+            customerNameElement.textContent = name;
         }
+        
+        document.getElementById('modalCustomerEmail').textContent = email || 'Not provided';
+        document.getElementById('modalCustomerPhone').textContent = phone || 'Not provided';
+        document.getElementById('modalOrderDate').textContent = new Date(date).toLocaleString();
+        document.getElementById('modalDeliveryAddress').textContent = address || 'Not provided';
 
-        function closeOrderDetailsModal() {
-            document.getElementById('orderDetailsModal').style.display = 'none';
-        }
+        // Set status
+        document.getElementById('modalCurrentStatus').innerHTML = `<span class="status ${status.toLowerCase()}">${status}</span>`;
+        
+        // Set selected status in dropdown
+        document.getElementById('statusSelect').value = status;
+        
+        // For demo purposes, we'll create some sample order items
+        const itemsBody = document.getElementById('orderItemsBody');
+        itemsBody.innerHTML = `
+            <tr>
+                <td>Chocolate Cake</td>
+                <td>1</td>
+                <td>RM45.00</td>
+                <td>RM45.00</td>
+            </tr>
+            <tr>
+                <td>Vanilla Cupcakes (6-pack)</td>
+                <td>2</td>
+                <td>RM18.00</td>
+                <td>RM36.00</td>
+            </tr>
+        `;
+        
+        // Calculate totals
+        const subtotal = 81.00;
+        const shipping = 8.00;
+        const totalAmount = subtotal + shipping;
+        
+        document.getElementById('modalSubtotal').textContent = `RM${subtotal.toFixed(2)}`;
+        document.getElementById('modalShippingFee').textContent = `RM${shipping.toFixed(2)}`;
+        document.getElementById('modalTotalAmount').textContent = `RM${totalAmount.toFixed(2)}`;
+        
+        // Show modal
+        document.getElementById('orderDetailsModal').style.display = 'block';
+    }
 
-        function openAddOrderModal() {
-            document.getElementById('addOrderModal').style.display = 'block';
-        }
+    function closeOrderDetailsModal() {
+        document.getElementById('orderDetailsModal').style.display = 'none';
+    }
 
-        function closeAddOrderModal() {
-            document.getElementById('addOrderModal').style.display = 'none';
-        }
+    function openAddOrderModal() {
+        document.getElementById('addOrderModal').style.display = 'block';
+    }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                closeOrderDetailsModal();
-            }
+    function closeAddOrderModal() {
+        document.getElementById('addOrderModal').style.display = 'none';
+    }
+
+    function confirmDelete(orderId) {
+        document.getElementById('delete-order-id').value = orderId;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            closeOrderDetailsModal();
+            closeAddOrderModal();
+            closeDeleteModal();
         }
-    </script>
+    }
+</script>
 </body>
 </html>

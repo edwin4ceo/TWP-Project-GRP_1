@@ -127,7 +127,7 @@ $stmt->close();
     }
 
     .logo-container img {
-      height: 50px;
+      height: 65px;
       margin-right: 15px;
     }
 
@@ -202,6 +202,13 @@ $stmt->close();
 
     .member-table td {
       font-size: 0.9rem;
+    }
+
+    .member-table td:nth-child(5) { 
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .member-action-btn {

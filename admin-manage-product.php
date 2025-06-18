@@ -165,22 +165,6 @@ try {
       align-items: center;
     }
 
-    .logo-container img {
-      height: 50px;
-      margin-right: 15px;
-    }
-
-    .logo-text h1 {
-      color: var(--brown);
-      margin: 0;
-      font-size: 1.8rem;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-      font-size: 0.9rem;
-    }
-
     .admin-nav .profile {
       display: flex;
       align-items: center;
@@ -354,7 +338,7 @@ try {
     }
 
     .logo-container img {
-      height: 50px;
+      height: 65px;
       margin-right: 15px;
     }
 
@@ -784,6 +768,7 @@ try {
 
   <!-- Delete Confirmation Modal -->
   <div id="deleteModal" class="modal">
+    <div class="modal-content" style="width: 50%;">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Confirm Delete</h3>
@@ -797,6 +782,7 @@ try {
           <button type="submit" class="btn btn-primary" name="delete_product">Delete</button>
         </div>
       </form>
+    </div>
     </div>
   </div>
 

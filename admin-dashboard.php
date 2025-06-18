@@ -54,10 +54,20 @@ try {
     $stmt = $conn->query("SELECT COUNT(*) FROM products WHERE stock < 5");
     $low_stock_products = $stmt->fetch_row()[0];
     
-    // Fetch recent orders
+    // Fetch recent orders with customer name
     $recent_orders = [];
-    $stmt = $conn->query("SELECT * FROM orders ORDER BY order_date DESC LIMIT 5");
+    $stmt = $conn->query("
+        SELECT o.*, c.name AS customer_name 
+        FROM orders o
+        LEFT JOIN customers c ON o.customer_id = c.id
+        ORDER BY o.order_date DESC LIMIT 5
+    ");
     while ($row = $stmt->fetch_assoc()) {
+        // Get item count for each order
+        $item_stmt = $conn->prepare("SELECT COUNT(*) FROM order_items WHERE order_id = ?");
+        $item_stmt->bind_param("i", $row['id']);
+        $item_stmt->execute();
+        $row['item_count'] = $item_stmt->get_result()->fetch_row()[0];
         $recent_orders[] = $row;
     }
 } catch (Exception $e) {
@@ -127,7 +137,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
     }
     
     .logo-container img {
-      height: 50px;
+      height: 65px;
       margin-right: 15px;
     }
     
@@ -363,6 +373,11 @@ $customer_percentage_change = $last_month_customers > 0 ?
       color: #e67e22;
     }
 
+    .status.processing {
+      background-color: #e6f3ff;
+      color: #3498db;
+    }
+
     .status.completed {
       background-color: #e6f7ee;
       color: #2ecc71;
@@ -371,6 +386,11 @@ $customer_percentage_change = $last_month_customers > 0 ?
     .status.cancelled {
       background-color: #ffebee;
       color: #e74c3c;
+    }
+
+    .status.shipped {
+      background-color: #e6e6ff;
+      color: #5c6bc0;
     }
 
     .text-primary {
@@ -383,6 +403,24 @@ $customer_percentage_change = $last_month_customers > 0 ?
     .text-primary:hover {
       color: var(--primary-dark);
       text-decoration: underline;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .view-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .view-btn:hover {
+      background-color: var(--primary-dark);
     }
 
     /* Footer */
@@ -398,13 +436,13 @@ $customer_percentage_change = $last_month_customers > 0 ?
 
     @media (max-width: 1200px) {
       .stats-cards {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 768px) {
       .stats-cards {
-        grid-template-columns: 1fr; /* 1 column on small screens */
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -449,7 +487,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
       <div class="page-header">
         <div class="page-title">
           <h2>Dashboard Overview</h2>
-          <p>Welcome back, <?php echo htmlspecialchars($admin_name); ?> ! Here's what's happening with your store today.</p>
+          <p>Welcome back, <?php echo htmlspecialchars($admin_name); ?>! Here's what's happening with your store today.</p>
         </div>
       </div>
       
@@ -540,7 +578,7 @@ $customer_percentage_change = $last_month_customers > 0 ?
         <div class="section-header">
           <h3 class="section-title">Recent Orders</h3>
           <a href="admin-manage-orders.php" class="view-all">
-            <i class="fas fa-list"></i> View All
+            <i class="fas fa-list"></i> View All Orders
           </a>
         </div>
         
@@ -554,24 +592,32 @@ $customer_percentage_change = $last_month_customers > 0 ?
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <?php if (!empty($recent_orders)): ?>
                 <?php foreach ($recent_orders as $order): ?>
                   <tr>
-                    <td>#<?php echo htmlspecialchars($order['order_id']); ?></td>
-                    <td><?php echo htmlspecialchars($order['customer_name'] ?? 'N/A'); ?></td>
+                    <td>#<?php echo htmlspecialchars($order['id']); ?></td>
+                    <td>
+                      <?php if (!empty($order['customer_id'])): ?>
+                        <a href="admin-manage-member.php?customer_id=<?php echo $order['customer_id']; ?>">
+                          <?php echo htmlspecialchars($order['customer_name'] ?? 'Guest'); ?>
+                        </a>
+                      <?php else: ?>
+                        <?php echo htmlspecialchars($order['customer_name'] ?? 'Guest'); ?>
+                      <?php endif; ?>
+                    </td>
                     <td><?php echo $order['item_count'] ?? 0; ?></td>
                     <td>$<?php echo number_format($order['total_amount'] ?? 0, 2); ?></td>
-                    <td><?php echo date('M j, Y', strtotime($order['order_date'])); ?></td>
+                    <td><?php echo date('M j, Y H:i', strtotime($order['order_date'])); ?></td>
                     <td>
                       <span class="status <?php echo strtolower($order['status'] ?? 'pending'); ?>">
-                        <?php echo htmlspecialchars($order['status'] ?? 'Pending'); ?>
+                        <?php echo ucfirst(htmlspecialchars($order['status'] ?? 'Pending')); ?>
                       </span>
                     </td>
-                    <td><a href="admin-order-details.php?id=<?php echo $order['order_id']; ?>" class="text-primary">View</a></td>
+                    <td><a href="admin-order-details.php?id=<?php echo $order['id']; ?>" class="text-primary">View</a></td>
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>
