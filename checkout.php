@@ -35,6 +35,7 @@ if (!empty($_SESSION['cart'])) {
         mysqli_stmt_close($stmt);
     } else {
         error_log("Failed to prepare cart query: " . mysqli_error($conn));
+        $errors[] = "Unable to load cart items.";
     }
 }
 
@@ -45,17 +46,18 @@ $tax = $subtotal * $tax_rate;
 $total = $subtotal + $shipping + $tax;
 
 // Fetch user details
-$user_id = $_SESSION['user_id'];
+$customer_id = $_SESSION['user_id'];
 $query = "SELECT name, email, phone FROM customers WHERE id = ?";
 $stmt = mysqli_prepare($conn, $query);
 if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_bind_param($stmt, "i", $customer_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
+    $user = mysqli_fetch_assoc($result) ?: ['name' => '', 'email' => '', 'phone' => ''];
     mysqli_stmt_close($stmt);
 } else {
     error_log("Failed to prepare user query: " . mysqli_error($conn));
+    $errors[] = "Unable to load user details.";
     $user = ['name' => '', 'email' => '', 'phone' => ''];
 }
 
@@ -84,6 +86,16 @@ $form_data = [
     'cvv' => isset($_POST['cvv']) ? trim($_POST['cvv']) : '',
     'billing_zip' => isset($_POST['billing_zip']) ? trim($_POST['billing_zip']) : ''
 ];
+
+// Construct delivery address
+$delivery_address = trim(
+    ($form_data['street_address'] ? $form_data['street_address'] : '') . ' ' .
+    ($form_data['apartment'] ? $form_data['apartment'] . ', ' : '') .
+    ($form_data['city'] ? $form_data['city'] . ', ' : '') .
+    ($form_data['state'] ? $form_data['state'] . ', ' : '') .
+    ($form_data['zip_code'] ? $form_data['zip_code'] . ', ' : '') .
+    ($form_data['country'] ? $form_data['country'] : '')
+);
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
@@ -122,12 +134,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
         mysqli_begin_transaction($conn);
         try {
             // Insert order
-            $query = "INSERT INTO orders (user_id, total, status) VALUES (?, ?, 'pending')";
+            $customer_name = $form_data['first_name'] . ' ' . $form_data['last_name'];
+            $query = "INSERT INTO orders (customer_id, customer_name, total_amount, status, delivery_address, customer_email, customer_phone) VALUES (?, ?, ?, 'pending', ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $query);
             if (!$stmt) {
                 throw new Exception("Failed to prepare order insert query: " . mysqli_error($conn));
             }
-            mysqli_stmt_bind_param($stmt, "id", $user_id, $total);
+            mysqli_stmt_bind_param($stmt, "issdss", $customer_id, $customer_name, $total, $delivery_address, $form_data['email'], $form_data['phone']);
             if (!mysqli_stmt_execute($stmt)) {
                 throw new Exception("Failed to execute order insert query: " . mysqli_stmt_error($stmt));
             }
@@ -160,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
         } catch (Exception $e) {
             mysqli_rollback($conn);
             $errors[] = "Failed to process order: " . htmlspecialchars($e->getMessage());
-            error_log("Order processing error: " . $e->getMessage() . " | User ID: $user_id | Total: $total");
+            error_log("Order processing error: " . $e->getMessage() . " | Customer ID: $customer_id | Total: $total | Time: " . date('Y-m-d H:i:s'));
         }
     }
 }
@@ -173,7 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="checkout-confirmation-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
