@@ -21,15 +21,20 @@ if (!empty($_SESSION['cart'])) {
     $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
     $query = "SELECT id, name, price, image FROM products WHERE id IN ($placeholders)";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, str_repeat('i', count($product_ids)), ...$product_ids);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    
-    while ($row = mysqli_fetch_assoc($result)) {
-        $row['quantity'] = $_SESSION['cart'][$row['id']];
-        $row['total'] = $row['price'] * $row['quantity'];
-        $subtotal += $row['total'];
-        $cart_items[] = $row;
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, str_repeat('i', count($product_ids)), ...$product_ids);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        while ($row = mysqli_fetch_assoc($result)) {
+            $row['quantity'] = $_SESSION['cart'][$row['id']];
+            $row['total'] = $row['price'] * $row['quantity'];
+            $subtotal += $row['total'];
+            $cart_items[] = $row;
+        }
+        mysqli_stmt_close($stmt);
+    } else {
+        error_log("Failed to prepare cart query: " . mysqli_error($conn));
     }
 }
 
@@ -43,10 +48,16 @@ $total = $subtotal + $shipping + $tax;
 $user_id = $_SESSION['user_id'];
 $query = "SELECT name, email, phone FROM customers WHERE id = ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+} else {
+    error_log("Failed to prepare user query: " . mysqli_error($conn));
+    $user = ['name' => '', 'email' => '', 'phone' => ''];
+}
 
 // Split name for default values
 $name_parts = explode(' ', $user['name'], 2);
@@ -113,17 +124,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
             // Insert order
             $query = "INSERT INTO orders (user_id, total, status) VALUES (?, ?, 'pending')";
             $stmt = mysqli_prepare($conn, $query);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare order insert query: " . mysqli_error($conn));
+            }
             mysqli_stmt_bind_param($stmt, "id", $user_id, $total);
-            mysqli_stmt_execute($stmt);
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception("Failed to execute order insert query: " . mysqli_stmt_error($stmt));
+            }
             $order_id = mysqli_insert_id($conn);
+            mysqli_stmt_close($stmt);
 
             // Insert order items
             $query = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $query);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare order items insert query: " . mysqli_error($conn));
+            }
             foreach ($cart_items as $item) {
                 mysqli_stmt_bind_param($stmt, "iiid", $order_id, $item['id'], $item['quantity'], $item['price']);
-                mysqli_stmt_execute($stmt);
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception("Failed to execute order items insert query: " . mysqli_stmt_error($stmt));
+                }
             }
+            mysqli_stmt_close($stmt);
 
             // Commit transaction
             mysqli_commit($conn);
@@ -136,7 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
             exit();
         } catch (Exception $e) {
             mysqli_rollback($conn);
-            $errors[] = "Failed to process order: " . $e->getMessage();
+            $errors[] = "Failed to process order: " . htmlspecialchars($e->getMessage());
+            error_log("Order processing error: " . $e->getMessage() . " | User ID: $user_id | Total: $total");
         }
     }
 }
