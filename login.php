@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="profile-dropdown">
                     <span class="profile-icon" id="profileToggle">👤</span>
                     <div class="dropdown-menu" id="profileMenu">
-                        <a href="signup.php">Sign Up</a>
+                        <a href="register.php">Sign Up</a>
                         <a href="login.php">Login</a>
                     </div>
                 </div>
