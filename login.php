@@ -2,10 +2,7 @@
 session_start();
 
 // Database connection
-$servername = "127.0.0.1";
-$username = "root";
-$password = "";
-$dbname = "bakeease";
+include("db_connection.php");
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
