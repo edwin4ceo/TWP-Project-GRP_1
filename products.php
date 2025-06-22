@@ -21,7 +21,7 @@ $result = mysqli_stmt_get_result($stmt);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Products - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="products-styles.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>

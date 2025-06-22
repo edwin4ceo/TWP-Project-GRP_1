@@ -59,7 +59,6 @@ if ($order_id > 0) {
     <title>Order Confirmation - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="checkout-confirmation-styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>
