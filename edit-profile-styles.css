@@ -1,0 +1,215 @@
+/* ------------------------------
+   Edit Profile Section
+------------------------------ */
+.edit-profile-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 180px);
+  background: linear-gradient(145deg, #fff7ed, #fefce8);
+  padding: 30px 20px;
+}
+
+.edit-profile-container {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 50px 40px;
+  max-width: 640px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInScale 0.8s ease-out;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.edit-profile-container h2 {
+  font-family: 'Lora', 'Arial', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  background: #fef2f2;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #fee2e2;
+}
+
+.success {
+  color: #15803d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  background: #ecfdf5;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #d1fae5;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-row {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 220px;
+  text-align: left;
+}
+
+.form-group label {
+  font-family: 'Lora', 'Arial', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2c2c2c;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-bottom: 2px solid #e5e5e5;
+  border-radius: 4px 4px 0 0;
+  font-size: 0.95rem;
+  color: #2c2c2c;
+  background: #f8fafc;
+  outline: none;
+  transition: border-bottom-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+  border-bottom-color: #d97706;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.15);
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.form-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+form button {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-family: 'Lora', 'Arial', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form button:hover {
+  background: linear-gradient(90deg, #b45309, #d97706);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
+}
+
+.cancel-button {
+  display: inline-block;
+  background: #6b7280;
+  color: #ffffff;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-family: 'Lora', 'Arial', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cancel-button:hover {
+  background: #4b5563;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(107, 114, 128, 0.3);
+}
+
+/* ------------------------------
+   Responsive Design
+------------------------------ */
+@media (max-width: 768px) {
+  .edit-profile-container {
+    max-width: 520px;
+    padding: 35px;
+  }
+
+  .edit-profile-container h2 {
+    font-size: 1.9rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-group {
+    min-width: 100%;
+  }
+
+  .form-group input {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  form button, .cancel-button {
+    padding: 14px;
+    font-size: 1rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-profile-container {
+    max-width: 340px;
+    padding: 25px;
+  }
+
+  .edit-profile-container h2 {
+    font-size: 1.6rem;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .form-group input {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .error, .success {
+    font-size: 0.85rem;
+  }
+}
