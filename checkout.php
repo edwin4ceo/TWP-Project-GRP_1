@@ -48,11 +48,16 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
+// Split name for default values
+$name_parts = explode(' ', $user['name'], 2);
+$default_first_name = $name_parts[0];
+$default_last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+
 // Initialize form data and errors
 $errors = [];
 $form_data = [
-    'first_name' => isset($_POST['first_name']) ? trim($_POST['first_name']) : explode(' ', $user['name'], 2)[0],
-    'last_name' => isset($_POST['last_name']) ? trim($_POST['last_name']) : isset(explode(' ', $user['name'], 2)[1]) ? explode(' ', $user['name'], 2)[1] : '',
+    'first_name' => isset($_POST['first_name']) ? trim($_POST['first_name']) : $default_first_name,
+    'last_name' => isset($_POST['last_name']) ? trim($_POST['last_name']) : $default_last_name,
     'email' => isset($_POST['email']) ? trim($_POST['email']) : $user['email'],
     'phone' => isset($_POST['phone']) ? trim($_POST['phone']) : $user['phone'],
     'street_address' => isset($_POST['street_address']) ? trim($_POST['street_address']) : '',
