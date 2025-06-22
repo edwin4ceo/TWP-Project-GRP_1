@@ -67,7 +67,9 @@ if ($result) {
   </div>
     </header>
 
-    <section class="hero">
+    <!-- Hero Section -->
+  <main>
+    <section class="intro">
         <h1>Freshly Baked Goodness, Just a Click Away!</h1>
         <p>At BakeEase, we deliver delicious breads, cakes, and pastries straight to your doorstep. Browse our menu and order your favorites today!</p>
         <a href="products.php">Explore Our Menu</a>
@@ -88,12 +90,13 @@ if ($result) {
         </div>
     </section>
 
-    <section class="features">
+    <section class="why-choose">
         <h2>Why Choose BakeEase?</h2>
         <p>✅ Baked fresh daily</p>
         <p>✅ Premium ingredients</p>
         <p>✅ Fast delivery in your area</p>
     </section>
+    </main>
 
     <footer>
         <p>© 2025 BakeEase Bakery. All rights reserved.</p>
