@@ -63,16 +63,19 @@ session_start();
             <div class="about-container">
                 <h2>About Our Team</h2>
                 <div class="team-member">
+                    <img src="images/edwin.jpeg" alt="Edwin Photo" />
                     <h3>Edwin Teo Yuan Jing</h3>
                     <p>Front-End Developer (Visitor Role)</p>
                     <p>Student ID: 1231203190</p>
                 </div>
                 <div class="team-member">
+                    <img src="images/zunyi.jpeg" alt="zunyi Photo" />
                     <h3>CHAN ZUN YI</h3>
                     <p>UI/UX Designer (Customer Role)</p>
                     <p>Student ID: 1231201459</p>
                 </div>
                 <div class="team-member">
+                    <img src="images/soonkit.jpg" alt="Soon Kit Photo" />
                     <h3>WONG SOON KIT</h3>
                     <p>Admin Page Developer (Admin Role)</p>
                     <p>Student ID: 1231201251</p>
@@ -85,57 +88,43 @@ session_start();
         <p>© 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const profileToggle = document.getElementById("profileToggle");
-        const profileMenu = document.getElementById("profileMenu");
-        const cartToggle = document.getElementById("cartToggle");
-        const cartMenu = document.getElementById("cartMenu");
-        const navToggle = document.getElementById("navToggle");
-        const navMenu = document.getElementById("navMenu");
+    <!-- JavaScript for dropdowns -->
+  <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
 
-        if (!profileToggle || !profileMenu || !cartToggle || !cartMenu || !navToggle || !navMenu) {
-            console.error("One or more dropdown elements not found.");
-            return;
-        }
-
-        profileToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            profileMenu.classList.toggle("show");
-            cartMenu.classList.remove("show");
-            navMenu.classList.remove("show");
-        });
-
-        cartToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            cartMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            navMenu.classList.remove("show");
-        });
-
-        navToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            navMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            cartMenu.classList.remove("show");
-        });
-
-        document.addEventListener("click", (e) => {
-            if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-                profileMenu.classList.remove("show");
-            }
-            if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-                cartMenu.classList.remove("show");
-            }
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove("show");
-            }
-        });
-
-        profileMenu.addEventListener("click", (e) => e.stopPropagation());
-        cartMenu.addEventListener("click", (e) => e.stopPropagation());
-        navMenu.addEventListener("click", (e) => e.stopPropagation());
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
     });
-    </script>
+
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
+
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
+
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+  if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+    profileMenu.style.display = "none";
+  }
+  if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+    cartMenu.style.display = "none";
+  }
+  if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+    navMenu.style.display = "none";
+  }
+});
+  </script>
 </body>
 </html>
