@@ -109,44 +109,43 @@ if ($result) {
     </footer>
 
     <!-- JavaScript for dropdowns -->
-    <script>
-        const profileToggle = document.getElementById("profileToggle");
-        const profileMenu = document.getElementById("profileMenu");
-        const cartToggle = document.getElementById("cartToggle");
-        const cartMenu = document.getElementById("cartMenu");
-        const navToggle = document.getElementById("navToggle");
-        const navMenu = document.getElementById("navMenu");
+  <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
 
-        profileToggle.addEventListener("click", () => {
-            profileMenu.classList.toggle("show");
-            cartMenu.classList.remove("show");
-            navMenu.classList.remove("show");
-        });
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
+    });
 
-        cartToggle.addEventListener("click", () => {
-            cartMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            navMenu.classList.remove("show");
-        });
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
 
-        navToggle.addEventListener("click", () => {
-            navMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            cartMenu.classList.remove("show");
-        });
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
 
-        document.addEventListener("click", (e) => {
-            if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-                profileMenu.classList.remove("show");
-            }
-            if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-                cartMenu.classList.remove("show");
-            }
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove("show");
-            }
-        });
-    </script>
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+  if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+    profileMenu.style.display = "none";
+  }
+  if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+    cartMenu.style.display = "none";
+  }
+  if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+    navMenu.style.display = "none";
+  }
+});
+  </script>
 </body>
 </html>
 
