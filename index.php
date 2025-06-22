@@ -1,5 +1,6 @@
 <?php
-require_once 'db_connection.php';
+session_start();
+include("db_connection.php");
 
 // Fetch popular products (limiting to 3 as shown in the original HTML)
 $query = "SELECT id, name, description, price, image FROM products WHERE category = 'Cake' LIMIT 3";
@@ -19,178 +20,51 @@ if ($result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BakeEase Bakery</title>
-    <style>
-        /* Basic CSS to maintain original design */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-        }
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .nav-links, .cart, .account {
-            position: relative;
-            display: inline-block;
-        }
-        .dropdown {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown a:hover {
-            background-color: #f1f1f1;
-        }
-        .nav-links:hover .dropdown,
-        .cart:hover .dropdown,
-        .account:hover .dropdown {
-            display: block;
-        }
-        .search-bar {
-            text-align: center;
-            padding: 10px;
-        }
-        .search-bar input {
-            padding: 5px;
-            width: 200px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .hero {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: #f9f9f9;
-        }
-        .hero h1 {
-            margin-bottom: 20px;
-        }
-        .hero p {
-            margin-bottom: 20px;
-        }
-        .hero a {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .hero a:hover {
-            background-color: #555;
-        }
-        .popular {
-            max-width: 1200px;
-            margin: 50px auto;
-            text-align: center;
-        }
-        .popular h2 {
-            margin-bottom: 20px;
-        }
-        .product-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .product-card {
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 250px;
-            padding: 20px;
-            text-align: center;
-        }
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-        .product-card h3 {
-            margin: 10px 0;
-        }
-        .product-card p {
-            margin: 10px 0;
-            color: #666;
-        }
-        .product-card .price {
-            font-weight: bold;
-            color: #333;
-        }
-       ，唐
-        .product-card a {
-            display: inline-block;
-            margin-top: 10px;
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .product-card a:hover {
-            background-color: #555;
-        }
-        .features {
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
     <header>
-        <nav>
-            <div class="nav-links">
-                <span>☰</span>
-                <div class="dropdown">
-                    <a href="index.php">Home</a>
-                    <a href="products.php">Products</a>
-                    <a href="about.php">About Us</a>
-                    <a href="contact.php">Contact</a>
-                </div>
-            </div>
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-            </div>
-            <div class="cart">
-                <span>🛒</span>
-                <div class="dropdown">
-                    <a href="cart.php">View Cart</a>
-                    <a href="checkout.php">Checkout</a>
-                </div>
-            </div>
-            <div class="account">
-                <span>👤</span>
-                <div class="dropdown">
-                    <a href="signup.php">Sign Up</a>
-                    <a href="login.php">Login</a>
-                </div>
-            </div>
-        </nav>
+        <div class="header-bar">
+    <!-- Logo + Search Centered -->
+    <div class="logo-left">
+      <a href="index.php">
+      <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" /></a>
+      <div class="search-center">
+      <form class="search-form" action="products.php" method="get">
+      <input type="text" name="search" placeholder="Welcome To BakeEase" />
+      <button type="submit">Search</button>
+      </form>
+      </div>
+    </div>
+        <!-- Right Side Icons: Menu, Cart, Profile -->
+    <div class="header-right">
+      <div class="nav-dropdown">
+        <span class="nav-toggle" id="navToggle">☰</span>
+        <div class="dropdown-menu" id="navMenu">
+          <a href="index.php">Home</a>
+          <a href="products.php">Products</a>
+          <a href="about.php">About Us</a>
+          <a href="contact.php">Contact</a>
+        </div>
+      </div>
+
+      <div class="cart-dropdown">
+        <span class="cart-icon" id="cartToggle">🛒</span>
+        <div class="dropdown-menu" id="cartMenu">
+          <a href="shoppingCart.php">View Cart</a>
+          <a href="checkout.php">Checkout</a>
+        </div>
+      </div>
+
+      <div class="profile-dropdown">
+        <span class="profile-icon" id="profileToggle">👤</span>
+        <div class="dropdown-menu" id="profileMenu">
+          <a href="register.php">Sign Up</a>
+          <a href="login.php">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
     </header>
 
     <section class="hero">
@@ -224,6 +98,48 @@ if ($result) {
     <footer>
         <p>© 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
+
+    <!-- JavaScript for dropdowns -->
+  <script>
+    const profileToggle = document.getElementById("profileToggle");
+    const profileMenu = document.getElementById("profileMenu");
+    const cartToggle = document.getElementById("cartToggle");
+    const cartMenu = document.getElementById("cartMenu");
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    // Toggle Profile Menu
+    profileToggle.addEventListener("click", () => {
+      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+      cartMenu.style.display = "none";
+    });
+
+    // Toggle Cart Menu
+    cartToggle.addEventListener("click", () => {
+      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+      profileMenu.style.display = "none";
+    });
+
+    navToggle.addEventListener("click", () => {
+    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+  });
+
+    // Hide dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.style.display = "none";
+      }
+      if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+        cartMenu.style.display = "none";
+      }
+      document.addEventListener("click", (e) => {
+      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      navMenu.style.display = "none";
+    }
+  });
+    });
+  </script>
+
 </body>
 </html>
 
