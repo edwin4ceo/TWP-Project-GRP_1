@@ -2,38 +2,48 @@
 session_start();
 require_once 'db_connection.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'customer') {
-    header("Location: login.php");
+// Check if order_id is provided
+if (!isset($_GET['order_id'])) {
+    header("Location: shoppingCart.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
-$query = "SELECT name, email, phone FROM customers WHERE id = ?";
+$order_id = (int)$_GET['order_id'];
+
+// Fetch order details
+$query = "SELECT o.id, o.total, o.created_at, c.name, c.email FROM orders o JOIN customers c ON o.user_id = c.id WHERE o.id = ? AND o.user_id = ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_bind_param($stmt, "ii", $order_id, $_SESSION['user_id']);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
 
-if (!$user) {
-    session_destroy();
-    header("Location: login.php");
+if (!$result || mysqli_num_rows($result) === 0) {
+    header("Location: shoppingCart.php");
     exit();
 }
 
-// Fetch order history
-$query = "SELECT id, total, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+$order = mysqli_fetch_assoc($result);
+
+// Fetch order items
+$query = "SELECT oi.quantity, oi.price, p.name, p.image FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_bind_param($stmt, "i", $order_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: index.php");
-    exit();
+$order_items = [];
+$subtotal = 0;
+while ($row = mysqli_fetch_assoc($result)) {
+    $row['total'] = $row['quantity'] * $row['price'];
+    $subtotal += $row['total'];
+    $order_items[] = $row;
 }
+
+// Calculate totals
+$shipping = 0;
+$tax_rate = 0.07;
+$tax = $subtotal * $tax_rate;
+$total = $subtotal + $shipping + $tax;
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +51,7 @@ if (isset($_GET['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - BakeEase Bakery</title>
+    <title>Order Confirmation - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo.png" type="image/png" />
@@ -80,8 +90,13 @@ if (isset($_GET['logout'])) {
                 <div class="profile-dropdown">
                     <span class="profile-icon" id="profileToggle">👤</span>
                     <div class="dropdown-menu" id="profileMenu">
-                        <a href="profile.php">Profile</a>
-                        <a href="logout.php">Logout</a>
+                        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_type'] === 'customer'): ?>
+                            <a href="profile.php">Profile</a>
+                            <a href="logout.php">Logout</a>
+                        <?php else: ?>
+                            <a href="register.php">Sign Up</a>
+                            <a href="login.php">Login</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -89,30 +104,65 @@ if (isset($_GET['logout'])) {
     </header>
 
     <main>
-        <section class="profile-section">
-            <div class="profile-container">
-                <h2>Your Profile</h2>
-                <div class="profile-details">
-                    <p><strong>Name:</strong> <?= htmlspecialchars($user['name']) ?></p>
-                    <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-                    <p><strong>Phone:</strong> <?= htmlspecialchars($user['phone']) ?></p>
+        <section class="confirmation-section">
+            <div class="confirmation-container">
+                <div class="progress-bar">
+                    <div class="progress-step">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Cart</span>
+                    </div>
+                    <div class="progress-step">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Checkout</span>
+                    </div>
+                    <div class="progress-step active">
+                        <span class="step-number">3</span>
+                        <span class="step-label">Confirmation</span>
+                    </div>
                 </div>
-                <a href="edit_profile.php" class="action-button">Edit Profile</a>
-                <h3>Order History</h3>
-                <?php if (empty($orders)): ?>
-                    <p>No orders found.</p>
-                <?php else: ?>
-                    <div class="order-history">
-                        <?php foreach ($orders as $order): ?>
-                            <div class="order-entry">
-                                <p><strong>Order ID:</strong> #<?= sprintf("%06d", $order['id']) ?></p>
-                                <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['created_at'])) ?></p>
-                                <p><strong>Total:</strong> RM <?= number_format($order['total'], 2) ?></p>
-                                <p><strong>Status:</strong> <?= ucfirst($order['status']) ?></p>
+                <h2>Thank You for Your Order!</h2>
+                <p>Your order has been successfully placed. You'll receive a confirmation email soon.</p>
+                <div class="order-details">
+                    <h3>Order Details</h3>
+                    <p><strong>Order ID:</strong> #<?= sprintf("%06d", $order['id']) ?></p>
+                    <p><strong>Customer:</strong> <?= htmlspecialchars($order['name']) ?></p>
+                    <p><strong>Email:</strong> <?= htmlspecialchars($order['email']) ?></p>
+                    <p><strong>Order Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['created_at'])) ?></p>
+                    <div class="order-items">
+                        <?php foreach ($order_items as $item): ?>
+                            <div class="order-item">
+                                <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                                <div class="item-details">
+                                    <span><?= htmlspecialchars($item['name']) ?></span>
+                                    <span>Qty: <?= $item['quantity'] ?></span>
+                                    <span>RM <?= number_format($item['total'], 2) ?></span>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
-                <?php endif; ?>
+                    <div class="order-totals">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>RM <?= number_format($subtotal, 2) ?></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span>RM <?= number_format($shipping, 2) ?></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (7%):</span>
+                            <span>RM <?= number_format($tax, 2) ?></span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>RM <?= number_format($total, 2) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirmation-actions">
+                    <a href="products.php" class="continue-shopping">Continue Shopping</a>
+                    <a href="profile.php" class="view-history">View Order History</a>
+                </div>
             </div>
         </section>
     </main>

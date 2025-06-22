@@ -139,6 +139,46 @@
   }
 }
 
+/* ------------------------------
+   Profile Order History
+------------------------------ */
+.order-history {
+  margin-top: 20px;
+}
+
+.order-entry {
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #e5e5e5;
+}
+
+.order-entry p {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.order-entry p strong {
+  color: #2c2c2c;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .order-entry {
+    padding: 12px;
+  }
+
+  .order-entry p {
+    font-size: 0.85rem;
+  }
+}
+
+/* ------------------------------
+   Profile Edit Profile
+------------------------------ */
+
 @media (max-width: 480px) {
   .profile-container {
     max-width: 340px;
