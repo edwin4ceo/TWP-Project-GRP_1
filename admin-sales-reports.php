@@ -119,18 +119,40 @@ try {
     }
     
     // Get daily sales for chart
+    $daily_sales = [];
+    $dateRange = new DatePeriod(
+        new DateTime($start_date),
+        new DateInterval('P1D'), // 1-day interval
+        new DateTime($end_date . ' +1 day') // Include end date
+    );
+
+    // Initialize all dates with 0 sales
+    foreach ($dateRange as $date) {
+        $formattedDate = $date->format('Y-m-d');
+        $daily_sales[$formattedDate] = [
+            'day' => $formattedDate,
+            'daily_sales' => 0
+        ];
+    }
+
+    // Fill in actual sales data
     $stmt = $conn->prepare("
         SELECT DATE(order_date) AS day, SUM(total_amount) AS daily_sales
         FROM orders
         WHERE DATE(order_date) BETWEEN ? AND ?
         AND status = 'completed'
         GROUP BY DATE(order_date)
-        ORDER BY DATE(order_date)
     ");
     $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
-    $daily_result = $stmt->get_result();
-    $daily_sales = $daily_result->fetch_all(MYSQLI_ASSOC);
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $daily_sales[$row['day']] = $row;
+    }
+
+    // Convert to sequential array for Chart.js
+    $daily_sales = array_values($daily_sales);
     
 } catch (Exception $e) {
     $error = "Error generating report: " . $e->getMessage();
@@ -989,62 +1011,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
       });
 
       <?php if (isset($daily_sales) && count($daily_sales) > 0): ?>
-        // Generate chart with actual data
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        
-        const labels = [
-          <?php foreach ($daily_sales as $day): ?>
-            '<?php echo date('d/m', strtotime($day['day'])); ?>',
-          <?php endforeach; ?>
-        ];
-        
-        const salesData = [
-          <?php foreach ($daily_sales as $day): ?>
-            <?php echo $day['daily_sales'] ?: '0'; ?>,
-          <?php endforeach; ?>
-        ];
-        
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Daily Sales (RM)',
-              data: salesData,
-              backgroundColor: 'rgba(230, 126, 34, 0.2)',
-              borderColor: 'rgba(230, 126, 34, 1)',
-              borderWidth: 2,
-              tension: 0.1,
-              fill: true
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              title: {
-                display: true,
-                text: 'Sales Report (<?php echo $start_date; ?> to <?php echo $end_date; ?>)',
-                font: {
-                  size: 16
-                }
+          const ctx = document.getElementById('salesChart').getContext('2d');
+          
+          const labels = [
+              <?php foreach ($daily_sales as $day): ?>
+                  '<?php echo date('d M', strtotime($day['day'])); ?>',
+              <?php endforeach; ?>
+          ];
+          
+          const salesData = [
+              <?php foreach ($daily_sales as $day): ?>
+                  <?php echo $day['daily_sales'] ?? 0; ?>,
+              <?php endforeach; ?>
+          ];
+          
+          new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Daily Sales (RM)',
+                      data: salesData,
+                      backgroundColor: 'rgba(230, 126, 34, 0.2)',
+                      borderColor: 'rgba(230, 126, 34, 1)',
+                      borderWidth: 2,
+                      tension: 0.1,
+                      fill: true
+                  }]
               },
-              legend: {
-                position: 'top',
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return 'RM ' + value;
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Sales Report (<?php echo date('d M Y', strtotime($start_date)); ?> to <?php echo date('d M Y', strtotime($end_date)); ?>)',
+                          font: { size: 16 }
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          ticks: {
+                              callback: function(value) {
+                                  return 'RM ' + value;
+                              }
+                          }
+                      }
                   }
-                }
               }
-            }
-          }
-        });
+          });
       <?php endif; ?>
     });
 
