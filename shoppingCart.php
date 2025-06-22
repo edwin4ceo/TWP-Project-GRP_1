@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <header>
   <div class="header-bar">
     <div class="logo-left">
-      <a href="index.html">
+      <a href="index.php">
         <img src="images/logo.png" alt="BakeEase Logo" class="logo-inline" />
       </a>
       <h1 id="page-heading">Shopping Cart</h1>
@@ -74,26 +74,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="nav-dropdown">
         <span class="nav-toggle" id="navToggle">☰</span>
         <div class="dropdown-menu" id="navMenu">
-          <a href="index.html">Home</a>
+          <a href="index.php">Home</a>
           <a href="products.php">Products</a>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact</a>
+          <a href="about.php">About Us</a>
+          <a href="contact.php">Contact</a>
         </div>
       </div>
       <div class="cart-dropdown">
         <span class="cart-icon" id="cartToggle">🛒</span>
         <div class="dropdown-menu" id="cartMenu">
           <a href="shoppingCart.php">View Cart</a>
-          <a href="checkout.html">Checkout</a>
+          <a href="checkout.php">Checkout</a>
         </div>
       </div>
       <div class="profile-dropdown">
-        <span class="profile-icon" id="profileToggle">👤</span>
-        <div class="dropdown-menu" id="profileMenu">
-          <a href="register.html">Sign Up</a>
-          <a href="login.html">Login</a>
-        </div>
-      </div>
+    <span class="profile-icon" id="profileToggle">👤</span>
+    <div class="dropdown-menu" id="profileMenu">
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_type'] === 'customer'): ?>
+            <a href="profile.php">Profile</a>
+            <a href="profile.php?logout=1">Logout</a>
+        <?php else: ?>
+            <a href="register.php">Sign Up</a>
+            <a href="login.php">Login</a>
+        <?php endif; ?>
+    </div>
+</div>
     </div>
   </div>
 </header>
@@ -171,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <p class="summary-row"><strong>Shipping:</strong> <span><?= format_price($shipping) ?></span></p>
           <p class="summary-row"><strong>Tax (7%):</strong> <span><?= format_price($tax) ?></span></p>
           <p class="summary-row total"><strong>Total:</strong> <span><?= format_price($total) ?></span></p>
-          <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+          <a href="checkout.php" class="checkout-btn">Proceed to Checkout</a>
         </div>
       </div>
     <?php endif; ?>
