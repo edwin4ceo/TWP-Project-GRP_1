@@ -40,12 +40,17 @@ include("db_connection.php");
         </div>
 
         <div class="profile-dropdown">
-          <span class="profile-icon" id="profileToggle">👤</span>
-          <div class="dropdown-menu" id="profileMenu">
+    <span class="profile-icon" id="profileToggle">👤</span>
+    <div class="dropdown-menu" id="profileMenu">
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_type'] === 'customer'): ?>
+            <a href="profile.php">Profile</a>
+            <a href="profile.php?logout=1">Logout</a>
+        <?php else: ?>
             <a href="register.php">Sign Up</a>
             <a href="login.php">Login</a>
-          </div>
-        </div>
+        <?php endif; ?>
+    </div>
+</div>
       </div>
     </div>
   </header>
