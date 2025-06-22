@@ -21,6 +21,8 @@ if ($result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>
     <header>
@@ -39,7 +41,7 @@ if ($result) {
         <!-- Right Side Icons: Menu, Cart, Profile -->
     <div class="header-right">
       <div class="nav-dropdown">
-        <span class="nav-toggle" id="navToggle">☰</span>
+        <span class="nav-toggle" id="navToggle" title="Navigation Menu">☰</span>
         <div class="dropdown-menu" id="navMenu">
           <a href="index.php">Home</a>
           <a href="products.php">Products</a>
@@ -129,18 +131,16 @@ if ($result) {
 
     // Hide dropdowns when clicking outside
     document.addEventListener("click", (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.style.display = "none";
-      }
-      if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-        cartMenu.style.display = "none";
-      }
-      document.addEventListener("click", (e) => {
-      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-      navMenu.style.display = "none";
-    }
-  });
-    });
+  if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+    profileMenu.style.display = "none";
+  }
+  if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+    cartMenu.style.display = "none";
+  }
+  if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+    navMenu.style.display = "none";
+  }
+});
   </script>
 
 </body>
