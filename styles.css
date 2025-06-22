@@ -28,16 +28,8 @@ h1, h2, h3 {
   color: #2c2c2c;
 }
 
-h1 {
-  font-size: 2.8rem;
-}
-
 h2 {
   font-size: 2rem;
-}
-
-h3 {
-  font-size: 1.3rem;
 }
 
 a {
@@ -189,7 +181,7 @@ header {
 }
 
 /* ------------------------------
-   Main Content Sections
+   Main Content - Login Section
 ------------------------------ */
 main {
   max-width: 1320px;
@@ -197,141 +189,110 @@ main {
   padding: 20px;
 }
 
-.intro {
-  text-align: center;
-  padding: 60px 20px;
-  background: linear-gradient(180deg, #ffffff, #fef3c7);
+.login-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+.login-container {
+  background: #ffffff;
   border-radius: 16px;
-  margin-bottom: 50px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 1s ease-out;
+  padding: 40px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.intro h1 {
+.login-container h2 {
   margin-bottom: 20px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 1.8rem;
 }
 
-.intro p {
-  font-size: 1.2rem;
-  color: #4b5563;
-  max-width: 650px;
-  margin: 0 auto 25px;
-}
-
-.intro a {
-  display: inline-block;
-  background: #d97706;
-  color: #ffffff;
-  padding: 14px 28px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.intro a:hover {
-  background: #b45309;
-  transform: translateY(-4px);
-}
-
-.popular {
-  padding: 30px 0;
-}
-
-.popular h2 {
-  margin-bottom: 25px;
-  padding: 12px 24px;
-  background: #fef3c7;
-  display: inline-block;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
-}
-
-.product-card {
-  background: #ffffff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.product-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-bottom: 2px solid #fef3c7;
-}
-
-.product-card h3 {
-  margin: 15px 20px 10px;
-}
-
-.product-card p {
-  font-size: 0.95rem;
-  color: #6b7280;
-  padding: 0 20px;
+.error {
+  color: #dc2626;
+  font-size: 0.9rem;
   margin-bottom: 15px;
 }
 
-.product-card .price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #d97706;
-  padding: 0 20px;
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
-.product-card a {
+.form-group label {
   display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #2c2c2c;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #d97706;
+}
+
+.login-container button {
+  width: 100%;
   background: #d97706;
   color: #ffffff;
-  padding: 12px;
-  margin: 15px 20px;
+  border: none;
+  padding: 14px;
   border-radius: 10px;
-  text-align: center;
+  font-size: 1rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  transition: background 0.3s ease;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.product-card a:hover {
+.login-container button:hover {
   background: #b45309;
+  transform: translateY(-2px);
 }
 
-.why-choose {
-  background: #ffffff;
-  padding: 50px 20px;
-  border-radius: 16px;
-  text-align: center;
-  margin: 50px 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.forgot-password {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #d97706;
 }
 
-.why-choose h2 {
-  margin-bottom: 25px;
+.forgot-password:hover {
+  color: #b45309;
+  text-decoration: underline;
 }
 
-.why-choose p {
-  font-size: 1.1rem;
+.signup-link {
+  margin-top: 20px;
+  font-size: 0.95rem;
   color: #4b5563;
-  margin: 12px 0;
+}
+
+.signup-link a {
+  font-weight: 600;
+}
+
+.signup-link a:hover {
+  color: #b45309;
+  text-decoration: underline;
 }
 
 /* ------------------------------
@@ -343,6 +304,8 @@ footer {
   text-align: center;
   padding: 20px 0;
   width: 100%;
+  position: relative;
+  bottom: 0;
 }
 
 footer p {
@@ -362,16 +325,9 @@ footer p {
     max-width: 320px;
   }
 
-  .intro h1 {
-    font-size: 2.2rem;
-  }
-
-  .intro p {
-    font-size: 1rem;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  .login-container {
+    max-width: 400px;
+    padding: 30px;
   }
 }
 
@@ -388,21 +344,13 @@ footer p {
     gap: 10px;
   }
 
-  .intro h1 {
-    font-size: 1.8rem;
+  .login-container h2 {
+    font-size: 1.5rem;
   }
 
-  .intro p {
-    font-size: 0.95rem;
-  }
-
-  .intro a {
-    padding: 12px 24px;
-    font-size: 0.9rem;
-  }
-
-  .product-card img {
-    height: 180px;
+  .login-container {
+    max-width: 350px;
+    padding: 25px;
   }
 }
 
@@ -426,36 +374,25 @@ footer p {
     padding: 8px;
   }
 
-  .intro h1 {
-    font-size: 1.5rem;
+  .login-container {
+    max-width: 300px;
+    padding: 20px;
   }
 
-  .intro p {
+  .login-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .form-group input {
+    font-size: 0.85rem;
+  }
+
+  .login-container button {
     font-size: 0.9rem;
+    padding: 12px;
   }
 
-  .intro a {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-  }
-
-  .popular h2 {
-    font-size: 1.5rem;
-  }
-
-  .product-card h3 {
-    font-size: 1.1rem;
-  }
-
-  .product-card p {
-    font-size: 0.85rem;
-  }
-
-  .product-card .price {
-    font-size: 1rem;
-  }
-
-  .product-card a {
+  .forgot-password, .signup-link {
     font-size: 0.85rem;
   }
 }
