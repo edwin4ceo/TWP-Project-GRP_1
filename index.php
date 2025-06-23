@@ -81,19 +81,19 @@ if ($result) {
         </section>
 
         <section class="popular">
-            <h2>Popular Picks</h2>
-            <div class="product-grid">
-                <?php foreach ($products as $product): ?>
-                    <div class="product-card">
-                        <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                        <h3><?php echo htmlspecialchars($product['name']); ?></h3>
-                        <p><?php echo htmlspecialchars($product['description']); ?></p>
-                        <p class="price">RM <?php echo number_format($product['price'], 2); ?></p>
-                        <a href="product_details.php?id=<?php echo $product['id']; ?>">View Details</a>
-                    </div>
-                <?php endforeach; ?>
+    <h2>Popular Picks</h2>
+    <div class="product-grid">
+        <?php foreach ($products as $product): ?>
+            <div class="product-card">
+                <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+                <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                <p><?php echo htmlspecialchars($product['description']); ?></p>
+                <p class="price">RM <?php echo number_format($product['price'], 2); ?></p>
+                <a href="product-detail.php?id=<?php echo htmlspecialchars($product['id']); ?>">View Details</a>
             </div>
-        </section>
+        <?php endforeach; ?>
+    </div>
+</section>
 
         <section class="why-choose">
             <h2>Why Choose BakeEase?</h2>
