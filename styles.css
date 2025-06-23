@@ -229,7 +229,7 @@ main {
   flex: 1 1 calc(33.33% - 20px);
   max-width: calc(33.33% - 20px);
   box-sizing: border-box;
-  background: #ffffff;
+  background: #fde2fb;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
