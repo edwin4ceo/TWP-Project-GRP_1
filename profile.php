@@ -106,7 +106,7 @@ if (isset($_GET['logout'])) {
                         <?php foreach ($orders as $order): ?>
                             <div class="order-entry">
                                 <p><strong>Order ID:</strong> #<?= sprintf("%06d", $order['id']) ?></p>
-                                <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['created_at'])) ?></p>
+                                <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['order_date'])) ?></p>
                                 <p><strong>Total:</strong> RM <?= number_format($order['total_amount'], 2) ?></p>
                                 <p><strong>Status:</strong> <?= ucfirst($order['status']) ?></p>
                             </div>
