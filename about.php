@@ -1,23 +1,5 @@
 <?php
 session_start();
-require_once 'db_connection.php';
-
-if (!isset($_GET['id'])) {
-    die("Product ID is missing.");
-}
-
-$product_id = intval($_GET['id']);
-$query = "SELECT id, name, description, price, image FROM products WHERE id = ?";
-$stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $product_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-
-if (!$result || mysqli_num_rows($result) === 0) {
-    die("Product not found.");
-}
-
-$product = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +7,8 @@ $product = mysqli_fetch_assoc($result);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['name']) ?> - BakeEase Bakery</title>
+    <title>About Our Team - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="product-detail-styles.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>
@@ -77,30 +58,34 @@ $product = mysqli_fetch_assoc($result);
         </div>
     </header>
 
-    <main class="product-detail-container">
-        <section class="product-detail">
-            <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" />
-            <div class="product-info">
-                <h2><?= htmlspecialchars($product['name']) ?></h2>
-                <p><?= htmlspecialchars($product['description']) ?></p>
-                <p><strong>RM <?= number_format($product['price'], 2) ?></strong></p>
-                <ul>
-                    <li>Weight: 1kg (default)</li>
-                    <li>Freshly baked daily</li>
-                    <li>Fast delivery available</li>
-                </ul>
-                <form method="POST" action="add_to_cart.php" class="add-to-cart-form">
-                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                    <input type="number" name="quantity" value="1" min="1" max="99" class="quantity-input">
-                    <button type="submit" class="add-to-cart-button">Add to Cart</button>
-                </form>
-                <a href="products.php" class="back-button">← Back to Products</a>
+    <main>
+        <section class="about-section">
+            <div class="about-container">
+                <h2>About Our Team</h2>
+                <div class="team-member">
+                    <img src="images/edwin.jpeg" alt="Edwin Photo" />
+                    <h3>Edwin Teo Yuan Jing</h3>
+                    <p>Front-End Developer (Visitor Role)</p>
+                    <p>Student ID: 1231203190</p>
+                </div>
+                <div class="team-member">
+                    <img src="images/zunyi.jpeg" alt="zunyi Photo" />
+                    <h3>CHAN ZUN YI</h3>
+                    <p>UI/UX Designer (Customer Role)</p>
+                    <p>Student ID: 1231201459</p>
+                </div>
+                <div class="team-member">
+                    <img src="images/soonkit.jpg" alt="Soon Kit Photo" />
+                    <h3>WONG SOON KIT</h3>
+                    <p>Admin Page Developer (Admin Role)</p>
+                    <p>Student ID: 1231201251</p>
+                </div>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+        <p>© 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript for dropdowns -->
@@ -143,7 +128,3 @@ $product = mysqli_fetch_assoc($result);
   </script>
 </body>
 </html>
-
-<?php
-mysqli_close($conn);
-?>

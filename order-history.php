@@ -2,22 +2,29 @@
 session_start();
 require_once 'db_connection.php';
 
-if (!isset($_GET['id'])) {
-    die("Product ID is missing.");
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'customer') {
+    header("Location: login.php");
+    exit();
 }
 
-$product_id = intval($_GET['id']);
-$query = "SELECT id, name, description, price, image FROM products WHERE id = ?";
+// Fetch orders for the logged-in customer
+$customer_id = $_SESSION['user_id'];
+$orders = [];
+$query = "SELECT id, total_amount, order_date, status FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $product_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-
-if (!$result || mysqli_num_rows($result) === 0) {
-    die("Product not found.");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $customer_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $orders[] = $row;
+    }
+    mysqli_stmt_close($stmt);
+} else {
+    error_log("Failed to prepare order history query: " . mysqli_error($conn));
+    $errors[] = "Unable to fetch order history.";
 }
-
-$product = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +32,9 @@ $product = mysqli_fetch_assoc($result);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['name']) ?> - BakeEase Bakery</title>
+    <title>Order History - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="product-detail-styles.css">
+    <link rel="stylesheet" href="order-history.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>
@@ -64,43 +71,62 @@ $product = mysqli_fetch_assoc($result);
                 <div class="profile-dropdown">
                     <span class="profile-icon" id="profileToggle">👤</span>
                     <div class="dropdown-menu" id="profileMenu">
-                        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_type'] === 'customer'): ?>
-                            <a href="profile.php">Profile</a>
-                            <a href="logout.php">Logout</a>
-                        <?php else: ?>
-                            <a href="register.php">Sign Up</a>
-                            <a href="login.php">Login</a>
-                        <?php endif; ?>
+                        <a href="order-history.php">Order History</a>
+                        <a href="profile.php">Profile</a>
+                        <a href="logout.php">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="product-detail-container">
-        <section class="product-detail">
-            <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" />
-            <div class="product-info">
-                <h2><?= htmlspecialchars($product['name']) ?></h2>
-                <p><?= htmlspecialchars($product['description']) ?></p>
-                <p><strong>RM <?= number_format($product['price'], 2) ?></strong></p>
-                <ul>
-                    <li>Weight: 1kg (default)</li>
-                    <li>Freshly baked daily</li>
-                    <li>Fast delivery available</li>
-                </ul>
-                <form method="POST" action="add_to_cart.php" class="add-to-cart-form">
-                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                    <input type="number" name="quantity" value="1" min="1" max="99" class="quantity-input">
-                    <button type="submit" class="add-to-cart-button">Add to Cart</button>
-                </form>
-                <a href="products.php" class="back-button">← Back to Products</a>
+    <main>
+        <section class="order-history-section">
+            <div class="order-history-container">
+                <h2>Your Order History</h2>
+                <?php if (isset($errors) && !empty($errors)): ?>
+                    <div class="error">
+                        <?php foreach ($errors as $error): ?>
+                            <p><?= htmlspecialchars($error) ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php elseif (!empty($orders)): ?>
+                    <table class="order-history-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($orders as $order): ?>
+                                <tr>
+                                    <td>#<?= $order['id'] ?></td>
+                                    <td><?= date('F j, Y, g:i a', strtotime($order['order_date'])) ?></td>
+                                    <td>RM <?= number_format($order['total_amount'], 2) ?></td>
+                                    <td><?= htmlspecialchars($order['status']) ?></td>
+                                    <td>
+                                        <a href="confirmation.php?order_id=<?= $order['id'] ?>" class="view-details">View Details</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="no-orders">
+                        <p>No orders found. Start shopping to create your order history!</p>
+                        <a href="products.php" class="shop-now">Shop Now</a>
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 BakeEase Bakery. All rights reserved.</p>
+        <p>© 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript for dropdowns -->

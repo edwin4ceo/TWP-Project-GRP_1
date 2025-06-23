@@ -22,7 +22,7 @@ if (!$user) {
 }
 
 // Fetch order history
-$query = "SELECT id, total, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+$query = "SELECT id, total_amount, order_date, status FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
@@ -43,7 +43,7 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profile-styles.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>
@@ -106,8 +106,8 @@ if (isset($_GET['logout'])) {
                         <?php foreach ($orders as $order): ?>
                             <div class="order-entry">
                                 <p><strong>Order ID:</strong> #<?= sprintf("%06d", $order['id']) ?></p>
-                                <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['created_at'])) ?></p>
-                                <p><strong>Total:</strong> RM <?= number_format($order['total'], 2) ?></p>
+                                <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['order_date'])) ?></p>
+                                <p><strong>Total:</strong> RM <?= number_format($order['total_amount'], 2) ?></p>
                                 <p><strong>Status:</strong> <?= ucfirst($order['status']) ?></p>
                             </div>
                         <?php endforeach; ?>
@@ -121,8 +121,8 @@ if (isset($_GET['logout'])) {
         <p>© 2025 BakeEase Bakery. All rights reserved.</p>
     </footer>
 
+    <!-- JavaScript for dropdowns -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
         const profileToggle = document.getElementById("profileToggle");
         const profileMenu = document.getElementById("profileMenu");
         const cartToggle = document.getElementById("cartToggle");
@@ -130,48 +130,34 @@ if (isset($_GET['logout'])) {
         const navToggle = document.getElementById("navToggle");
         const navMenu = document.getElementById("navMenu");
 
-        if (!profileToggle || !profileMenu || !cartToggle || !cartMenu || !navToggle || !navMenu) {
-            console.error("One or more dropdown elements not found.");
-            return;
-        }
-
-        profileToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            profileMenu.classList.toggle("show");
-            cartMenu.classList.remove("show");
-            navMenu.classList.remove("show");
+        // Toggle Profile Menu
+        profileToggle.addEventListener("click", () => {
+            profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+            cartMenu.style.display = "none";
         });
 
-        cartToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            cartMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            navMenu.classList.remove("show");
+        // Toggle Cart Menu
+        cartToggle.addEventListener("click", () => {
+            cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+            profileMenu.style.display = "none";
         });
 
-        navToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            navMenu.classList.toggle("show");
-            profileMenu.classList.remove("show");
-            cartMenu.classList.remove("show");
+        navToggle.addEventListener("click", () => {
+            navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
         });
 
+        // Hide dropdowns when clicking outside
         document.addEventListener("click", (e) => {
             if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-                profileMenu.classList.remove("show");
+                profileMenu.style.display = "none";
             }
             if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-                cartMenu.classList.remove("show");
+                cartMenu.style.display = "none";
             }
             if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove("show");
+                navMenu.style.display = "none";
             }
         });
-
-        profileMenu.addEventListener("click", (e) => e.stopPropagation());
-        cartMenu.addEventListener("click", (e) => e.stopPropagation());
-        navMenu.addEventListener("click", (e) => e.stopPropagation());
-    });
     </script>
 </body>
 </html>

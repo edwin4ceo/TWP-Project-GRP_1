@@ -1,0 +1,248 @@
+/* ------------------------------
+   Order History Section
+------------------------------ */
+.order-history-section {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 200px); /* Ensure section fills viewport minus header/footer */
+}
+
+.order-history-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-history-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #2c2c2c;
+}
+
+.order-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+.order-history-table th, .order-history-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.order-history-table th {
+  background-color: #f4f4f4;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.order-history-table td {
+  vertical-align: middle;
+}
+
+.order-history-table tr:hover {
+  background-color: #fef3c7;
+  transition: background-color 0.3s ease;
+}
+
+/* Specific column widths for better readability */
+.order-history-table th:nth-child(1), .order-history-table td:nth-child(1) {
+  width: 15%; /* Order ID */
+}
+
+.order-history-table th:nth-child(5), .order-history-table td:nth-child(5) {
+  width: 20%; /* Actions */
+  text-align: center;
+}
+
+/* Status badges */
+.order-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.order-status.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.order-status.processing {
+  background-color: #e0f2fe;
+  color: #2563eb;
+}
+
+.order-status.delivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.order-status.cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.no-orders {
+  text-align: center;
+  padding: 40px;
+}
+
+.no-orders p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: #4b5563;
+}
+
+.shop-now, .view-details {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #d97706;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.shop-now:hover, .view-details:hover {
+  background-color: #b45309;
+  transform: translateY(-2px);
+}
+
+.error {
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Loading state */
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-spinner::after {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #d97706;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ------------------------------
+   Responsive Media Queries
+------------------------------ */
+@media (max-width: 768px) {
+  .order-history-section {
+    padding: 30px 15px;
+  }
+
+  .order-history-container {
+    padding: 15px;
+  }
+
+  .order-history-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .order-history-table {
+    font-size: 0.9rem;
+  }
+
+  .order-history-table th, .order-history-table td {
+    padding: 8px;
+  }
+
+  .shop-now, .view-details {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-history-section {
+    padding: 20px 10px;
+  }
+
+  .order-history-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .order-history-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .order-history-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .order-history-table thead {
+    display: none;
+  }
+
+  .order-history-table tr {
+    display: block;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: #ffffff;
+  }
+
+  .order-history-table td {
+    display: block;
+    text-align: left;
+    padding: 5px 10px;
+    border: none;
+  }
+
+  .order-history-table td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: inline-block;
+    width: 100px;
+    color: #2c2c2c;
+  }
+
+  .order-history-table td[data-label="Actions"] {
+    text-align: center;
+  }
+
+  .order-history-table td[data-label="Status"] .order-status {
+    display: inline-block;
+  }
+
+  .no-orders p {
+    font-size: 1rem;
+  }
+
+  .shop-now, .view-details {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+}
