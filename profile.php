@@ -22,7 +22,7 @@ if (!$user) {
 }
 
 // Fetch order history
-$query = "SELECT id, total, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+$query = "SELECT id, total_amount, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);

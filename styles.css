@@ -242,11 +242,13 @@ main {
 }
 
 .product-card img {
-  max-width: 100%;
-  height: auto;
+  max-width: 100%; /* Ensures images don't exceed container width */
+  max-height: 200px; /* Sets a maximum height to control image size */
+  height: auto; /* Maintains aspect ratio */
   display: block;
-  margin: 0 auto 15px;
+  margin: 0 auto 15px; /* Centers the image and adds space below */
   border-radius: 4px;
+  object-fit: cover; /* Ensures the image covers the area without distortion */
 }
 
 .product-card h3 {
