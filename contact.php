@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - BakeEase Bakery</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="about-contact-styles.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
 </head>
 <body>

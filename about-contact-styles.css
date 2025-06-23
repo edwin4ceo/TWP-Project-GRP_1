@@ -1,0 +1,107 @@
+/* ------------------------------
+   Contact and About Sections
+------------------------------ */
+.contact-section, .about-section {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+}
+
+.contact-container, .about-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-container h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #2c2c2c;
+}
+
+.team-member {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.team-member img {
+    max-width: 100%; /* Ensures image fits container */
+    max-height: 200px; /* Sets a reasonable height for team photos */
+    height: auto; /* Maintains aspect ratio */
+    display: block; /* Removes inline spacing */
+    margin: 0 auto 15px; /* Centers and adds space below */
+    border-radius: 50%; /* Circular image */
+    object-fit: cover; /* Ensures image fills the circle without distortion */
+    -webkit-object-fit: cover; /* Vendor prefix for Safari */
+    -moz-object-fit: cover; /* Vendor prefix for Firefox */
+}
+
+.team-member h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #2c2c2c;
+}
+
+.team-member p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin: 5px 0;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    .about-container {
+        padding: 30px;
+    }
+
+    .team-member {
+        display: inline-block;
+        width: 30%;
+        vertical-align: top;
+        margin: 0 1.5% 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .about-container h2 {
+        font-size: 2rem;
+    }
+
+    .team-member img {
+        max-height: 150px; /* Reduce height on smaller screens */
+    }
+
+    .team-member h3 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-container {
+        padding: 15px;
+    }
+
+    .team-member img {
+        max-height: 120px;
+    }
+
+    .team-member h3 {
+        font-size: 1rem;
+    }
+
+    .team-member p {
+        font-size: 0.85rem;
+    }
+}
