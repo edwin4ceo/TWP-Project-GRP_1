@@ -810,7 +810,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
       <div class="alert alert-error">
         <?php echo $error; ?>
       </div>
-    <?php elseif ($_SERVER['REQUEST_METHOD'] == 'POST' || $total_orders > 0): ?>
+    <?php elseif ($_SERVER['REQUEST_METHOD'] == 'POST' ): ?>
       <!-- Report Container -->
       <div class="report-container" id="report-container">
         <div class="export-buttons">
