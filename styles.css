@@ -173,7 +173,7 @@ header {
 }
 
 /* ------------------------------
-   Main Content - Login Section
+   Main Content - Intro Section
 ------------------------------ */
 main {
   max-width: 1320px;
@@ -181,6 +181,128 @@ main {
   padding: 20px;
 }
 
+.intro {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.intro h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.intro p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.intro a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #d97706;
+  color: #ffffff;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.intro a:hover {
+  background: #b45309;
+}
+
+/* ------------------------------
+   Main Content - Popular Picks Section
+------------------------------ */
+.popular {
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.product-card {
+  flex: 1 1 calc(33.33% - 20px);
+  max-width: calc(33.33% - 20px);
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 15px;
+  border-radius: 4px;
+}
+
+.product-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.product-card p {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+.product-card .price {
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-bottom: 10px;
+}
+
+.product-card a {
+  display: inline-block;
+  padding: 8px 15px;
+  background: #d97706;
+  color: #ffffff;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.product-card a:hover {
+  background: #b45309;
+}
+
+/* ------------------------------
+   Main Content - Why Choose Section
+------------------------------ */
+.why-choose {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.why-choose h2 {
+  margin-bottom: 20px;
+}
+
+.why-choose p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+/* ------------------------------
+   Main Content - Login Section
+------------------------------ */
 .login-section {
   display: flex;
   justify-content: center;
@@ -302,7 +424,7 @@ main {
 }
 
 /* ------------------------------
-   Checkout Section - NEW
+   Checkout Section
 ------------------------------ */
 .checkout-section {
   padding: 40px 20px;
@@ -472,7 +594,7 @@ main {
 }
 
 /* ------------------------------
-   Confirmation Section - NEW
+   Confirmation Section
 ------------------------------ */
 .confirmation-section {
   padding: 40px 20px;
@@ -711,6 +833,11 @@ footer p {
   .order-summary {
     margin-top: 20px;
   }
+
+  .product-card {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
 }
 
 @media (max-width: 768px) {
@@ -745,6 +872,11 @@ footer p {
 
   .order-history-table th, .order-history-table td {
     padding: 8px;
+  }
+
+  .product-card {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
   }
 }
 
@@ -833,5 +965,10 @@ footer p {
 
   .order-history-table td[data-label="Actions"] {
     text-align: center;
+  }
+
+  .product-card {
+    flex: 1 1 100%;
+    max-width: 100%;
   }
 }
