@@ -22,7 +22,7 @@ if (!$user) {
 }
 
 // Fetch order history
-$query = "SELECT id, total_amount, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC";
+$query = "SELECT id, total_amount, order_date, status FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
@@ -107,7 +107,7 @@ if (isset($_GET['logout'])) {
                             <div class="order-entry">
                                 <p><strong>Order ID:</strong> #<?= sprintf("%06d", $order['id']) ?></p>
                                 <p><strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($order['created_at'])) ?></p>
-                                <p><strong>Total:</strong> RM <?= number_format($order['total'], 2) ?></p>
+                                <p><strong>Total:</strong> RM <?= number_format($order['total_amount'], 2) ?></p>
                                 <p><strong>Status:</strong> <?= ucfirst($order['status']) ?></p>
                             </div>
                         <?php endforeach; ?>
@@ -122,43 +122,43 @@ if (isset($_GET['logout'])) {
     </footer>
 
     <!-- JavaScript for dropdowns -->
-  <script>
-    const profileToggle = document.getElementById("profileToggle");
-    const profileMenu = document.getElementById("profileMenu");
-    const cartToggle = document.getElementById("cartToggle");
-    const cartMenu = document.getElementById("cartMenu");
-    const navToggle = document.getElementById("navToggle");
-    const navMenu = document.getElementById("navMenu");
+    <script>
+        const profileToggle = document.getElementById("profileToggle");
+        const profileMenu = document.getElementById("profileMenu");
+        const cartToggle = document.getElementById("cartToggle");
+        const cartMenu = document.getElementById("cartMenu");
+        const navToggle = document.getElementById("navToggle");
+        const navMenu = document.getElementById("navMenu");
 
-    // Toggle Profile Menu
-    profileToggle.addEventListener("click", () => {
-      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
-      cartMenu.style.display = "none";
-    });
+        // Toggle Profile Menu
+        profileToggle.addEventListener("click", () => {
+            profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+            cartMenu.style.display = "none";
+        });
 
-    // Toggle Cart Menu
-    cartToggle.addEventListener("click", () => {
-      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
-      profileMenu.style.display = "none";
-    });
+        // Toggle Cart Menu
+        cartToggle.addEventListener("click", () => {
+            cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+            profileMenu.style.display = "none";
+        });
 
-    navToggle.addEventListener("click", () => {
-    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
-  });
+        navToggle.addEventListener("click", () => {
+            navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+        });
 
-    // Hide dropdowns when clicking outside
-    document.addEventListener("click", (e) => {
-  if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-    profileMenu.style.display = "none";
-  }
-  if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-    cartMenu.style.display = "none";
-  }
-  if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-    navMenu.style.display = "none";
-  }
-});
-  </script>
+        // Hide dropdowns when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.style.display = "none";
+            }
+            if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+                cartMenu.style.display = "none";
+            }
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
 

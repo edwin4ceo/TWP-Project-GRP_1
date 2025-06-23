@@ -245,10 +245,13 @@ main {
   max-width: 100%; /* Ensures images don't exceed container width */
   max-height: 200px; /* Sets a maximum height to control image size */
   height: auto; /* Maintains aspect ratio */
-  display: block;
+  display: block; /* Removes any inline spacing issues */
   margin: 0 auto 15px; /* Centers the image and adds space below */
   border-radius: 4px;
   object-fit: cover; /* Ensures the image covers the area without distortion */
+  width: 100%; /* Explicitly sets width to 100% of container */
+  -webkit-object-fit: cover; /* Vendor prefix for Safari */
+  -moz-object-fit: cover; /* Vendor prefix for Firefox */
 }
 
 .product-card h3 {
