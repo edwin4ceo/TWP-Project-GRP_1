@@ -63,6 +63,151 @@ $total = $subtotal + $shipping + $tax;
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="cart-styles.css">
     <link rel="icon" href="images/logo.png" type="image/png" />
+    <style>
+        /* Enhanced Continue Shopping Button Styles */
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .continue-shopping-prominent {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #fd7e14, #e8690b);
+            border: none;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+            box-shadow: 0 3px 10px rgba(253, 126, 20, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-shopping-prominent::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .continue-shopping-prominent:hover::before {
+            left: 100%;
+        }
+
+        .continue-shopping-prominent:hover {
+            background: linear-gradient(135deg, #e8690b, #d45807);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 126, 20, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .continue-shopping-prominent:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(253, 126, 20, 0.3);
+        }
+
+        .shopping-icon {
+            margin-right: 8px;
+            font-size: 18px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-2px);
+            }
+        }
+
+        .update-button {
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .update-button:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cart-actions {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .continue-shopping-prominent {
+                width: 100%;
+                order: -1;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .update-button {
+                width: 100%;
+            }
+        }
+
+        /* Enhanced empty cart styling */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .browse-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #fd7e14, #e8690b);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(253, 126, 20, 0.3);
+        }
+
+        .browse-button:hover {
+            background: linear-gradient(135deg, #e8690b, #d45807);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 126, 20, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -135,7 +280,9 @@ $total = $subtotal + $shipping + $tax;
                         <span class="cart-icon-large">🛒</span>
                         <p>Your cart is empty</p>
                         <p>Add some delicious items to your cart!</p>
-                        <a href="products.php" class="browse-button">Browse Products</a>
+                        <a href="products.php" class="browse-button">
+                            <span class="shopping-icon">🛍️</span>Browse Products
+                        </a>
                     </div>
                 <?php else: ?>
                     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
@@ -164,7 +311,9 @@ $total = $subtotal + $shipping + $tax;
                             <?php endforeach; ?>
                         </div>
                         <div class="cart-actions">
-                            <a href="products.php" class="continue-shopping">← Continue Shopping</a>
+                            <a href="products.php" class="continue-shopping-prominent">
+                                <span class="shopping-icon">🛍️</span>Continue Shopping
+                            </a>
                             <button type="submit" name="update" class="update-button">Update Cart</button>
                         </div>
                     </form>
@@ -203,43 +352,55 @@ $total = $subtotal + $shipping + $tax;
     </footer>
 
     <!-- JavaScript for dropdowns -->
-  <script>
-    const profileToggle = document.getElementById("profileToggle");
-    const profileMenu = document.getElementById("profileMenu");
-    const cartToggle = document.getElementById("cartToggle");
-    const cartMenu = document.getElementById("cartMenu");
-    const navToggle = document.getElementById("navToggle");
-    const navMenu = document.getElementById("navMenu");
+    <script>
+        const profileToggle = document.getElementById("profileToggle");
+        const profileMenu = document.getElementById("profileMenu");
+        const cartToggle = document.getElementById("cartToggle");
+        const cartMenu = document.getElementById("cartMenu");
+        const navToggle = document.getElementById("navToggle");
+        const navMenu = document.getElementById("navMenu");
 
-    // Toggle Profile Menu
-    profileToggle.addEventListener("click", () => {
-      profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
-      cartMenu.style.display = "none";
-    });
+        // Toggle Profile Menu
+        profileToggle.addEventListener("click", () => {
+            profileMenu.style.display = (profileMenu.style.display === "block") ? "none" : "block";
+            cartMenu.style.display = "none";
+        });
 
-    // Toggle Cart Menu
-    cartToggle.addEventListener("click", () => {
-      cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
-      profileMenu.style.display = "none";
-    });
+        // Toggle Cart Menu
+        cartToggle.addEventListener("click", () => {
+            cartMenu.style.display = (cartMenu.style.display === "block") ? "none" : "block";
+            profileMenu.style.display = "none";
+        });
 
-    navToggle.addEventListener("click", () => {
-    navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
-  });
+        navToggle.addEventListener("click", () => {
+            navMenu.style.display = (navMenu.style.display === "block") ? "none" : "block";
+        });
 
-    // Hide dropdowns when clicking outside
-    document.addEventListener("click", (e) => {
-  if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-    profileMenu.style.display = "none";
-  }
-  if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
-    cartMenu.style.display = "none";
-  }
-  if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-    navMenu.style.display = "none";
-  }
-});
-  </script>
+        // Hide dropdowns when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.style.display = "none";
+            }
+            if (!cartToggle.contains(e.target) && !cartMenu.contains(e.target)) {
+                cartMenu.style.display = "none";
+            }
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.style.display = "none";
+            }
+        });
+
+        // Add hover effect to continue shopping button
+        const continueShoppingBtn = document.querySelector('.continue-shopping-prominent');
+        if (continueShoppingBtn) {
+            continueShoppingBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+            });
+            
+            continueShoppingBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        }
+    </script>
 </body>
 </html>
 
