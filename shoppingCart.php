@@ -7,6 +7,24 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+// Initialize promo discount
+if (!isset($_SESSION['promo_discount'])) {
+    $_SESSION['promo_discount'] = 0;
+    $_SESSION['promo_code_used'] = '';
+}
+
+// Promo codes database (you can move this to database later)
+$promo_codes = [
+    'SAVE10' => ['discount' => 10, 'type' => 'percentage', 'description' => '10% off'],
+    'SAVE20' => ['discount' => 20, 'type' => 'percentage', 'description' => '20% off'],
+    'NEWBIE15' => ['discount' => 15, 'type' => 'percentage', 'description' => '15% off for new customers'],
+    'FLAT5' => ['discount' => 5, 'type' => 'fixed', 'description' => 'RM 5 off'],
+    'FLAT10' => ['discount' => 10, 'type' => 'fixed', 'description' => 'RM 10 off'],
+    'WELCOME' => ['discount' => 25, 'type' => 'percentage', 'description' => '25% welcome discount'],
+    'BAKERY30' => ['discount' => 30, 'type' => 'percentage', 'description' => '30% bakery special'],
+    'SWEET15' => ['discount' => 15, 'type' => 'fixed', 'description' => 'RM 15 sweet deal']
+];
+
 // Handle cart updates (remove or update quantity)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['remove'])) {
@@ -22,8 +40,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     } elseif (isset($_POST['promo_code'])) {
-        // Placeholder for promo code (no actual logic)
-        $_SESSION['promo_message'] = "Promo code applied (feature not implemented).";
+        $entered_code = strtoupper(trim($_POST['promo_code']));
+        
+        if (empty($entered_code)) {
+            $_SESSION['promo_message'] = "Please enter a promo code.";
+            $_SESSION['promo_message_type'] = "error";
+        } elseif (array_key_exists($entered_code, $promo_codes)) {
+            // Valid promo code
+            $_SESSION['promo_discount'] = $promo_codes[$entered_code]['discount'];
+            $_SESSION['promo_type'] = $promo_codes[$entered_code]['type'];
+            $_SESSION['promo_code_used'] = $entered_code;
+            $_SESSION['promo_message'] = "🎉 Promo code '{$entered_code}' applied successfully! " . $promo_codes[$entered_code]['description'];
+            $_SESSION['promo_message_type'] = "success";
+        } else {
+            // Invalid promo code
+            $_SESSION['promo_message'] = "❌ Invalid promo code. Please try again.";
+            $_SESSION['promo_message_type'] = "error";
+        }
+    } elseif (isset($_POST['remove_promo'])) {
+        // Remove promo code
+        $_SESSION['promo_discount'] = 0;
+        $_SESSION['promo_type'] = '';
+        $_SESSION['promo_code_used'] = '';
+        $_SESSION['promo_message'] = "Promo code removed successfully.";
+        $_SESSION['promo_message_type'] = "success";
     }
 }
 
@@ -47,11 +87,22 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
+// Calculate discount
+$discount_amount = 0;
+if ($_SESSION['promo_discount'] > 0) {
+    if ($_SESSION['promo_type'] == 'percentage') {
+        $discount_amount = $subtotal * ($_SESSION['promo_discount'] / 100);
+    } else { // fixed amount
+        $discount_amount = min($_SESSION['promo_discount'], $subtotal); // Can't discount more than subtotal
+    }
+}
+
 // Calculate totals
 $shipping = 0; // Free shipping
 $tax_rate = 0.07;
-$tax = $subtotal * $tax_rate;
-$total = $subtotal + $shipping + $tax;
+$discounted_subtotal = $subtotal - $discount_amount;
+$tax = $discounted_subtotal * $tax_rate;
+$total = $discounted_subtotal + $shipping + $tax;
 ?>
 
 <!DOCTYPE html>
@@ -157,6 +208,141 @@ $total = $subtotal + $shipping + $tax;
             box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
         }
 
+        /* Promo code styles */
+        .promo-form {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            align-items: stretch;
+        }
+
+        .promo-form input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .promo-form input:focus {
+            outline: none;
+            border-color: #fd7e14;
+            box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.1);
+        }
+
+        .promo-form button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #17a2b8, #117a8b);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .promo-form button:hover {
+            background: linear-gradient(135deg, #138496, #0f6674);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        .promo-applied {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .promo-applied-text {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .promo-applied-text::before {
+            content: '🎉';
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .remove-promo {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .remove-promo:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border: 2px solid #dc3545;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        .discount-row {
+            color: #28a745;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .discount-row span:first-child::before {
+            content: '💰 ';
+            margin-right: 5px;
+        }
+
+        .promo-hints {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .promo-hints strong {
+            color: #fd7e14;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .cart-actions {
@@ -174,6 +360,16 @@ $total = $subtotal + $shipping + $tax;
 
             .update-button {
                 width: 100%;
+            }
+
+            .promo-form {
+                flex-direction: column;
+            }
+
+            .promo-applied {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
             }
         }
 
@@ -206,6 +402,36 @@ $total = $subtotal + $shipping + $tax;
             box-shadow: 0 5px 15px rgba(253, 126, 20, 0.4);
             color: white;
             text-decoration: none;
+        }
+
+        /* Enhanced checkout button */
+        .checkout-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .checkout-button:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .checkout-button::before {
+            content: '🛒 ';
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -287,8 +513,12 @@ $total = $subtotal + $shipping + $tax;
                 <?php else: ?>
                     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                         <?php if (isset($_SESSION['promo_message'])): ?>
-                            <div class="success"><?php echo htmlspecialchars($_SESSION['promo_message']); unset($_SESSION['promo_message']); ?></div>
+                            <div class="<?php echo $_SESSION['promo_message_type']; ?>">
+                                <?php echo htmlspecialchars($_SESSION['promo_message']); ?>
+                            </div>
+                            <?php unset($_SESSION['promo_message'], $_SESSION['promo_message_type']); ?>
                         <?php endif; ?>
+                        
                         <div class="cart-table">
                             <div class="cart-header">
                                 <span>Product</span>
@@ -324,6 +554,14 @@ $total = $subtotal + $shipping + $tax;
                             <span>Subtotal:</span>
                             <span>RM <?php echo number_format($subtotal, 2); ?></span>
                         </div>
+                        
+                        <?php if ($discount_amount > 0): ?>
+                            <div class="summary-row discount-row">
+                                <span>Discount (<?php echo $_SESSION['promo_code_used']; ?>):</span>
+                                <span>-RM <?php echo number_format($discount_amount, 2); ?></span>
+                            </div>
+                        <?php endif; ?>
+                        
                         <div class="summary-row">
                             <span>Shipping:</span>
                             <span>RM <?php echo number_format($shipping, 2); ?></span>
@@ -336,10 +574,26 @@ $total = $subtotal + $shipping + $tax;
                             <span>Total:</span>
                             <span>RM <?php echo number_format($total, 2); ?></span>
                         </div>
-                        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="promo-form">
-                            <input type="text" name="promo_code" placeholder="Enter promo code">
-                            <button type="submit">Apply</button>
-                        </form>
+                        
+                        <?php if (!empty($_SESSION['promo_code_used'])): ?>
+                            <div class="promo-applied">
+                                <div class="promo-applied-text">
+                                    Promo code "<?php echo $_SESSION['promo_code_used']; ?>" applied
+                                </div>
+                                <form method="POST" style="display: inline;">
+                                    <button type="submit" name="remove_promo" class="remove-promo">Remove</button>
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="promo-form">
+                                <input type="text" name="promo_code" placeholder="Enter promo code" maxlength="20">
+                                <button type="submit">Apply Code</button>
+                            </form>
+                            <div class="promo-hints">
+                                <strong>Try these codes:</strong> SAVE10, SAVE20, NEWBIE15, FLAT5, FLAT10, WELCOME, BAKERY30, SWEET15
+                            </div>
+                        <?php endif; ?>
+                        
                         <a href="checkout.php" class="checkout-button">Proceed to Checkout</a>
                     </div>
                 <?php endif; ?>
@@ -400,6 +654,17 @@ $total = $subtotal + $shipping + $tax;
                 this.style.transform = 'translateY(0) scale(1)';
             });
         }
+
+        // Auto-hide success/error messages after 5 seconds
+        const messages = document.querySelectorAll('.success, .error');
+        messages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 300);
+            }, 5000);
+        });
     </script>
 </body>
 </html>
