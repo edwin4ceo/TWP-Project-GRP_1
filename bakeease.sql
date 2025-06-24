@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2025 at 02:02 PM
+-- Generation Time: Jun 24, 2025 at 11:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -172,7 +172,8 @@ INSERT INTO `customers` (`id`, `name`, `email`, `password`, `phone`, `address`, 
 (8, 'keekee', 'doyouluvme@gmail.com', '', '+60113266323', '29, Jalan Perdana 3/8, Taman Mohammad, 82000, Pontian, Johor', '2025-06-18 17:33:16', 'active'),
 (9, 'chunchun', 'kit719@gmail.com', '', '+601121611161', '30. Jalan Setia 3/17, Taman Indah , Alor Setar, 05100, Kedah', '2025-06-18 17:36:55', 'active'),
 (10, 'ivan teo', 'mone01009@gmail.com', '$2y$10$I5rnF2efa/VeiEqV6OW4h.vCOBTscCfot7y.t466CNZD38GexbJh2', '0163558148', NULL, '2025-06-22 02:16:06', 'active'),
-(11, 'EDWIN TEO YUAN JING', 'mone@gmail.com', '$2y$10$jCxADqJuzc0iQJTKHdmG2uy1v1DFboIxf8fl4s0evYKvPrgVtTjfi', '0163558148', NULL, '2025-06-23 02:20:46', 'active');
+(11, 'EDWIN TEO YUAN JING', 'mone@gmail.com', '$2y$10$jCxADqJuzc0iQJTKHdmG2uy1v1DFboIxf8fl4s0evYKvPrgVtTjfi', '0163558148', NULL, '2025-06-23 02:20:46', 'active'),
+(12, 'chan jiejie', 'ying@gmail.com', '$2y$10$N93O72d//uH4k3we3TwqZOyLrZ4LQkHRR/AyzLxXVnvZeAxExaQTa', '0183238182', NULL, '2025-06-24 01:23:30', 'active');
 
 -- --------------------------------------------------------
 
@@ -186,6 +187,7 @@ CREATE TABLE `customer_feedback_summary` (
 ,`avg_delivery_rating` decimal(14,4)
 ,`avg_product_quality_rating` decimal(14,4)
 ,`positive_recommendations` bigint(21)
+,`negative_recommendations` bigint(21)
 ,`recommendation_percentage` decimal(26,2)
 );
 
@@ -224,7 +226,10 @@ INSERT INTO `orders` (`id`, `customer_id`, `customer_name`, `total_amount`, `sta
 (35, 10, 'ivan teo', 11.24, 'pending', '0', NULL, '2025-06-22 10:23:25', 'mone01009@gmail.com', '0163558148'),
 (36, 10, 'ivan teo', 90.95, 'pending', '0', NULL, '2025-06-23 07:32:52', 'mone01009@gmail.com', '0163558148'),
 (37, 10, 'ivan teo', 256.80, 'pending', '21', NULL, '2025-06-23 11:33:53', 'mone01009@gmail.com', '0163558148'),
-(38, 10, 'ivan teo', 272.85, 'pending', '21', NULL, '2025-06-23 11:46:00', 'mone01009@gmail.com', '0163558148');
+(38, 10, 'ivan teo', 272.85, 'pending', '21', NULL, '2025-06-23 11:46:00', 'mone01009@gmail.com', '0163558148'),
+(39, 12, 'chan jiejie', 6.96, 'pending', '21', NULL, '2025-06-24 07:28:25', 'ying@gmail.com', '0183238182'),
+(40, 12, 'chan jiejie', 85.60, 'pending', '21', NULL, '2025-06-24 09:18:36', 'ying@gmail.com', '0183238182'),
+(41, 12, 'chan jiejie', 6.96, 'pending', '21', NULL, '2025-06-24 09:20:05', 'ying@gmail.com', '0183238182');
 
 -- --------------------------------------------------------
 
@@ -260,17 +265,19 @@ CREATE TABLE `order_feedback` (
   `comments` text NOT NULL,
   `would_recommend` enum('definitely','probably','not_sure','probably_not','definitely_not') NOT NULL,
   `improvement_suggestions` text DEFAULT NULL,
-  `feedback_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `feedback_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_featured` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_feedback`
 --
 
-INSERT INTO `order_feedback` (`id`, `order_id`, `customer_id`, `overall_rating`, `delivery_rating`, `product_quality_rating`, `comments`, `would_recommend`, `improvement_suggestions`, `feedback_date`) VALUES
-(1, 23, 2, 5, 5, 5, 'Outstanding experience from start to finish! The ordering process was very smooth, delivery was right on time, and the cake quality exceeded my expectations. Perfect for our family celebration!', 'definitely', 'Maybe consider offering more sugar-free options for health-conscious customers.', '2025-06-19 13:30:00'),
-(2, 24, 2, 4, 4, 5, 'Very satisfied with my order! The products were fresh and delicious. Delivery was punctual and everything was well-packaged. Great bakery service overall.', 'definitely', 'Would love to see weekend delivery slots for busy working customers like myself.', '2025-06-19 14:00:00'),
-(3, 32, 3, 4, 3, 4, 'Good quality baked goods and reasonable pricing. The items were fresh and tasty. Delivery took slightly longer than expected but still within promised timeframe. Overall satisfied.', 'probably', 'Faster delivery during peak hours would be great. Maybe provide real-time order tracking feature.', '2025-06-19 07:30:00');
+INSERT INTO `order_feedback` (`id`, `order_id`, `customer_id`, `overall_rating`, `delivery_rating`, `product_quality_rating`, `comments`, `would_recommend`, `improvement_suggestions`, `feedback_date`, `is_featured`) VALUES
+(1, 23, 2, 5, 5, 5, 'Outstanding experience from start to finish! The ordering process was very smooth, delivery was right on time, and the cake quality exceeded my expectations. Perfect for our family celebration!', 'definitely', 'Maybe consider offering more sugar-free options for health-conscious customers.', '2025-06-19 13:30:00', 0),
+(2, 24, 2, 4, 4, 5, 'Very satisfied with my order! The products were fresh and delicious. Delivery was punctual and everything was well-packaged. Great bakery service overall.', 'definitely', 'Would love to see weekend delivery slots for busy working customers like myself.', '2025-06-19 14:00:00', 0),
+(3, 32, 3, 4, 3, 4, 'Good quality baked goods and reasonable pricing. The items were fresh and tasty. Delivery took slightly longer than expected but still within promised timeframe. Overall satisfied.', 'probably', 'Faster delivery during peak hours would be great. Maybe provide real-time order tracking feature.', '2025-06-19 07:30:00', 0),
+(4, 40, 12, 3, 4, 4, 'good', 'definitely', 'good', '2025-06-24 09:19:04', 0);
 
 -- --------------------------------------------------------
 
@@ -294,7 +301,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) 
 (1, 35, 11, 1, 10.50),
 (2, 36, 8, 1, 85.00),
 (3, 37, 1, 3, 80.00),
-(4, 38, 3, 3, 85.00);
+(4, 38, 3, 3, 85.00),
+(5, 39, 13, 1, 6.50),
+(6, 40, 1, 1, 80.00),
+(7, 41, 13, 1, 6.50);
 
 -- --------------------------------------------------------
 
@@ -446,11 +456,31 @@ INSERT INTO `product_review_summary` (`product_id`, `total_reviews`, `average_ra
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `recent_feedback`
+-- (See below for the actual view)
+--
+CREATE TABLE `recent_feedback` (
+`id` int(11)
+,`order_id` int(11)
+,`overall_rating` int(11)
+,`delivery_rating` int(11)
+,`product_quality_rating` int(11)
+,`comments` text
+,`would_recommend` enum('definitely','probably','not_sure','probably_not','definitely_not')
+,`feedback_date` timestamp
+,`customer_name` varchar(100)
+,`total_amount` decimal(10,2)
+,`order_date` timestamp
+);
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `customer_feedback_summary`
 --
 DROP TABLE IF EXISTS `customer_feedback_summary`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `customer_feedback_summary`  AS SELECT count(0) AS `total_feedback`, avg(`order_feedback`.`overall_rating`) AS `avg_overall_rating`, avg(`order_feedback`.`delivery_rating`) AS `avg_delivery_rating`, avg(`order_feedback`.`product_quality_rating`) AS `avg_product_quality_rating`, count(case when `order_feedback`.`would_recommend` in ('definitely','probably') then 1 end) AS `positive_recommendations`, round(count(case when `order_feedback`.`would_recommend` in ('definitely','probably') then 1 end) * 100.0 / count(0),2) AS `recommendation_percentage` FROM `order_feedback` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `customer_feedback_summary`  AS SELECT count(0) AS `total_feedback`, avg(`order_feedback`.`overall_rating`) AS `avg_overall_rating`, avg(`order_feedback`.`delivery_rating`) AS `avg_delivery_rating`, avg(`order_feedback`.`product_quality_rating`) AS `avg_product_quality_rating`, count(case when `order_feedback`.`would_recommend` in ('definitely','probably') then 1 end) AS `positive_recommendations`, count(case when `order_feedback`.`would_recommend` in ('definitely_not','probably_not') then 1 end) AS `negative_recommendations`, round(count(case when `order_feedback`.`would_recommend` in ('definitely','probably') then 1 end) * 100.0 / count(0),2) AS `recommendation_percentage` FROM `order_feedback` ;
 
 -- --------------------------------------------------------
 
@@ -469,6 +499,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `product_rating_summary`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_rating_summary`  AS SELECT `p`.`id` AS `id`, `p`.`name` AS `name`, `p`.`category` AS `category`, `p`.`price` AS `price`, `p`.`image` AS `image`, coalesce(`prs`.`average_rating`,0) AS `average_rating`, coalesce(`prs`.`total_reviews`,0) AS `total_reviews`, coalesce(`prs`.`five_star_count`,0) AS `five_star_count`, coalesce(`prs`.`four_star_count`,0) AS `four_star_count`, coalesce(`prs`.`three_star_count`,0) AS `three_star_count`, coalesce(`prs`.`two_star_count`,0) AS `two_star_count`, coalesce(`prs`.`one_star_count`,0) AS `one_star_count` FROM (`products` `p` left join `product_review_summary` `prs` on(`p`.`id` = `prs`.`product_id`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `recent_feedback`
+--
+DROP TABLE IF EXISTS `recent_feedback`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `recent_feedback`  AS SELECT `of`.`id` AS `id`, `of`.`order_id` AS `order_id`, `of`.`overall_rating` AS `overall_rating`, `of`.`delivery_rating` AS `delivery_rating`, `of`.`product_quality_rating` AS `product_quality_rating`, `of`.`comments` AS `comments`, `of`.`would_recommend` AS `would_recommend`, `of`.`feedback_date` AS `feedback_date`, `o`.`customer_name` AS `customer_name`, `o`.`total_amount` AS `total_amount`, `o`.`order_date` AS `order_date` FROM (`order_feedback` `of` join `orders` `o` on(`of`.`order_id` = `o`.`id`)) ORDER BY `of`.`feedback_date` DESC ;
 
 --
 -- Indexes for dumped tables
@@ -583,25 +622,25 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `order_feedback`
 --
 ALTER TABLE `order_feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products`
