@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($cart_items)) {
             $_SESSION['cart'] = [];
 
             // Redirect to confirmation
-            header("Location: confirmation.php?order_id=$order_id");
+            header("Location: order_feedback.php?order_id=$order_id");
             exit();
         } catch (Exception $e) {
             mysqli_rollback($conn);

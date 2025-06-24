@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !$feedback_exists) {
     }
     if (empty($form_data['comments'])) {
         $errors[] = "Please share your experience with us.";
-    } elseif (strlen($form_data['comments']) < 3) {
-        $errors[] = "Please provide more detailed feedback (at least 3 characters).";
+    } elseif (strlen($form_data['comments']) < 5) {
+        $errors[] = "Please provide more detailed feedback (at least 5 characters).";
     }
     if (empty($form_data['would_recommend'])) {
         $errors[] = "Please let us know if you would recommend us to others.";
@@ -292,6 +292,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !$feedback_exists) {
             background: #A0522D;
         }
         
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
         .error {
             background: #ffebee;
             color: #c62828;
@@ -463,7 +468,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !$feedback_exists) {
                             <div class="rating-section">
                                 <h4>Overall Experience</h4>
                                 <p>How would you rate your overall experience with BakeEase Bakery?</p>
-                                <div class="star-rating">
+                                <div class="star-rating" data-rating="overall_rating">
                                     <input type="radio" name="overall_rating" value="5" id="overall5" <?= $form_data['overall_rating'] == 5 ? 'checked' : '' ?>>
                                     <label for="overall5">★</label>
                                     <input type="radio" name="overall_rating" value="4" id="overall4" <?= $form_data['overall_rating'] == 4 ? 'checked' : '' ?>>
@@ -481,7 +486,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !$feedback_exists) {
                             <div class="rating-section">
                                 <h4>Delivery Service</h4>
                                 <p>How satisfied were you with our delivery service?</p>
-                                <div class="star-rating">
+                                <div class="star-rating" data-rating="delivery_rating">
                                     <input type="radio" name="delivery_rating" value="5" id="delivery5" <?= $form_data['delivery_rating'] == 5 ? 'checked' : '' ?>>
                                     <label for="delivery5">★</label>
                                     <input type="radio" name="delivery_rating" value="4" id="delivery4" <?= $form_data['delivery_rating'] == 4 ? 'checked' : '' ?>>
@@ -499,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !$feedback_exists) {
                             <div class="rating-section">
                                 <h4>Product Quality</h4>
                                 <p>How would you rate the quality of our baked goods?</p>
-                                <div class="star-rating">
+                                <div class="star-rating" data-rating="product_quality_rating">
                                     <input type="radio" name="product_quality_rating" value="5" id="quality5" <?= $form_data['product_quality_rating'] == 5 ? 'checked' : '' ?>>
                                     <label for="quality5">★</label>
                                     <input type="radio" name="product_quality_rating" value="4" id="quality4" <?= $form_data['product_quality_rating'] == 4 ? 'checked' : '' ?>>
