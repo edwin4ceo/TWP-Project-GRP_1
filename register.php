@@ -35,8 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check if email already exists
-    $query = "SELECT id FROM customers WHERE email = '$email'";
-    $result = mysqli_query($conn, $query);
+    $query = "SELECT id FROM customers WHERE email = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     if (mysqli_num_rows($result) > 0) {
         $errors[] = "Email is already registered.";
     }
@@ -48,15 +51,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $status = 'active';
         $created_at = date('Y-m-d H:i:s');
 
-        $query = "INSERT INTO customers (name, email, phone, password, status, created_at) 
-                  VALUES ('$name', '$email', '$phone', '$hashed_password', '$status', '$created_at')";
-        if (mysqli_query($conn, $query)) {
+        // Use prepared statement for INSERT
+        $query = "INSERT INTO customers (name, email, phone, password, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "ssssss", $name, $email, $phone, $hashed_password, $status, $created_at);
+
+        // Check connection and execute
+        if (!$stmt) {
+            // Attempt to reconnect if the connection is lost
+            $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "ssssss", $name, $email, $phone, $hashed_password, $status, $created_at);
+        }
+
+        if (mysqli_stmt_execute($stmt)) {
             $_SESSION['success'] = "Registration successful! Please login.";
             header("Location: login.php");
             exit();
         } else {
             $errors[] = "Registration failed: " . mysqli_error($conn);
         }
+        mysqli_stmt_close($stmt);
     }
 }
 ?>
